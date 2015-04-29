@@ -45,8 +45,78 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    NAMESPACE = 258,
-    QUALIFIED_NAME = 259
+    QUALIFIED_NAME = 258,
+    ID = 259,
+    PUBLIC = 260,
+    PRIVATE = 261,
+    PROTECTED = 262,
+    FINAL = 263,
+    REQUIRED = 264,
+    NATIVE = 265,
+    OVERRIDE = 266,
+    STANDARD = 267,
+    STR = 268,
+    CHAR = 269,
+    INT = 270,
+    LONG = 271,
+    FLOAT = 272,
+    FLOAT64 = 273,
+    BOOL_TRUE = 274,
+    BOOL_FALSE = 275,
+    NAMESPACE = 276,
+    PROTOCOL = 277,
+    CLASS = 278,
+    IMPORT = 279,
+    ENUM = 280,
+    VAR = 281,
+    FUNC = 282,
+    BRACE_LEFT = 283,
+    BRACE_RIGHT = 284,
+    PAREN_LEFT = 285,
+    PAREN_RIGHT = 286,
+    COLON = 287,
+    COMMA = 288,
+    BRACKET_RIGHT = 289,
+    BRACKET_LEFT = 290,
+    QUESTION_MARK = 291,
+    OP_EQUAL = 292,
+    OP_NEQUAL = 293,
+    OP_LESS = 294,
+    OP_LESS_EQ = 295,
+    OP_GREATER = 296,
+    OP_GREATER_EQ = 297,
+    OP_ASSIGN = 298,
+    OP_TYPE = 299,
+    OP_THROWS = 300,
+    OP_ASSIGN_PLUS = 301,
+    OP_ASSIGN_MINUS = 302,
+    OP_ASSIGN_MUL = 303,
+    OP_ASSIGN_DIV = 304,
+    OP_ASSIGN_MOD = 305,
+    OP_ASSIGN_POW = 306,
+    OP_ASSIGN_XOR = 307,
+    OP_ASSIGN_AND = 308,
+    OP_ASSIGN_OR = 309,
+    OP_ASSIGN_LSHIFT = 310,
+    OP_ASSIGN_RSHIFT = 311,
+    OP_INC = 312,
+    OP_DEC = 313,
+    OP_PLUS = 314,
+    OP_MINUS = 315,
+    OP_MUL = 316,
+    OP_DIV = 317,
+    OP_MOD = 318,
+    OP_POW = 319,
+    OP_XOR = 320,
+    OP_AND = 321,
+    OP_OR = 322,
+    OP_NOT = 323,
+    OP_XNOR = 324,
+    OP_NAND = 325,
+    OP_NOR = 326,
+    OP_LSHIFT = 327,
+    OP_RSHIFT = 328,
+    OP_COMPLEMENT = 329
   };
 #endif
 
@@ -58,8 +128,30 @@ union YYSTYPE
 #line 5 "grammar/AshGrammar.y" /* yacc.c:1915  */
 
 	std::string str;
+	int token;
+	int int32;
+	long long int64;
+	float float32;
+	char ch;
+	double float64;
+	Operator* op;
+	TokenFile* file;
+	TokenImport* import;
+	Imports* imports;
+	TokenTypeDec* typeDec;
+	TokenModifier* mod;
+	Modifiers* mods;
+	TokenFuncDec* funcDec;
+	TokenArg* arg;
+	Args* args;
+	TokenType* type;
+	Types* types;
+	TokenBlock* block;
+	TokenStatement* stmt;
+	TokenVarDec* varDec;
+	TokenExpression* expr;
 
-#line 63 "grammar/parser.hpp" /* yacc.c:1915  */
+#line 155 "grammar/parser.hpp" /* yacc.c:1915  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

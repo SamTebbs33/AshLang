@@ -1,5 +1,9 @@
 %{
 	#include <string>
+	#define YYERROR_VERBOSE
+	extern int yylex();
+	extern const char* yytext;
+	void yyerror(const char* s){printf("Error:%d: %s\n", yylineno, s);}
 %}
 
 %union{
@@ -8,24 +12,58 @@
 	int int32;
 	long long int64;
 	float float32;
+	char ch;
 	double float64;
 	Operator* op;
+	TokenFile* file;
+	TokenImport* import;
+	Imports* imports;
+	TokenTypeDec* typeDec;
+	TokenModifier* mod;
+	Modifiers* mods;
+	TokenFuncDec* funcDec;
+	TokenArg* arg;
+	Args* args;
+	TokenType* type;
+	Types* types;
+	TokenBlock* block;
+	TokenStatement* stmt;
+	TokenVarDec* varDec;
+	TokenExpression* expr;
 }
 
 %token <str> QUALIFIED_NAME ID PUBLIC PRIVATE PROTECTED FINAL REQUIRED NATIVE OVERRIDE STANDARD
 %token <str> STR
+%token <ch> CHAR
 %token <int32> INT
 %token <int64> LONG
 %token <float32> FLOAT
 %token <float64> FLOAT64
 %token <token> BOOL_TRUE BOOL_FALSE
-%token <token> NAMESPACE PROTOCOL CLASS IMPORT ENUM
-%token <token> BRACE_LEFT BRACE_RIGHT PAREN_LEFT PAREN_RIGHT COLON COMMA 
+%token <token> NAMESPACE PROTOCOL CLASS IMPORT ENUM VAR FUNC
+%token <token> BRACE_LEFT BRACE_RIGHT PAREN_LEFT PAREN_RIGHT COLON COMMA BRACKET_RIGHT BRACKET_LEFT QUESTION_MARK
 %token <op> OP_EQUAL OP_NEQUAL OP_LESS OP_LESS_EQ OP_GREATER OP_GREATER_EQ
 %token <op> OP_ASSIGN OP_TYPE OP_THROWS OP_ASSIGN_PLUS OP_ASSIGN_MINUS OP_ASSIGN_MUL OP_ASSIGN_DIV OP_ASSIGN_MOD OP_ASSIGN_POW OP_ASSIGN_XOR OP_ASSIGN_AND OP_ASSIGN_OR OP_ASSIGN_LSHIFT OP_ASSIGN_RSHIFT OP_INC OP_DEC
 %token <op> OP_PLUS OP_MINUS OP_MUL OP_DIV OP_MOD OP_POW
 %token <op> OP_XOR OP_AND OP_OR OP_NOT OP_XNOR OP_NAND OP_NOR
 %token <op> OP_LSHIFT OP_RSHIFT OP_COMPLEMENT
+
+%type <op> op_infix op_prefix op_postfix
+%type <file> file
+%type <import> import
+%type <imports> imports
+%type <typedec> type_dec class_dec protocol_dec enum_dec
+%type <mod> type_mod class_func_mod class_var_mod func_var_mod
+%type <mods> type_mods class_func_mods class_var_mods func_var_mods
+%type <funcDec> class_func_dec protocol_func_dec
+%type <arg> arg
+%type <args> args
+%type <type> type
+%type <types> type_supers
+%type <block> class_block protocol_block enum_block 
+%type <stmt> class_stmt protocol_stmt enum_stmt
+%type <varDec> var_dec_explicit_assign var_dec_explicit var_dec_implicit class_var_dec protcol_var_dec func_var_dec
+%type <expr> expr
 
 %%
 
@@ -51,8 +89,9 @@ func_var_mod: FINAL ;
 func_var_mods: func_var_mod | func_var_mods func_var_mod | ;
 
 type_args: PAREN_LEFT args PAREN_RIGHT | ;
+type: ID | type BRACKET_LEFT BRACKET_RIGHT
 args: arg | args arg ;
-arg: ID COLON Type ;
+arg: ID COLON type ;
 
 func_type: COLON type | ; 
 type_supers: func_type | type_supers COMMA type ;
@@ -69,7 +108,7 @@ protocol_stmt: protcol_var_dec | protocol_func_dec ;
 
 func_dec: FUNC ID PAREN_LEFT args PAREN_RIGHT func_type ;
 class_func_dec: class_func_mods func_dec BRACE_LEFT func_dec_block BRACE_RIGHT ;
-protcol_var_dec: class_func_mods func_dec ;
+protocol_func_dec: class_func_mods func_dec ;
 var_dec_body: VAR ID ;
 var_dec_explicit: var_dec_body func_type ;
 var_dec_explicit_assign: var_dec_explicit OP_ASSIGN expr ;
