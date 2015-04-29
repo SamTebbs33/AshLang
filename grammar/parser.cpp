@@ -65,8 +65,14 @@
 #line 1 "grammar/AshGrammar.y" /* yacc.c:339  */
 
 	#include <string>
+	#include "tokens.h"
+	#define YYERROR_VERBOSE
+	extern int yylex();
+	extern const char* yytext;
+	void yyerror(const char* s){printf("Error:%d: %s\n", yylineno, s);}
+	int lineNo = 0;
 
-#line 70 "grammar/parser.cpp" /* yacc.c:339  */
+#line 76 "grammar/parser.cpp" /* yacc.c:339  */
 
 # ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -181,9 +187,10 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 5 "grammar/AshGrammar.y" /* yacc.c:355  */
+#line 11 "grammar/AshGrammar.y" /* yacc.c:355  */
 
 	std::string str;
+	int line;
 	int token;
 	int int32;
 	long long int64;
@@ -207,7 +214,7 @@ union YYSTYPE
 	TokenVarDec* varDec;
 	TokenExpression* expr;
 
-#line 211 "grammar/parser.cpp" /* yacc.c:355  */
+#line 218 "grammar/parser.cpp" /* yacc.c:355  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
@@ -222,7 +229,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 226 "grammar/parser.cpp" /* yacc.c:358  */
+#line 233 "grammar/parser.cpp" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -507,19 +514,19 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    66,    66,    68,    68,    68,    69,    70,    70,    72,
-      72,    73,    73,    73,    74,    75,    76,    78,    78,    79,
-      79,    79,    79,    80,    80,    80,    80,    80,    80,    80,
-      81,    81,    81,    82,    82,    82,    82,    83,    83,    83,
-      84,    85,    85,    85,    87,    87,    88,    88,    89,    89,
-      90,    92,    92,    93,    93,    95,    95,    95,    96,    96,
-      97,    97,    97,    98,    99,    99,    99,   100,   100,   100,
-     101,   102,   102,   102,   103,   103,   105,   106,   107,   108,
-     109,   110,   111,   112,   112,   112,   113,   114,   115,   117,
-     118,   119,   120,   121,   122,   123,   124,   125,   126,   127,
-     128,   130,   130,   130,   130,   130,   130,   130,   130,   130,
-     130,   130,   130,   130,   130,   130,   130,   130,   130,   130,
-     130,   132,   132,   132,   132,   133,   133
+       0,    73,    73,    75,    75,    75,    76,    77,    77,    79,
+      79,    80,    80,    80,    81,    82,    83,    85,    85,    86,
+      86,    86,    86,    87,    87,    87,    87,    87,    87,    87,
+      88,    88,    88,    89,    89,    89,    89,    90,    90,    90,
+      91,    92,    92,    92,    94,    94,    95,    95,    96,    96,
+      97,    99,    99,   100,   100,   102,   102,   102,   103,   103,
+     104,   104,   104,   105,   106,   106,   106,   107,   107,   107,
+     108,   109,   109,   109,   110,   110,   112,   113,   114,   115,
+     116,   117,   118,   119,   119,   119,   120,   121,   122,   124,
+     125,   126,   127,   128,   129,   130,   131,   132,   133,   134,
+     135,   137,   137,   137,   137,   137,   137,   137,   137,   137,
+     137,   137,   137,   137,   137,   137,   137,   137,   137,   137,
+     137,   139,   139,   139,   139,   140,   140
 };
 #endif
 
@@ -1448,163 +1455,163 @@ yyreduce:
   switch (yyn)
     {
         case 101:
-#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1454 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1461 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 102:
-#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1460 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1467 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 103:
-#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1466 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1473 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 104:
-#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1472 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1479 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 105:
-#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1478 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1485 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 106:
-#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1484 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1491 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 107:
-#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1490 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1497 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 108:
-#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1496 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1503 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 109:
-#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1502 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1509 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 110:
-#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1508 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1515 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 111:
-#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1514 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1521 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 112:
-#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1520 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1527 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 113:
-#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1526 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1533 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 114:
-#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1532 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1539 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 115:
-#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1538 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1545 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 116:
-#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1544 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1551 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 117:
-#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1550 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1557 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 118:
-#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1556 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1563 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 119:
-#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1562 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1569 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 120:
-#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1568 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1575 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 121:
-#line 132 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 139 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1574 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1581 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 122:
-#line 132 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 139 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1580 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1587 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 123:
-#line 132 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 139 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1586 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1593 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 124:
-#line 132 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 139 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1592 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1599 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 125:
-#line 133 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 140 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1598 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1605 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 126:
-#line 133 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 140 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.op) = new Operator(*(yyvsp[0].op));}
-#line 1604 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1611 "grammar/parser.cpp" /* yacc.c:1661  */
     break;
 
 
-#line 1608 "grammar/parser.cpp" /* yacc.c:1661  */
+#line 1615 "grammar/parser.cpp" /* yacc.c:1661  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1832,5 +1839,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 135 "grammar/AshGrammar.y" /* yacc.c:1906  */
+#line 142 "grammar/AshGrammar.y" /* yacc.c:1906  */
 

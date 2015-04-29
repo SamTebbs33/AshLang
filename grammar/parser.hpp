@@ -125,9 +125,10 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 5 "grammar/AshGrammar.y" /* yacc.c:1915  */
+#line 11 "grammar/AshGrammar.y" /* yacc.c:1915  */
 
 	std::string str;
+	int line;
 	int token;
 	int int32;
 	long long int64;
@@ -151,7 +152,7 @@ union YYSTYPE
 	TokenVarDec* varDec;
 	TokenExpression* expr;
 
-#line 155 "grammar/parser.hpp" /* yacc.c:1915  */
+#line 156 "grammar/parser.hpp" /* yacc.c:1915  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

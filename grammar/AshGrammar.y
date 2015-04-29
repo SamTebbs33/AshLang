@@ -1,13 +1,16 @@
 %{
 	#include <string>
+	#include "tokens.h"
 	#define YYERROR_VERBOSE
 	extern int yylex();
 	extern const char* yytext;
 	void yyerror(const char* s){printf("Error:%d: %s\n", yylineno, s);}
+	int lineNo = 0;
 %}
 
 %union{
 	std::string str;
+	int line;
 	int token;
 	int int32;
 	long long int64;
