@@ -49,9 +49,9 @@
 %token <float64> FLOAT64
 %token <token> BOOL_TRUE BOOL_FALSE
 %token <token> NAMESPACE PROTOCOL CLASS IMPORT ENUM VAR FUNC
-%token <token> BRACE_LEFT BRACE_RIGHT PAREN_LEFT PAREN_RIGHT COLON COMMA BRACKET_RIGHT BRACKET_LEFT QUESTION_MARK DOT
+%token <token> BRACE_LEFT BRACE_RIGHT PAREN_LEFT PAREN_RIGHT COLON COMMA BRACKET_RIGHT BRACKET_LEFT QUESTION_MARK DOT ARROW
 %token <op> OP_EQUAL OP_NEQUAL OP_LESS OP_LESS_EQ OP_GREATER OP_GREATER_EQ
-%token <op> OP_ASSIGN OP_TYPE OP_THROWS OP_ASSIGN_PLUS OP_ASSIGN_MINUS OP_ASSIGN_MUL OP_ASSIGN_DIV OP_ASSIGN_MOD OP_ASSIGN_POW OP_ASSIGN_XOR OP_ASSIGN_AND OP_ASSIGN_OR OP_ASSIGN_LSHIFT OP_ASSIGN_RSHIFT OP_INC OP_DEC
+%token <op> OP_ASSIGN OP_TYPE OP_ARROW OP_ASSIGN_PLUS OP_ASSIGN_MINUS OP_ASSIGN_MUL OP_ASSIGN_DIV OP_ASSIGN_MOD OP_ASSIGN_POW OP_ASSIGN_XOR OP_ASSIGN_AND OP_ASSIGN_OR OP_ASSIGN_LSHIFT OP_ASSIGN_RSHIFT OP_INC OP_DEC
 %token <op> OP_PLUS OP_MINUS OP_MUL OP_DIV OP_MOD OP_POW
 %token <op> OP_XOR OP_AND OP_OR OP_NOT OP_XNOR OP_NAND OP_NOR
 %token <op> OP_LSHIFT OP_RSHIFT OP_COMPLEMENT
@@ -109,6 +109,7 @@ arg: ID COLON type ;
 
 func_type: COLON type | ; 
 type_supers: func_type | type_supers COMMA type ;
+throws: ARROW type | ;
 
 class_block: class_stmt | class_block class_stmt | ;
 class_stmt: class_func_dec | class_var_dec ;
@@ -120,7 +121,7 @@ enum_stmt: class_stmt ;
 protocol_block: protocol_stmt | protocol_block protocol_stmt | ;
 protocol_stmt: protocol_var_dec | protocol_func_dec ;
 
-func_dec: FUNC ID PAREN_LEFT args PAREN_RIGHT func_type ;
+func_dec: FUNC ID PAREN_LEFT args PAREN_RIGHT func_type throws ;
 class_func_dec: class_func_mods func_dec BRACE_LEFT func_dec_block BRACE_RIGHT ;
 protocol_func_dec: class_func_mods func_dec ;
 var_dec_body: VAR ID ;
