@@ -1,1 +1,1 @@
-./bin/tests/parser-test tests/syntaxt.ash
+./bin/tests/parser-test tests/syntax.ash

@@ -37,9 +37,10 @@
 	TokenVarDec* varDec;
 	TokenExpression* expr;
 	std::vector<TokenTypeDec*>* typeDecVec;
+	TokenQualifiedName* qualifiedName;
 }
 
-%token <str> QUALIFIED_NAME ID PUBLIC PRIVATE PROTECTED FINAL REQUIRED NATIVE OVERRIDE STANDARD
+%token <str> ID PUBLIC PRIVATE PROTECTED FINAL REQUIRED NATIVE OVERRIDE STANDARD STATIC
 %token <str> STR
 %token <ch> CHAR
 %token <int32> INT
@@ -73,24 +74,28 @@
 %type <stmt> class_stmt protocol_stmt enum_stmt
 %type <varDec> var_dec_explicit_assign var_dec_explicit var_dec_implicit class_var_dec protcol_var_dec func_var_dec
 %type <expr> expr
+%type <qualifiedName> qualified_name
+
+%start file
 
 %%
 
 file: namespace_dec imports type_decs ;
 
 imports: import | imports import | ;
-import: IMPORT QUALIFIED_NAME ;
-namespace_dec: NAMESPACE QUALIFIED_NAME | ;
+import: IMPORT qualified_name ;
+qualified_name: ID | qualified_name DOT ID ;
+namespace_dec: NAMESPACE qualified_name | ;
 
 type_decs: type_dec | type_decs type_dec;
 type_dec: class_dec | protocol_dec | enum_dec ;
 class_dec: type_mods CLASS ID type_args type_supers BRACE_LEFT class_block BRACE_RIGHT ; 
-protocol_dec: type_mods PROTOCOL ID type_args type_supers protocol_block ;
-enum_dec: ENUM ID type_args enum_block ;
+protocol_dec: type_mods PROTOCOL ID type_args type_supers BRACE_LEFT protocol_block BRACE_RIGHT ;
+enum_dec: ENUM ID type_args BRACE_LEFT enum_instances enum_block BRACE_RIGHT ;
 
-type_mods: type_mod | type_mods type_mod ;
+type_mods: type_mod | type_mods type_mod | ;
 type_mod: PUBLIC | PRIVATE | PROTECTED | FINAL ;
-class_func_mod: PUBLIC | PRIVATE | PROTECTED | FINAL | NATIVE | REQUIRED | STANDARD OVERRIDE ;
+class_func_mod: PUBLIC | PRIVATE | PROTECTED | FINAL | NATIVE | REQUIRED | STANDARD | STATIC | OVERRIDE ;
 class_func_mods: class_func_mod | class_func_mods class_func_mod | ;
 class_var_mod: PUBLIC | PRIVATE | PROTECTED | FINAL ;
 class_var_mods: class_var_mod | class_var_mods class_var_mod | ;
@@ -99,7 +104,7 @@ func_var_mods: func_var_mod | func_var_mods func_var_mod | ;
 
 type_args: PAREN_LEFT args PAREN_RIGHT | ;
 type: ID | type BRACKET_LEFT BRACKET_RIGHT
-args: arg | args arg ;
+args: arg | args COMMA arg | ;
 arg: ID COLON type ;
 
 func_type: COLON type | ; 
@@ -110,10 +115,10 @@ class_stmt: class_func_dec | class_var_dec ;
 func_dec_block: func_stmt | func_dec_block func_stmt | ;
 func_stmt: func_var_dec ;
 enum_instances: ID | enum_instances COMMA ID | ;
-enum_block: enum_instances | enum_block enum_stmt | ;
+enum_block: enum_stmt | enum_block enum_stmt | ;
 enum_stmt: class_stmt ;
 protocol_block: protocol_stmt | protocol_block protocol_stmt | ;
-protocol_stmt: protcol_var_dec | protocol_func_dec ;
+protocol_stmt: protocol_var_dec | protocol_func_dec ;
 
 func_dec: FUNC ID PAREN_LEFT args PAREN_RIGHT func_type ;
 class_func_dec: class_func_mods func_dec BRACE_LEFT func_dec_block BRACE_RIGHT ;
@@ -125,7 +130,7 @@ var_dec_implicit: var_dec_body OP_ASSIGN expr ;
 var_dec: var_dec_explicit | var_dec_explicit_assign | var_dec_implicit ;
 class_var_dec: class_var_mods var_dec ;
 func_var_dec: func_var_mods var_dec ;
-protcol_var_dec: var_dec_explicit ;
+protocol_var_dec: class_var_mods var_dec_explicit ;
 
 expr: expr op_infix expr
 	| op_prefix expr 

@@ -84,4 +84,8 @@ class TokenExpression : Token{
 
 };
 
+class TokenQualifiedName : Token{
+
+};
+
 #endif

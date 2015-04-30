@@ -45,16 +45,16 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    QUALIFIED_NAME = 258,
-    ID = 259,
-    PUBLIC = 260,
-    PRIVATE = 261,
-    PROTECTED = 262,
-    FINAL = 263,
-    REQUIRED = 264,
-    NATIVE = 265,
-    OVERRIDE = 266,
-    STANDARD = 267,
+    ID = 258,
+    PUBLIC = 259,
+    PRIVATE = 260,
+    PROTECTED = 261,
+    FINAL = 262,
+    REQUIRED = 263,
+    NATIVE = 264,
+    OVERRIDE = 265,
+    STANDARD = 266,
+    STATIC = 267,
     STR = 268,
     CHAR = 269,
     INT = 270,
@@ -154,8 +154,9 @@ union YYSTYPE
 	TokenVarDec* varDec;
 	TokenExpression* expr;
 	std::vector<TokenTypeDec*>* typeDecVec;
+	TokenQualifiedName* qualifiedName;
 
-#line 159 "grammar/parser.hpp" /* yacc.c:1915  */
+#line 160 "grammar/parser.hpp" /* yacc.c:1915  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

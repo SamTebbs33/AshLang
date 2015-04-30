@@ -21,12 +21,20 @@
 
 %option yylineno
 
+Identifier ([a-zA-Z]([a-zA-Z]|[0-9])*)
+Digit ([0-9])
+DigitNonZero ([1-9])
+HexDigit ([a-fA-F0-9])
+OctalDigit ([0-7])
+BinaryDigit ([0|1])
+
+
 %%
 
-0x[a-fA-F0-9]+		SAVE_INT(16); return INT;
-0o[0-7]+			SAVE_INT(8); return INT;
-0b[0|1]+			SAVE_INT(2); return INT;
--?[1-9][0-9]*		SAVE_INT(10); return INT;
+0x({HexDigit})+				SAVE_INT(16); return INT;
+0o({OctalDigit})+				SAVE_INT(8); return INT;
+0b({BinaryDigit})+				SAVE_INT(2); return INT;
+-?{DigitNonZero}({Digit})*		SAVE_INT(10); return INT;
 0					SAVE_INT(10); return INT;
 -?[0-9]+\.[0-9]+	SAVE_FLOAT64; return FLOAT64;
 -?[0-9]+\.[0-9]+f	SAVE_FLOAT; return FLOAT;
@@ -39,14 +47,15 @@
 [ \t\n]+			;
 <<EOF>>				lineNo = 0; return EOF;
 
-"public"			return PUBLIC;
-"private"			return PRIVATE;
-"protected"			return PROTECTED;
-"final"				return FINAL;
-"required"			return REQUIRED;
-"native"			return NATIVE;
-"override"			return OVERRIDE;
-"standard"			return STANDARD;
+"public"			SAVE_STR; return PUBLIC;
+"private"			SAVE_STR; return PRIVATE;
+"protected"			SAVE_STR; return PROTECTED;
+"final"				SAVE_STR; return FINAL;
+"required"			SAVE_STR; return REQUIRED;
+"native"			SAVE_STR; return NATIVE;
+"override"			SAVE_STR; return OVERRIDE;
+"standard"			SAVE_STR; return STANDARD;
+"static"			SAVE_STR; return STATIC;
 
 "var"				return VAR;
 "func"				return FUNC;
@@ -54,9 +63,9 @@
 "enum"				return ENUM;
 "protocol"			return PROTOCOL;
 "import"			return IMPORT;
+"namespace"			return NAMESPACE;
 
-[a-zA-Z]([a-zA-Z]|[0-9])* SAVE_STR; return ID;
-[a-zA-Z]([a-zA-Z]|[0-9])*(.[a-zA-Z]([a-zA-Z]|[0-9])*)* SAVE_STR; return QUALIFIED_NAME;
+{Identifier}		SAVE_STR; return ID;
 
 "="					SAVE_OP; return OP_ASSIGN;
 ":"					return COLON;
