@@ -625,21 +625,22 @@ char *yytext;
 
 	#include <string>
 	#include <cstdlib>
+	#include "tokens.h"
 	#include "parser.hpp"
 
 	#define SAVE_LINE yylval.line = lineNo;
-	#define SAVE_STR yylval.str = new string(yytext, yyleng); SAVE_LINE;
-	#define SAVE_INT(b) yylval.integer = atoi(yytext); SAVE_LINE;
+	#define SAVE_STR yylval.str = new std::string(yytext, yyleng); SAVE_LINE;
+	#define SAVE_INT(b) yylval.int32 = atoi(yytext); SAVE_LINE;
 	#define SAVE_FLOAT64 yylval.float64 = atof(yytext); SAVE_LINE;
 	#define SAVE_FLOAT yylval.float32 = (float)atof(yytext); SAVE_LINE;
 	#define SAVE_TOKEN(t) yylval.token = t; SAVE_LINE;
-	#define SAVE_CHAR(c) yylval.ch = yytext[1]; SAVE_LINE;
-	#define SAVE_OP yylval.op = new Operator(yytext);
+	#define SAVE_CHAR yylval.ch = yytext[1]; SAVE_LINE;
+	#define SAVE_OP yylval.op = new Operator(new std::string(yytext));
 
-	extern "C" int yywrap(return 1;)
+	extern "C" int yywrap(){return 1;}
 	extern int lineNo;
 
-#line 643 "grammar/lexer.cpp"
+#line 644 "grammar/lexer.cpp"
 
 #define INITIAL 0
 
@@ -821,10 +822,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 23 "grammar/AshLexGrammar.l"
+#line 24 "grammar/AshLexGrammar.l"
 
 
-#line 828 "grammar/lexer.cpp"
+#line 829 "grammar/lexer.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -919,399 +920,399 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 25 "grammar/AshLexGrammar.l"
+#line 26 "grammar/AshLexGrammar.l"
 SAVE_INT(16); return INT;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 26 "grammar/AshLexGrammar.l"
+#line 27 "grammar/AshLexGrammar.l"
 SAVE_INT(8); return INT;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 27 "grammar/AshLexGrammar.l"
+#line 28 "grammar/AshLexGrammar.l"
 SAVE_INT(2); return INT;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 28 "grammar/AshLexGrammar.l"
+#line 29 "grammar/AshLexGrammar.l"
 SAVE_INT(10); return INT;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 29 "grammar/AshLexGrammar.l"
+#line 30 "grammar/AshLexGrammar.l"
 SAVE_INT(10); return INT;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 30 "grammar/AshLexGrammar.l"
+#line 31 "grammar/AshLexGrammar.l"
 SAVE_FLOAT64; return FLOAT64;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 31 "grammar/AshLexGrammar.l"
+#line 32 "grammar/AshLexGrammar.l"
 SAVE_FLOAT; return FLOAT;
 	YY_BREAK
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 32 "grammar/AshLexGrammar.l"
+#line 33 "grammar/AshLexGrammar.l"
 SAVE_CHAR; return CHAR;
 	YY_BREAK
 case 9:
 /* rule 9 can match eol */
 YY_RULE_SETUP
-#line 33 "grammar/AshLexGrammar.l"
+#line 34 "grammar/AshLexGrammar.l"
 SAVE_STR; return STR;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 34 "grammar/AshLexGrammar.l"
+#line 35 "grammar/AshLexGrammar.l"
 return BOOL_TRUE;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 35 "grammar/AshLexGrammar.l"
+#line 36 "grammar/AshLexGrammar.l"
 return BOOL_FALSE;
 	YY_BREAK
 case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
-#line 36 "grammar/AshLexGrammar.l"
+#line 37 "grammar/AshLexGrammar.l"
 lineNo++;
 	YY_BREAK
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 37 "grammar/AshLexGrammar.l"
+#line 38 "grammar/AshLexGrammar.l"
 ;
 	YY_BREAK
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 38 "grammar/AshLexGrammar.l"
+#line 39 "grammar/AshLexGrammar.l"
 ;
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 39 "grammar/AshLexGrammar.l"
+#line 40 "grammar/AshLexGrammar.l"
 lineNo = 0; return EOF;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 41 "grammar/AshLexGrammar.l"
+#line 42 "grammar/AshLexGrammar.l"
 return PUBLIC;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 42 "grammar/AshLexGrammar.l"
+#line 43 "grammar/AshLexGrammar.l"
 return PRIVATE;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 43 "grammar/AshLexGrammar.l"
+#line 44 "grammar/AshLexGrammar.l"
 return PROTECTED;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 44 "grammar/AshLexGrammar.l"
+#line 45 "grammar/AshLexGrammar.l"
 return FINAL;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 45 "grammar/AshLexGrammar.l"
+#line 46 "grammar/AshLexGrammar.l"
 return REQUIRED;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 46 "grammar/AshLexGrammar.l"
+#line 47 "grammar/AshLexGrammar.l"
 return NATIVE;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 47 "grammar/AshLexGrammar.l"
+#line 48 "grammar/AshLexGrammar.l"
 return OVERRIDE;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 48 "grammar/AshLexGrammar.l"
+#line 49 "grammar/AshLexGrammar.l"
 return STANDARD;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 50 "grammar/AshLexGrammar.l"
+#line 51 "grammar/AshLexGrammar.l"
 return VAR;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 51 "grammar/AshLexGrammar.l"
+#line 52 "grammar/AshLexGrammar.l"
 return FUNC;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 52 "grammar/AshLexGrammar.l"
+#line 53 "grammar/AshLexGrammar.l"
 return CLASS;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 53 "grammar/AshLexGrammar.l"
+#line 54 "grammar/AshLexGrammar.l"
 return ENUM;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 54 "grammar/AshLexGrammar.l"
-return PROTOCOl;
+#line 55 "grammar/AshLexGrammar.l"
+return PROTOCOL;
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 55 "grammar/AshLexGrammar.l"
+#line 56 "grammar/AshLexGrammar.l"
 return IMPORT;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 57 "grammar/AshLexGrammar.l"
+#line 58 "grammar/AshLexGrammar.l"
 SAVE_STR; return ID;
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 58 "grammar/AshLexGrammar.l"
+#line 59 "grammar/AshLexGrammar.l"
 SAVE_STR; return QUALIFIED_NAME;
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 60 "grammar/AshLexGrammar.l"
+#line 61 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_ASSIGN;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 61 "grammar/AshLexGrammar.l"
+#line 62 "grammar/AshLexGrammar.l"
 return COLON;
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 62 "grammar/AshLexGrammar.l"
+#line 63 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_INC;
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 63 "grammar/AshLexGrammar.l"
+#line 64 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_DEC;
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 64 "grammar/AshLexGrammar.l"
+#line 65 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_ASSIGN_MINUS;
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 65 "grammar/AshLexGrammar.l"
+#line 66 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_ASSIGN_PLUS;
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 66 "grammar/AshLexGrammar.l"
+#line 67 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_ASSIGN_MUL;
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 67 "grammar/AshLexGrammar.l"
+#line 68 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_ASSIGN_DIV;
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 68 "grammar/AshLexGrammar.l"
+#line 69 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_ASSIGN_MOD;
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 69 "grammar/AshLexGrammar.l"
+#line 70 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_ASSIGN_POW;
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 70 "grammar/AshLexGrammar.l"
+#line 71 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_ASSIGN_XOR;
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 71 "grammar/AshLexGrammar.l"
+#line 72 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_ASSIGN_AND;
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 72 "grammar/AshLexGrammar.l"
+#line 73 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_ASSIGN_OR;
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 73 "grammar/AshLexGrammar.l"
+#line 74 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_ASSIGN_LSHIFT;
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 74 "grammar/AshLexGrammar.l"
-SAVE_OP; return OP_ASSING_RSHIFT;
+#line 75 "grammar/AshLexGrammar.l"
+SAVE_OP; return OP_ASSIGN_RSHIFT;
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 76 "grammar/AshLexGrammar.l"
+#line 77 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_PLUS;
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 77 "grammar/AshLexGrammar.l"
+#line 78 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_MINUS;
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 78 "grammar/AshLexGrammar.l"
+#line 79 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_MUL;
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 79 "grammar/AshLexGrammar.l"
+#line 80 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_DIV;
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 80 "grammar/AshLexGrammar.l"
+#line 81 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_MOD;
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 81 "grammar/AshLexGrammar.l"
+#line 82 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_POW;
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 83 "grammar/AshLexGrammar.l"
+#line 84 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_XOR;
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 84 "grammar/AshLexGrammar.l"
+#line 85 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_AND;
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 85 "grammar/AshLexGrammar.l"
+#line 86 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_OR;
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 87 "grammar/AshLexGrammar.l"
+#line 88 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_XOR;
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 88 "grammar/AshLexGrammar.l"
+#line 89 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_AND;	
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 89 "grammar/AshLexGrammar.l"
+#line 90 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_OR; 
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 90 "grammar/AshLexGrammar.l"
+#line 91 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_LSHIFT;
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 91 "grammar/AshLexGrammar.l"
+#line 92 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_RSHIFT;
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 92 "grammar/AshLexGrammar.l"
+#line 93 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_COMPLEMENT;
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 93 "grammar/AshLexGrammar.l"
+#line 94 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_EQUAL;
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 94 "grammar/AshLexGrammar.l"
-SAVE_OP; return OP_NOTEQUAL;
+#line 95 "grammar/AshLexGrammar.l"
+SAVE_OP; return OP_NEQUAL;
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 95 "grammar/AshLexGrammar.l"
+#line 96 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_LESS;
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 96 "grammar/AshLexGrammar.l"
+#line 97 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_GREATER;
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 97 "grammar/AshLexGrammar.l"
+#line 98 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_LESS_EQ;
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 98 "grammar/AshLexGrammar.l"
+#line 99 "grammar/AshLexGrammar.l"
 SAVE_OP; return OP_GREATER_EQ;
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 100 "grammar/AshLexGrammar.l"
+#line 101 "grammar/AshLexGrammar.l"
 return BRACE_LEFT;
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 101 "grammar/AshLexGrammar.l"
+#line 102 "grammar/AshLexGrammar.l"
 return BRACE_RIGHT;
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 102 "grammar/AshLexGrammar.l"
+#line 103 "grammar/AshLexGrammar.l"
 return PAREN_LEFT;
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 103 "grammar/AshLexGrammar.l"
+#line 104 "grammar/AshLexGrammar.l"
 return PAREN_RIGHT;
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 104 "grammar/AshLexGrammar.l"
+#line 105 "grammar/AshLexGrammar.l"
 return BRACKET_LEFT;
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 105 "grammar/AshLexGrammar.l"
+#line 106 "grammar/AshLexGrammar.l"
 return BRACKET_RIGHT;
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 106 "grammar/AshLexGrammar.l"
+#line 107 "grammar/AshLexGrammar.l"
 return DOT;
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 107 "grammar/AshLexGrammar.l"
+#line 108 "grammar/AshLexGrammar.l"
 return COMMA;
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 108 "grammar/AshLexGrammar.l"
+#line 109 "grammar/AshLexGrammar.l"
 return QUESTION_MARK;
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 109 "grammar/AshLexGrammar.l"
+#line 110 "grammar/AshLexGrammar.l"
 { printf("Error:%d:%s\n", lineNo, yytext);  }	
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 111 "grammar/AshLexGrammar.l"
+#line 112 "grammar/AshLexGrammar.l"
 ECHO;
 	YY_BREAK
-#line 1315 "grammar/lexer.cpp"
+#line 1316 "grammar/lexer.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2318,7 +2319,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 111 "grammar/AshLexGrammar.l"
+#line 112 "grammar/AshLexGrammar.l"
 
 
 

@@ -79,44 +79,45 @@ extern int yydebug;
     BRACKET_RIGHT = 289,
     BRACKET_LEFT = 290,
     QUESTION_MARK = 291,
-    OP_EQUAL = 292,
-    OP_NEQUAL = 293,
-    OP_LESS = 294,
-    OP_LESS_EQ = 295,
-    OP_GREATER = 296,
-    OP_GREATER_EQ = 297,
-    OP_ASSIGN = 298,
-    OP_TYPE = 299,
-    OP_THROWS = 300,
-    OP_ASSIGN_PLUS = 301,
-    OP_ASSIGN_MINUS = 302,
-    OP_ASSIGN_MUL = 303,
-    OP_ASSIGN_DIV = 304,
-    OP_ASSIGN_MOD = 305,
-    OP_ASSIGN_POW = 306,
-    OP_ASSIGN_XOR = 307,
-    OP_ASSIGN_AND = 308,
-    OP_ASSIGN_OR = 309,
-    OP_ASSIGN_LSHIFT = 310,
-    OP_ASSIGN_RSHIFT = 311,
-    OP_INC = 312,
-    OP_DEC = 313,
-    OP_PLUS = 314,
-    OP_MINUS = 315,
-    OP_MUL = 316,
-    OP_DIV = 317,
-    OP_MOD = 318,
-    OP_POW = 319,
-    OP_XOR = 320,
-    OP_AND = 321,
-    OP_OR = 322,
-    OP_NOT = 323,
-    OP_XNOR = 324,
-    OP_NAND = 325,
-    OP_NOR = 326,
-    OP_LSHIFT = 327,
-    OP_RSHIFT = 328,
-    OP_COMPLEMENT = 329
+    DOT = 292,
+    OP_EQUAL = 293,
+    OP_NEQUAL = 294,
+    OP_LESS = 295,
+    OP_LESS_EQ = 296,
+    OP_GREATER = 297,
+    OP_GREATER_EQ = 298,
+    OP_ASSIGN = 299,
+    OP_TYPE = 300,
+    OP_THROWS = 301,
+    OP_ASSIGN_PLUS = 302,
+    OP_ASSIGN_MINUS = 303,
+    OP_ASSIGN_MUL = 304,
+    OP_ASSIGN_DIV = 305,
+    OP_ASSIGN_MOD = 306,
+    OP_ASSIGN_POW = 307,
+    OP_ASSIGN_XOR = 308,
+    OP_ASSIGN_AND = 309,
+    OP_ASSIGN_OR = 310,
+    OP_ASSIGN_LSHIFT = 311,
+    OP_ASSIGN_RSHIFT = 312,
+    OP_INC = 313,
+    OP_DEC = 314,
+    OP_PLUS = 315,
+    OP_MINUS = 316,
+    OP_MUL = 317,
+    OP_DIV = 318,
+    OP_MOD = 319,
+    OP_POW = 320,
+    OP_XOR = 321,
+    OP_AND = 322,
+    OP_OR = 323,
+    OP_NOT = 324,
+    OP_XNOR = 325,
+    OP_NAND = 326,
+    OP_NOR = 327,
+    OP_LSHIFT = 328,
+    OP_RSHIFT = 329,
+    OP_COMPLEMENT = 330
   };
 #endif
 
@@ -125,9 +126,9 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 11 "grammar/AshGrammar.y" /* yacc.c:1915  */
+#line 13 "grammar/AshGrammar.y" /* yacc.c:1915  */
 
-	std::string str;
+	std::string* str;
 	int line;
 	int token;
 	int int32;
@@ -137,6 +138,7 @@ union YYSTYPE
 	double float64;
 	Operator* op;
 	TokenFile* file;
+	TokenNamespace* namesp;
 	TokenImport* import;
 	Imports* imports;
 	TokenTypeDec* typeDec;
@@ -151,8 +153,9 @@ union YYSTYPE
 	TokenStatement* stmt;
 	TokenVarDec* varDec;
 	TokenExpression* expr;
+	std::vector<TokenTypeDec*>* typeDecVec;
 
-#line 156 "grammar/parser.hpp" /* yacc.c:1915  */
+#line 159 "grammar/parser.hpp" /* yacc.c:1915  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

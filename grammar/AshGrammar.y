@@ -1,15 +1,17 @@
 %{
 	#include <string>
+	#include <stdio.h>
 	#include "tokens.h"
 	#define YYERROR_VERBOSE
 	extern int yylex();
+	extern int yylineno;
 	extern const char* yytext;
 	void yyerror(const char* s){printf("Error:%d: %s\n", yylineno, s);}
 	int lineNo = 0;
 %}
 
 %union{
-	std::string str;
+	std::string* str;
 	int line;
 	int token;
 	int int32;
@@ -19,6 +21,7 @@
 	double float64;
 	Operator* op;
 	TokenFile* file;
+	TokenNamespace* namesp;
 	TokenImport* import;
 	Imports* imports;
 	TokenTypeDec* typeDec;
@@ -33,6 +36,7 @@
 	TokenStatement* stmt;
 	TokenVarDec* varDec;
 	TokenExpression* expr;
+	std::vector<TokenTypeDec*>* typeDecVec;
 }
 
 %token <str> QUALIFIED_NAME ID PUBLIC PRIVATE PROTECTED FINAL REQUIRED NATIVE OVERRIDE STANDARD
@@ -44,7 +48,7 @@
 %token <float64> FLOAT64
 %token <token> BOOL_TRUE BOOL_FALSE
 %token <token> NAMESPACE PROTOCOL CLASS IMPORT ENUM VAR FUNC
-%token <token> BRACE_LEFT BRACE_RIGHT PAREN_LEFT PAREN_RIGHT COLON COMMA BRACKET_RIGHT BRACKET_LEFT QUESTION_MARK
+%token <token> BRACE_LEFT BRACE_RIGHT PAREN_LEFT PAREN_RIGHT COLON COMMA BRACKET_RIGHT BRACKET_LEFT QUESTION_MARK DOT
 %token <op> OP_EQUAL OP_NEQUAL OP_LESS OP_LESS_EQ OP_GREATER OP_GREATER_EQ
 %token <op> OP_ASSIGN OP_TYPE OP_THROWS OP_ASSIGN_PLUS OP_ASSIGN_MINUS OP_ASSIGN_MUL OP_ASSIGN_DIV OP_ASSIGN_MOD OP_ASSIGN_POW OP_ASSIGN_XOR OP_ASSIGN_AND OP_ASSIGN_OR OP_ASSIGN_LSHIFT OP_ASSIGN_RSHIFT OP_INC OP_DEC
 %token <op> OP_PLUS OP_MINUS OP_MUL OP_DIV OP_MOD OP_POW
@@ -53,8 +57,10 @@
 
 %type <op> op_infix op_prefix op_postfix
 %type <file> file
+%type <namesp> namespace_dec
 %type <import> import
 %type <imports> imports
+%type <typeDecVec> type_decs
 %type <typedec> type_dec class_dec protocol_dec enum_dec
 %type <mod> type_mod class_func_mod class_var_mod func_var_mod
 %type <mods> type_mods class_func_mods class_var_mods func_var_mods
@@ -134,9 +140,9 @@ expr: expr op_infix expr
 	| expr QUESTION_MARK expr COLON expr
 	| PAREN_LEFT expr PAREN_RIGHT
 	;
-op_infix: OP_XOR{$$ = new Operator(*$1);} | OP_AND{$$ = new Operator(*$1);} | OP_OR{$$ = new Operator(*$1);} | OP_XNOR{$$ = new Operator(*$1);} | OP_NAND{$$ = new Operator(*$1);} | OP_NOR{$$ = new Operator(*$1);} | OP_EQUAL{$$ = new Operator(*$1);} | OP_NEQUAL{$$ = new Operator(*$1);} | OP_LESS{$$ = new Operator(*$1);} | OP_LESS_EQ{$$ = new Operator(*$1);} | OP_GREATER{$$ = new Operator(*$1);} | OP_GREATER_EQ{$$ = new Operator(*$1);} | OP_PLUS{$$ = new Operator(*$1);} | OP_MINUS{$$ = new Operator(*$1);} | OP_MUL{$$ = new Operator(*$1);} | OP_DIV{$$ = new Operator(*$1);} | OP_POW{$$ = new Operator(*$1);} | OP_MOD{$$ = new Operator(*$1);} | OP_LSHIFT{$$ = new Operator(*$1);} | OP_RSHIFT{$$ = new Operator(*$1);} ;
+op_infix: OP_XOR | OP_AND | OP_OR | OP_XNOR | OP_NAND | OP_NOR | OP_EQUAL | OP_NEQUAL | OP_LESS | OP_LESS_EQ | OP_GREATER | OP_GREATER_EQ | OP_PLUS | OP_MINUS | OP_MUL | OP_DIV | OP_POW | OP_MOD | OP_LSHIFT | OP_RSHIFT ;
 
-op_prefix: OP_NOT{$$ = new Operator(*$1);} | OP_INC{$$ = new Operator(*$1);} | OP_DEC{$$ = new Operator(*$1);} | OP_COMPLEMENT {$$ = new Operator(*$1);} ;
-op_postfix: OP_INC{$$ = new Operator(*$1);} | OP_DEC {$$ = new Operator(*$1);} ;
+op_prefix: OP_NOT | OP_INC | OP_DEC | OP_COMPLEMENT  ;
+op_postfix: OP_INC | OP_DEC  ;
 
 %%

@@ -2,18 +2,19 @@
 
 	#include <string>
 	#include <cstdlib>
+	#include "tokens.h"
 	#include "parser.hpp"
 
 	#define SAVE_LINE yylval.line = lineNo;
-	#define SAVE_STR yylval.str = new string(yytext, yyleng); SAVE_LINE;
-	#define SAVE_INT(b) yylval.integer = atoi(yytext); SAVE_LINE;
+	#define SAVE_STR yylval.str = new std::string(yytext, yyleng); SAVE_LINE;
+	#define SAVE_INT(b) yylval.int32 = atoi(yytext); SAVE_LINE;
 	#define SAVE_FLOAT64 yylval.float64 = atof(yytext); SAVE_LINE;
 	#define SAVE_FLOAT yylval.float32 = (float)atof(yytext); SAVE_LINE;
 	#define SAVE_TOKEN(t) yylval.token = t; SAVE_LINE;
-	#define SAVE_CHAR(c) yylval.ch = yytext[1]; SAVE_LINE;
-	#define SAVE_OP yylval.op = new Operator(yytext);
+	#define SAVE_CHAR yylval.ch = yytext[1]; SAVE_LINE;
+	#define SAVE_OP yylval.op = new Operator(new std::string(yytext));
 
-	extern "C" int yywrap(return 1;)
+	extern "C" int yywrap(){return 1;}
 	extern int lineNo;
 
 %}
@@ -51,7 +52,7 @@
 "func"				return FUNC;
 "class"				return CLASS;
 "enum"				return ENUM;
-"protocol"			return PROTOCOl;
+"protocol"			return PROTOCOL;
 "import"			return IMPORT;
 
 [a-zA-Z]([a-zA-Z]|[0-9])* SAVE_STR; return ID;
@@ -71,7 +72,7 @@
 "&="				SAVE_OP; return OP_ASSIGN_AND;
 "|="				SAVE_OP; return OP_ASSIGN_OR;
 "<<="				SAVE_OP; return OP_ASSIGN_LSHIFT;
-">>="				SAVE_OP; return OP_ASSING_RSHIFT;
+">>="				SAVE_OP; return OP_ASSIGN_RSHIFT;
 
 "+"					SAVE_OP; return OP_PLUS;
 "-"					SAVE_OP; return OP_MINUS;
@@ -91,7 +92,7 @@
 ">>" 				SAVE_OP; return OP_RSHIFT;
 "~" 				SAVE_OP; return OP_COMPLEMENT;
 "==" 				SAVE_OP; return OP_EQUAL;
-"!=" 				SAVE_OP; return OP_NOTEQUAL;
+"!=" 				SAVE_OP; return OP_NEQUAL;
 "<" 				SAVE_OP; return OP_LESS;
 ">" 				SAVE_OP; return OP_GREATER;
 "<=" 				SAVE_OP; return OP_LESS_EQ;
