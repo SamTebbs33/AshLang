@@ -8,6 +8,7 @@ int main(int argc, char *argv[])
 {
 	FILE* f = fopen(argv[1], "r");
 	if(f){
+		yyin = f;
 		yyrestart(f);
 		yyparse();
 	}
