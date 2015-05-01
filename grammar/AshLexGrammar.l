@@ -49,6 +49,8 @@ BinaryDigit ([0|1])
 [ \t\n]+						;
 <<EOF>>							lineNo = 0; return EOF;
 
+("int"|"bool"|"int8"|"int16"|"int64"|"uint"|"uint8"|"uint16"|"uint64"|"float"|"float64"|"char")			SAVE_STR; return PRIMITIVE;
+
 "public"						SAVE_STR; return PUBLIC;
 "private"						SAVE_STR; return PRIVATE;
 "protected"						SAVE_STR; return PROTECTED;
@@ -109,7 +111,7 @@ BinaryDigit ([0|1])
 "<=" 							SAVE_OP; return OP_LESS_EQ;
 ">=" 							SAVE_OP; return OP_GREATER_EQ;
 
-"->"							return ARROW;
+"=>"							return ARROW;
 "{"								return BRACE_LEFT;
 "}"				    			return BRACE_RIGHT;
 "("								return PAREN_LEFT;

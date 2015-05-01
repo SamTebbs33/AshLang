@@ -40,7 +40,7 @@
 	TokenQualifiedName* qualifiedName;
 }
 
-%token <str> ID PUBLIC PRIVATE PROTECTED FINAL REQUIRED NATIVE OVERRIDE STANDARD STATIC
+%token <str> ID PUBLIC PRIVATE PROTECTED FINAL REQUIRED NATIVE OVERRIDE STANDARD STATIC PRIMITIVE
 %token <str> STR
 %token <ch> CHAR
 %token <int32> INT
@@ -80,14 +80,14 @@
 
 %%
 
-file: namespace_dec imports type_decs ;
+file: namespace_dec imports type_decs {$$ = new TokenFile($1, $2, $3);} ;
 
-imports: import | imports import | ;
-import: IMPORT qualified_name ;
-qualified_name: ID | qualified_name DOT ID ;
-namespace_dec: NAMESPACE qualified_name | ;
+imports: import {$$ = new Imports($1);} | imports import {$$->imports->push_back($2);} | {$$ = new Imports();};
+import: IMPORT qualified_name {$$ = new TokenImport($2);} ;
+qualified_name: ID {$$ = new TokenQualifiedName($2);} | qualified_name DOT ID {$$->paths->push_back($3);};
+namespace_dec: NAMESPACE qualified_name {$$ = new TokenNamespace($2);} | {$$ = new TokenNamespace();} ;
 
-type_decs: type_dec | type_decs type_dec;
+type_decs: type_dec  {$$ = new std::vector<TokenTypeDec*>(); | type_decs type_dec {$$->push_back($2);} ;
 type_dec: class_dec | protocol_dec | enum_dec ;
 class_dec: type_mods CLASS ID type_args type_supers BRACE_LEFT class_block BRACE_RIGHT ; 
 protocol_dec: type_mods PROTOCOL ID type_args type_supers BRACE_LEFT protocol_block BRACE_RIGHT ;
@@ -103,7 +103,7 @@ func_var_mod: FINAL ;
 func_var_mods: func_var_mod | func_var_mods func_var_mod | ;
 
 type_args: PAREN_LEFT args PAREN_RIGHT | ;
-type: ID | type BRACKET_LEFT BRACKET_RIGHT
+type: ID | PRIMITIVE | type BRACKET_LEFT BRACKET_RIGHT
 args: arg | args COMMA arg | ;
 arg: ID COLON type ;
 

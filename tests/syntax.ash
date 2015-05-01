@@ -2,7 +2,7 @@ namespace stdlib.Tests
 import stdlib.Tester
 
 // Class that extends Object and implements PNamed
-class Person(name : String, age : Int) : Object, PNamed{
+class Person(name : String, age : int) : Object, PNamed{
 
 	/* Public variable
 	of type EAge */
@@ -10,7 +10,7 @@ class Person(name : String, age : Int) : Object, PNamed{
 	var ch = 'c'
 	
 	// Function that throws and Exception
-	public func toString() : String -> Exception{
+	public func toString() : String => Exception{
 		
 	}
 
@@ -20,7 +20,7 @@ protocol PNamed {
 	
 	// Uninitialised protocol variables
 	public var name : String
-	public var age : Int
+	public var age : int
 
 }
 
@@ -29,9 +29,9 @@ enum EAge {
 	/* Instances if EAge */
 	BABY, TODDLER, CHILD, TEEN, ADULT
 
-	public static func toAgeType(age : Int){
+	public static func toAgeType(age : int){
 		var temp = true ? 5+4 : 10
-		var temp2 : Int
+		var temp2 : int
 	}
 
 }
