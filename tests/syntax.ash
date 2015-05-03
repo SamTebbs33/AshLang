@@ -1,37 +1,18 @@
 namespace stdlib.Tests
 import stdlib.Tester
 
-// Class that extends Object and implements PNamed
-class Person(name : String, age : int) : Object, PNamed{
-
-	/* Public variable
-	of type EAge */
-	public var ageType : EAge
-	var ch = 'c'
-	
-	// Function that throws and Exception
-	public func toString() : String => Exception{
-		
-	}
-
+public class Test{
+	const pi = 3.145
+	var a = 1
+	var a : int
+	var a : int= 1
+	const b = 0
+	const b : int
+	const b : int = 0
 }
 
-protocol PNamed {
-	
-	// Uninitialised protocol variables
-	public var name : String
-	public var age : int
-
-}
-
-enum EAge {
-
-	/* Instances if EAge */
-	BABY, TODDLER, CHILD, TEEN, ADULT
-
-	public static func toAgeType(age : int){
-		var temp = true ? 5+4 : 10
-		var temp2 : int
-	}
-
+protocol PFoo{
+	const a 
+	var a = 1
+	var a : int
 }

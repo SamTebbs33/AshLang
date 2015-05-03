@@ -46,16 +46,16 @@ extern int yydebug;
   enum yytokentype
   {
     ID = 258,
-    PUBLIC = 259,
-    PRIVATE = 260,
-    PROTECTED = 261,
-    FINAL = 262,
-    REQUIRED = 263,
-    NATIVE = 264,
-    OVERRIDE = 265,
-    STANDARD = 266,
-    STATIC = 267,
-    PRIMITIVE = 268,
+    PRIMITIVE = 259,
+    PUBLIC = 260,
+    PRIVATE = 261,
+    PROTECTED = 262,
+    FINAL = 263,
+    REQUIRED = 264,
+    NATIVE = 265,
+    OVERRIDE = 266,
+    STANDARD = 267,
+    STATIC = 268,
     STR = 269,
     CHAR = 270,
     INT = 271,
@@ -71,55 +71,56 @@ extern int yydebug;
     ENUM = 281,
     VAR = 282,
     FUNC = 283,
-    BRACE_LEFT = 284,
-    BRACE_RIGHT = 285,
-    PAREN_LEFT = 286,
-    PAREN_RIGHT = 287,
-    COLON = 288,
-    COMMA = 289,
-    BRACKET_RIGHT = 290,
-    BRACKET_LEFT = 291,
-    QUESTION_MARK = 292,
-    DOT = 293,
-    ARROW = 294,
-    OP_EQUAL = 295,
-    OP_NEQUAL = 296,
-    OP_LESS = 297,
-    OP_LESS_EQ = 298,
-    OP_GREATER = 299,
-    OP_GREATER_EQ = 300,
-    OP_ASSIGN = 301,
-    OP_TYPE = 302,
-    OP_ARROW = 303,
-    OP_ASSIGN_PLUS = 304,
-    OP_ASSIGN_MINUS = 305,
-    OP_ASSIGN_MUL = 306,
-    OP_ASSIGN_DIV = 307,
-    OP_ASSIGN_MOD = 308,
-    OP_ASSIGN_POW = 309,
-    OP_ASSIGN_XOR = 310,
-    OP_ASSIGN_AND = 311,
-    OP_ASSIGN_OR = 312,
-    OP_ASSIGN_LSHIFT = 313,
-    OP_ASSIGN_RSHIFT = 314,
-    OP_INC = 315,
-    OP_DEC = 316,
-    OP_PLUS = 317,
-    OP_MINUS = 318,
-    OP_MUL = 319,
-    OP_DIV = 320,
-    OP_MOD = 321,
-    OP_POW = 322,
-    OP_XOR = 323,
-    OP_AND = 324,
-    OP_OR = 325,
-    OP_NOT = 326,
-    OP_XNOR = 327,
-    OP_NAND = 328,
-    OP_NOR = 329,
-    OP_LSHIFT = 330,
-    OP_RSHIFT = 331,
-    OP_COMPLEMENT = 332
+    CONST = 284,
+    BRACE_LEFT = 285,
+    BRACE_RIGHT = 286,
+    PAREN_LEFT = 287,
+    PAREN_RIGHT = 288,
+    COLON = 289,
+    COMMA = 290,
+    BRACKET_RIGHT = 291,
+    BRACKET_LEFT = 292,
+    QUESTION_MARK = 293,
+    DOT = 294,
+    ARROW = 295,
+    OP_EQUAL = 296,
+    OP_NEQUAL = 297,
+    OP_LESS = 298,
+    OP_LESS_EQ = 299,
+    OP_GREATER = 300,
+    OP_GREATER_EQ = 301,
+    OP_ASSIGN = 302,
+    OP_TYPE = 303,
+    OP_ARROW = 304,
+    OP_ASSIGN_PLUS = 305,
+    OP_ASSIGN_MINUS = 306,
+    OP_ASSIGN_MUL = 307,
+    OP_ASSIGN_DIV = 308,
+    OP_ASSIGN_MOD = 309,
+    OP_ASSIGN_POW = 310,
+    OP_ASSIGN_XOR = 311,
+    OP_ASSIGN_AND = 312,
+    OP_ASSIGN_OR = 313,
+    OP_ASSIGN_LSHIFT = 314,
+    OP_ASSIGN_RSHIFT = 315,
+    OP_INC = 316,
+    OP_DEC = 317,
+    OP_PLUS = 318,
+    OP_MINUS = 319,
+    OP_MUL = 320,
+    OP_DIV = 321,
+    OP_MOD = 322,
+    OP_POW = 323,
+    OP_XOR = 324,
+    OP_AND = 325,
+    OP_OR = 326,
+    OP_NOT = 327,
+    OP_XNOR = 328,
+    OP_NAND = 329,
+    OP_NOR = 330,
+    OP_LSHIFT = 331,
+    OP_RSHIFT = 332,
+    OP_COMPLEMENT = 333
   };
 #endif
 
@@ -128,7 +129,7 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 13 "grammar/AshGrammar.y" /* yacc.c:1915  */
+#line 24 "grammar/AshGrammar.y" /* yacc.c:1915  */
 
 	std::string* str;
 	int line;
@@ -139,6 +140,7 @@ union YYSTYPE
 	char ch;
 	double float64;
 	Operator* op;
+	TokenIdentifier* id;
 	TokenFile* file;
 	TokenNamespace* namesp;
 	TokenImport* import;
@@ -154,11 +156,13 @@ union YYSTYPE
 	TokenBlock* block;
 	TokenStatement* stmt;
 	TokenVarDec* varDec;
+	TokenVarDecExplicit* varDecE;
 	TokenExpression* expr;
 	std::vector<TokenTypeDec*>* typeDecVec;
 	TokenQualifiedName* qualifiedName;
+	std::vector<TokenIdentifier*>* enumInstances;
 
-#line 162 "grammar/parser.hpp" /* yacc.c:1915  */
+#line 166 "grammar/parser.hpp" /* yacc.c:1915  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

@@ -13,6 +13,8 @@
 	#define SAVE_TOKEN(t) yylval.token = t; SAVE_LINE;
 	#define SAVE_CHAR yylval.ch = yytext[1]; SAVE_LINE;
 	#define SAVE_OP yylval.op = new Operator(new std::string(yytext));
+	#define SAVE_ID yylval.id = new TokenIdentifier(new std::string(yytext));
+	#define SAVE_MOD yylval.mod = new TokenModifier(std::string(yytext));
 
 	extern "C" int yywrap(){return 1;}
 	extern int lineNo;
@@ -49,19 +51,20 @@ BinaryDigit ([0|1])
 [ \t\n]+						;
 <<EOF>>							lineNo = 0; return EOF;
 
-("int"|"bool"|"int8"|"int16"|"int64"|"uint"|"uint8"|"uint16"|"uint64"|"float"|"float64"|"char")			SAVE_STR; return PRIMITIVE;
+("int"|"bool"|"int8"|"int16"|"int64"|"uint"|"uint8"|"uint16"|"uint64"|"float"|"float64"|"char")			SAVE_ID; return PRIMITIVE;
 
-"public"						SAVE_STR; return PUBLIC;
-"private"						SAVE_STR; return PRIVATE;
-"protected"						SAVE_STR; return PROTECTED;
-"final"							SAVE_STR; return FINAL;
-"required"						SAVE_STR; return REQUIRED;
-"native"						SAVE_STR; return NATIVE;
-"override"						SAVE_STR; return OVERRIDE;
-"standard"						SAVE_STR; return STANDARD;
-"static"						SAVE_STR; return STATIC;
+"public"						SAVE_MOD; return PUBLIC;
+"private"						SAVE_MOD; return PRIVATE;
+"protected"						SAVE_MOD; return PROTECTED;
+"final"							SAVE_MOD; return FINAL;
+"required"						SAVE_MOD; return REQUIRED;
+"native"						SAVE_MOD; return NATIVE;
+"override"						SAVE_MOD; return OVERRIDE;
+"standard"						SAVE_MOD; return STANDARD;
+"static"						SAVE_MOD; return STATIC;
 
 "var"							return VAR;
+"const"							return CONST;
 "func"							return FUNC;
 "class"							return CLASS;
 "enum"							return ENUM;
@@ -69,7 +72,7 @@ BinaryDigit ([0|1])
 "import"						return IMPORT;
 "namespace"						return NAMESPACE;
 
-{Identifier}					SAVE_STR; return ID;
+{Identifier}					SAVE_ID; return ID;
 
 "="								SAVE_OP; return OP_ASSIGN;
 ":"								return COLON;
