@@ -2,13 +2,14 @@
 " Language: Ash
 " Maintainer: Sam Tebbs
 " Latest Revision: 30/04/15
+" Source: http://vim.wikia.com/wiki/Creating_your_own_syntax_files
 
 if exists("b:current_syntax")
 	finish
 endif
 
 " Keywords that are followed by an identifier (seperated by whitespace)
-syn keyword langKeywords var func class namespace protocol import enum 
+syn keyword langKeywords const var func class namespace protocol import enum return
 " nextGroup=id skipwhite
 
 " Identifier and qualified name
@@ -17,9 +18,20 @@ syn match id '([a-zA-Z]([a-zA-Z]|[0-9])*)(\.([a-zA-Z]([a-zA-Z]|[0-9])*))*'
 
 " Modifiers
 syn keyword mod public private protected final required native override standard static
+
+" Char and string literals
 syn match charLiteral '\'[^\\']\''
 syn match str '[\"][^\\"]*[\"]'
+
+" Boolean literals
 syn keyword bool true false
+
+" Primitive types
+syn keyword langType int int8 int16 int64 uint uint8 uint16 uint64 float float64 bool char
+
+" Operators
+" syn keyword operator ? == != < <= > >= = : => += -= *= /= %= **= ^= &= <<= >>= ++ -- + - * / % ** ^ & !
+syn keyword operator ? + =
 
 " Match numeric literals
 syn match numLiteral '\d\+'
@@ -41,12 +53,15 @@ syn region scope start="{" end="}" fold transparent
 
 " Comments
 syn match comment "//.*$"
+syn match comment "\/\*+((([^\*])+)|([\*]+(?!\/)))[*]+\/"
 
 let b:current_syntax = "ash"
 
 " Link the rules to highlighting groups: http://vimdoc.sourceforge.net/htmldoc/syntax.html#syntax
-hi def link langKeywords	Keyword
-hi def link mod				Keyword
+hi def link langType	    Function	
+hi def link langKeywords	StorageClass
+hi def link mod				StorageClass
+hi def link operator		Keyword
 hi def link numLiteral		Number
 hi def link charLiteral		Character
 hi def link bool			Boolean

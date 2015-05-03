@@ -40,6 +40,7 @@ BinaryDigit ([0|1])
 0								SAVE_INT(10); return INT;
 -?[0-9]+\.[0-9]+				SAVE_FLOAT64; return FLOAT64;
 -?[0-9]+\.[0-9]+f				SAVE_FLOAT; return FLOAT;
+-?[0-9]+\.[0-9]+e-?[0-9]+		SAVE_FLOAT64; return FLOAT64;
 [\'][^\\'][\']					SAVE_CHAR; return CHAR;
 [\"][^\\"]*[\"]					SAVE_STR; return STR;
 "true"							return BOOL_TRUE;
