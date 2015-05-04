@@ -1,9 +1,13 @@
 #include <stdio.h>
-#define println(a) printf(a); printf("\n");
+#include "../classloader.cpp"
+
+#define println(a) printf("%s\n", a);
 
 extern int yyparse();
 extern FILE* yyin;
 extern void yyrestart(FILE* f);
+extern int yydebug;
+char* currentFile;
 
 int main(int argc, char *argv[]){
 	if(argc < 2){
@@ -13,11 +17,11 @@ int main(int argc, char *argv[]){
 	FILE* f = fopen(argv[1], "r");
 	printf("Opening file: %s\n", argv[1]);
 	if(f){
-		println("Opened file");
-		yyin = f;
+		//yydebug = 1;
 		yyrestart(f);
+		currentFile = argv[1];
 		yyparse();
-		println("Parsed file");
-	}else println("Failed to open file");
+		printf("Parsed file");
+	}else printf("Failed to open file");
 	return 0;
 }

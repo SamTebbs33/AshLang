@@ -34,7 +34,7 @@
 # define YY_YY_GRAMMAR_PARSER_HPP_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+# define YYDEBUG 1
 #endif
 #if YYDEBUG
 extern int yydebug;
@@ -72,55 +72,56 @@ extern int yydebug;
     VAR = 282,
     FUNC = 283,
     CONST = 284,
-    BRACE_LEFT = 285,
-    BRACE_RIGHT = 286,
-    PAREN_LEFT = 287,
-    PAREN_RIGHT = 288,
-    COLON = 289,
-    COMMA = 290,
-    BRACKET_RIGHT = 291,
-    BRACKET_LEFT = 292,
-    QUESTION_MARK = 293,
-    DOT = 294,
-    ARROW = 295,
-    OP_EQUAL = 296,
-    OP_NEQUAL = 297,
-    OP_LESS = 298,
-    OP_LESS_EQ = 299,
-    OP_GREATER = 300,
-    OP_GREATER_EQ = 301,
-    OP_ASSIGN = 302,
-    OP_TYPE = 303,
-    OP_ARROW = 304,
-    OP_ASSIGN_PLUS = 305,
-    OP_ASSIGN_MINUS = 306,
-    OP_ASSIGN_MUL = 307,
-    OP_ASSIGN_DIV = 308,
-    OP_ASSIGN_MOD = 309,
-    OP_ASSIGN_POW = 310,
-    OP_ASSIGN_XOR = 311,
-    OP_ASSIGN_AND = 312,
-    OP_ASSIGN_OR = 313,
-    OP_ASSIGN_LSHIFT = 314,
-    OP_ASSIGN_RSHIFT = 315,
-    OP_INC = 316,
-    OP_DEC = 317,
-    OP_PLUS = 318,
-    OP_MINUS = 319,
-    OP_MUL = 320,
-    OP_DIV = 321,
-    OP_MOD = 322,
-    OP_POW = 323,
-    OP_XOR = 324,
-    OP_AND = 325,
-    OP_OR = 326,
-    OP_NOT = 327,
-    OP_XNOR = 328,
-    OP_NAND = 329,
-    OP_NOR = 330,
-    OP_LSHIFT = 331,
-    OP_RSHIFT = 332,
-    OP_COMPLEMENT = 333
+    RETURN = 285,
+    BRACE_LEFT = 286,
+    BRACE_RIGHT = 287,
+    PAREN_LEFT = 288,
+    PAREN_RIGHT = 289,
+    COLON = 290,
+    COMMA = 291,
+    BRACKET_RIGHT = 292,
+    BRACKET_LEFT = 293,
+    QUESTION_MARK = 294,
+    DOT = 295,
+    ARROW = 296,
+    OP_EQUAL = 297,
+    OP_NEQUAL = 298,
+    OP_LESS = 299,
+    OP_LESS_EQ = 300,
+    OP_GREATER = 301,
+    OP_GREATER_EQ = 302,
+    OP_ASSIGN = 303,
+    OP_TYPE = 304,
+    OP_ARROW = 305,
+    OP_ASSIGN_PLUS = 306,
+    OP_ASSIGN_MINUS = 307,
+    OP_ASSIGN_MUL = 308,
+    OP_ASSIGN_DIV = 309,
+    OP_ASSIGN_MOD = 310,
+    OP_ASSIGN_POW = 311,
+    OP_ASSIGN_XOR = 312,
+    OP_ASSIGN_AND = 313,
+    OP_ASSIGN_OR = 314,
+    OP_ASSIGN_LSHIFT = 315,
+    OP_ASSIGN_RSHIFT = 316,
+    OP_INC = 317,
+    OP_DEC = 318,
+    OP_PLUS = 319,
+    OP_MINUS = 320,
+    OP_MUL = 321,
+    OP_DIV = 322,
+    OP_MOD = 323,
+    OP_POW = 324,
+    OP_XOR = 325,
+    OP_AND = 326,
+    OP_OR = 327,
+    OP_NOT = 328,
+    OP_XNOR = 329,
+    OP_NAND = 330,
+    OP_NOR = 331,
+    OP_LSHIFT = 332,
+    OP_RSHIFT = 333,
+    OP_COMPLEMENT = 334
   };
 #endif
 
@@ -129,7 +130,7 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 24 "grammar/AshGrammar.y" /* yacc.c:1915  */
+#line 27 "grammar/AshGrammar.y" /* yacc.c:1915  */
 
 	std::string* str;
 	int line;
@@ -161,8 +162,12 @@ union YYSTYPE
 	std::vector<TokenTypeDec*>* typeDecVec;
 	TokenQualifiedName* qualifiedName;
 	std::vector<TokenIdentifier*>* enumInstances;
+	TokenVariable* var;
+	std::vector<TokenExpression*>* exprVec;
+	TokenFuncCall* funcCall;
+	TokenPrefix* prefix;
 
-#line 166 "grammar/parser.hpp" /* yacc.c:1915  */
+#line 171 "grammar/parser.hpp" /* yacc.c:1915  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

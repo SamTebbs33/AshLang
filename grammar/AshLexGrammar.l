@@ -6,12 +6,13 @@
 	#include "parser.hpp"
 
 	#define SAVE_LINE yylval.line = lineNo;
-	#define SAVE_STR yylval.str = new std::string(yytext, yyleng); SAVE_LINE;
-	#define SAVE_INT(b) yylval.int32 = strtol(yytext, NULL, b); SAVE_LINE;
-	#define SAVE_FLOAT64 yylval.float64 = atof(yytext); SAVE_LINE;
-	#define SAVE_FLOAT yylval.float32 = (float)atof(yytext); SAVE_LINE;
-	#define SAVE_TOKEN(t) yylval.token = t; SAVE_LINE;
-	#define SAVE_CHAR yylval.ch = yytext[1]; SAVE_LINE;
+	#define RET(a) SAVE_LINE; return a;
+	#define SAVE_STR yylval.str = new std::string(yytext, yyleng);
+	#define SAVE_INT(b) yylval.int32 = strtol(yytext, NULL, b);
+	#define SAVE_FLOAT64 yylval.float64 = atof(yytext);
+	#define SAVE_FLOAT yylval.float32 = (float)atof(yytext);
+	#define SAVE_TOKEN(t) yylval.token = t;
+	#define SAVE_CHAR yylval.ch = yytext[1];
 	#define SAVE_OP yylval.op = new Operator(new std::string(yytext));
 	#define SAVE_ID yylval.id = new TokenIdentifier(new std::string(yytext));
 	#define SAVE_MOD yylval.mod = new TokenModifier(std::string(yytext));
@@ -33,18 +34,18 @@ BinaryDigit ([0|1])
 
 %%
 
-0x({HexDigit})+					SAVE_INT(16); return INT;
-0o({OctalDigit})+				SAVE_INT(8); return INT;
-0b({BinaryDigit})+				SAVE_INT(2); return INT;
--?{DigitNonZero}({Digit})*		SAVE_INT(10); return INT;
-0								SAVE_INT(10); return INT;
--?[0-9]+\.[0-9]+				SAVE_FLOAT64; return FLOAT64;
--?[0-9]+\.[0-9]+f				SAVE_FLOAT; return FLOAT;
--?[0-9]+\.[0-9]+e-?[0-9]+		SAVE_FLOAT64; return FLOAT64;
-[\'][^\\'][\']					SAVE_CHAR; return CHAR;
-[\"][^\\"]*[\"]					SAVE_STR; return STR;
-"true"							return BOOL_TRUE;
-"false"							return BOOL_FALSE;
+0x({HexDigit})+					SAVE_INT(16); RET(INT);
+0o({OctalDigit})+				SAVE_INT(8); RET(INT);
+0b({BinaryDigit})+				SAVE_INT(2); RET(INT);
+-?{DigitNonZero}({Digit})*		SAVE_INT(10); RET(INT);
+0								SAVE_INT(10); RET(INT);
+-?[0-9]+\.[0-9]+				SAVE_FLOAT64; RET(FLOAT64);
+-?[0-9]+\.[0-9]+f				SAVE_FLOAT; RET(FLOAT);
+-?[0-9]+\.[0-9]+e-?[0-9]+		SAVE_FLOAT64; RET(FLOAT64);
+[\'][^\\'][\']					SAVE_CHAR; RET(CHAR);
+[\"][^\\"]*[\"]					SAVE_STR; RET(STR);
+"true"							RET(BOOL_TRUE);
+"false"							RET(BOOL_FALSE);
 
 [\n]							lineNo++;
 "//"+.*							; // Single-line comment	
@@ -54,29 +55,30 @@ BinaryDigit ([0|1])
 
 ("int"|"bool"|"int8"|"int16"|"int64"|"uint"|"uint8"|"uint16"|"uint64"|"float"|"float64"|"char")			SAVE_ID; return PRIMITIVE;
 
-"public"						SAVE_MOD; return PUBLIC;
-"private"						SAVE_MOD; return PRIVATE;
-"protected"						SAVE_MOD; return PROTECTED;
-"final"							SAVE_MOD; return FINAL;
-"required"						SAVE_MOD; return REQUIRED;
-"native"						SAVE_MOD; return NATIVE;
-"override"						SAVE_MOD; return OVERRIDE;
-"standard"						SAVE_MOD; return STANDARD;
-"static"						SAVE_MOD; return STATIC;
+"public"						SAVE_MOD; RET(PUBLIC);
+"private"						SAVE_MOD; RET(PRIVATE);
+"protected"						SAVE_MOD; RET(PROTECTED);
+"final"							SAVE_MOD; RET(FINAL);
+"required"						SAVE_MOD; RET(REQUIRED);
+"native"						SAVE_MOD; RET(NATIVE);
+"override"						SAVE_MOD; RET(OVERRIDE);
+"standard"						SAVE_MOD; RET(STANDARD);
+"static"						SAVE_MOD; RET(STATIC);
 
-"var"							return VAR;
-"const"							return CONST;
-"func"							return FUNC;
-"class"							return CLASS;
-"enum"							return ENUM;
-"protocol"						return PROTOCOL;
-"import"						return IMPORT;
-"namespace"						return NAMESPACE;
+"var"							RET(VAR);
+"const"							RET(CONST);
+"func"							RET(FUNC);
+"class"							RET(CLASS);
+"/enum"							RET(ENUM);
+"protocol"						RET(PROTOCOL);
+"import"						RET(IMPORT);
+"namespace"						RET(NAMESPACE);
+"return"						RET(RETURN);
 
 {Identifier}					SAVE_ID; return ID;
 
 "="								SAVE_OP; return OP_ASSIGN;
-":"								return COLON;
+":"								RET(COLON);
 "++"							SAVE_OP; return OP_INC;
 "--"							SAVE_OP; return OP_DEC;
 "-="							SAVE_OP; return OP_ASSIGN_MINUS;
@@ -115,16 +117,16 @@ BinaryDigit ([0|1])
 "<=" 							SAVE_OP; return OP_LESS_EQ;
 ">=" 							SAVE_OP; return OP_GREATER_EQ;
 
-"=>"							return ARROW;
-"{"								return BRACE_LEFT;
-"}"				    			return BRACE_RIGHT;
-"("								return PAREN_LEFT;
-")"								return PAREN_RIGHT;
-"["								return BRACKET_LEFT;
-"]"								return BRACKET_RIGHT;
-"."								return DOT;
-","								return COMMA;
-"?"								return QUESTION_MARK;
+"=>"							RET(ARROW);
+"{"								RET(BRACE_LEFT);
+"}"				    			RET(BRACE_RIGHT);
+"("								RET(PAREN_LEFT);
+")"								RET(PAREN_RIGHT);
+"["								RET(BRACKET_LEFT);
+"]"								RET(BRACKET_RIGHT);
+"."								RET(DOT);
+","								RET(COMMA);
+"?"								RET(QUESTION_MARK);
 .				    			{ printf("Error:%d: Unexpected token %s\n", lineNo, yytext);  }	
 
 %%

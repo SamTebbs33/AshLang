@@ -9,7 +9,7 @@ if exists("b:current_syntax")
 endif
 
 " Keywords that are followed by an identifier (seperated by whitespace)
-syn keyword langKeywords const var func class namespace protocol import enum return
+syn keyword langKeywords const var func class namespace protocol import enum return super this
 " nextGroup=id skipwhite
 
 " Identifier and qualified name
@@ -28,6 +28,9 @@ syn keyword bool true false
 
 " Primitive types
 syn keyword langType int int8 int16 int64 uint uint8 uint16 uint64 float float64 bool char
+
+" Class references
+syn keyword classRef this super
 
 " Operators
 " syn keyword operator ? == != < <= > >= = : => += -= *= /= %= **= ^= &= <<= >>= ++ -- + - * / % ** ^ & !
@@ -58,6 +61,8 @@ syn match comment "\/\*+((([^\*])+)|([\*]+(?!\/)))[*]+\/"
 let b:current_syntax = "ash"
 
 " Link the rules to highlighting groups: http://vimdoc.sourceforge.net/htmldoc/syntax.html#syntax
+" PreCondit = pink
+" Operator = orange
 hi def link langType	    Function	
 hi def link langKeywords	StorageClass
 hi def link mod				StorageClass
@@ -68,3 +73,4 @@ hi def link bool			Boolean
 hi def link str				String
 hi def link comment			Comment
 hi def link id				Identifier
+hi def link classRef		PreCondit

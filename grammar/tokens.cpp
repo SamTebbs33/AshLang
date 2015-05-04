@@ -37,6 +37,14 @@ TokenImport::TokenImport(TokenQualifiedName* name) : name(name){
 
 }
 
+TokenReturn::TokenReturn(TokenExpression* e) : expr(e){
+
+}
+
+TokenReturn::TokenReturn() : expr(NULL){
+
+}
+
 Imports::Imports(){
 	imports = new std::vector<TokenImport*>();
 }
@@ -162,5 +170,17 @@ TokenExprLong::TokenExprLong(long v) : val(v){
 }
 
 TokenExprTernary::TokenExprTernary(TokenExpression* eB, TokenExpression* e1, TokenExpression* e2) : exprBool(eB), expr1(e1), expr2(e2){
+
+}
+
+TokenVariable::TokenVariable(TokenIdentifier* i) : id(i){
+	arrExprs = new std::vector<TokenExpression*>();
+}
+
+TokenVarAssign::TokenVarAssign(TokenVariable* v, Operator* o, TokenExpression* e) : var(v), op(o), expr(e){
+
+}
+
+TokenFuncCall::TokenFuncCall(TokenIdentifier* i, std::vector<TokenExpression*>* e) : id(i), args(e){
 
 }

@@ -190,6 +190,13 @@ public:
 	TokenVarDecImplicit(TokenIdentifier* i, EnumVarDecKeyword::type k, TokenExpression* e);
 };
 
+class TokenReturn : public TokenStatement{
+public:
+	TokenExpression* expr;
+	TokenReturn();
+	TokenReturn(TokenExpression* e);
+};
+
 class TokenExprInfix : public TokenExpression{
 public:
 	TokenExpression* expr1, *expr2;
@@ -257,6 +264,34 @@ class TokenExprTernary : public TokenExpression{
 public:
 	TokenExpression* exprBool, *expr1, *expr2;
 	TokenExprTernary(TokenExpression* eBool, TokenExpression* e1, TokenExpression* e2);
+};
+
+class TokenPrefix : public TokenExpression{
+
+};
+
+class TokenVariable : public TokenPrefix{
+public:
+	TokenPrefix* prefix;
+	TokenIdentifier* id;
+	std::vector<TokenExpression*>* arrExprs;
+	TokenVariable(TokenIdentifier* i);
+};
+
+class TokenVarAssign : public TokenStatement{
+public:
+	TokenVariable* var;
+	Operator* op;
+	TokenExpression* expr;
+	TokenVarAssign(TokenVariable* v, Operator* o, TokenExpression* e);
+};
+
+class TokenFuncCall : public TokenStatement, public TokenPrefix{
+public:
+	TokenPrefix* prefix;
+	TokenIdentifier* id;
+	std::vector<TokenExpression*>* args;
+	TokenFuncCall(TokenIdentifier* i, std::vector<TokenExpression*>* e);
 };
 
 #endif
