@@ -1,7 +1,14 @@
 #include "tokens.h"
+#include "../src/context.h"
 
 TokenFile::TokenFile(TokenNamespace* n, Imports* i, std::vector<TokenTypeDec*>* v) : namespc(n), imports(i), typeDecs(v){
 
+}
+
+void TokenFile::preParse(){
+	if(namespc) namespc->preParse();
+	if(imports) foreachp(it, imports->imports) (*it)->preParse();
+	if(typeDecs) foreachp(it, typeDecs) (*it)->preParse();
 }
 
 TokenIdentifier::TokenIdentifier(std::string* str) : str(str){
@@ -33,8 +40,16 @@ TokenNamespace::TokenNamespace(TokenQualifiedName* name) : name(name){
 
 }
 
+void TokenNamespace::preParse(){
+	
+}
+
 TokenImport::TokenImport(TokenQualifiedName* name) : name(name){
 
+}
+
+void TokenImport::preParse(){
+	ClassLoader::importClass(*name->paths);
 }
 
 TokenReturn::TokenReturn(TokenExpression* e) : expr(e){

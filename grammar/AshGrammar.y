@@ -5,15 +5,6 @@
 	#include "tokens.h"
 	#define YYERROR_VERBOSE
 
-	char* toLower(char* str){
-		char* original = str;
-		while(*str){
-			*str = tolower(*str);
-			str++;
-		}
-		return original;
-	}
-
 	extern int yylex();
 	extern int yylineno;
 	extern const char* yytext;
@@ -22,6 +13,7 @@
 		fprintf(stderr, "Error:%s:%d: %s\n",currentFile, yylineno, s);
 	}
 	int lineNo = 0;
+	TokenFile* file;
 %}
 
 %union{
@@ -111,7 +103,7 @@
 
 %%
 
-file: namespace_dec imports type_decs {$$ = new TokenFile($1, $2, $3);} ;
+file: namespace_dec imports type_decs {file = new TokenFile($1, $2, $3);} ;
 
 imports: import {$$ = new Imports($1);} | imports import {$1->imports->push_back($2);} | {$$ = new Imports();};
 import: IMPORT qualified_name {$$ = new TokenImport($2);} ;

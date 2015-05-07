@@ -130,7 +130,7 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 27 "grammar/AshGrammar.y" /* yacc.c:1915  */
+#line 19 "grammar/AshGrammar.y" /* yacc.c:1915  */
 
 	std::string* str;
 	int line;

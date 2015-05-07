@@ -1,7 +1,10 @@
 #ifndef	TOKENS_H
+#define TOKENS_H
 
 #include <string>
 #include <vector>
+#include "../src/classloader.h"
+#include "../src/util.h"
 
 struct EnumVarDecKeyword{
 enum type{
@@ -18,6 +21,7 @@ enum type{
 class Token{
 public:
 	std::string toString();				
+	void preParse();
 };
 
 class TokenStatement : public Token{
@@ -49,13 +53,14 @@ public:
 	TokenQualifiedName* name;
 	TokenNamespace();
 	TokenNamespace(TokenQualifiedName* n);
+	void preParse();
 };
-
 
 class TokenImport : public Token{
 public:
 	TokenQualifiedName* name;
 	TokenImport(TokenQualifiedName* i);
+	void preParse();
 };
 
 class Imports{
@@ -151,6 +156,7 @@ public:
 	Imports* imports;
 	std::vector<TokenTypeDec*>* typeDecs;
 	TokenFile(TokenNamespace* n, Imports* i, std::vector<TokenTypeDec*>* v);
+	void preParse();
 };
 
 class TokenFuncDec : public TokenDeclaration{

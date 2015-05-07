@@ -1,23 +1,44 @@
 #include "classloader.h"
+#include "util.h"
+
+char cwdBuf[FILENAME_MAX];
+std::string compiledExtension = "", sourceExtension = "";
+
+void ClassLoader::init(){
+	currentDir(cwdBuf, sizeof(cwdBuf));
+	sourceExtension = ".ash";
+	compiledExtension = ".ashc";
+}
 
 std::string ClassLoader::getClassPath(){
 	return std::string(getenv("ASH_PATH"));
 }
 
-std::string ClassLoader::getCWD(){
+/*std::string ClassLoader::getCWD(){
 	if(currentDir(ClassLoader::cwdBuf, sizeof(ClassLoader::cwdBuf))){
 		return std::string(ClassLoader::cwdBuf);
 	}else return "";
+}*/
+
+bool ClassLoader::importClass(std::vector<std::string*> vec){
+	std::string path = "";
+	int x = 0;
+	foreach(it, vec){
+		path += **it;
+		if(x++ < vec.size()-1) path += PATH_SEP;
+	}
+	return importClass(&path);
 }
 
 bool ClassLoader::importClass(std::string* qualifiedName){
+	printf("Importing: %s\n", qualifiedName->c_str());
 	// Search current working directory
-	AshFile* file = ClassLoader::searchDir(ClassLoader::getCWD(), qualifiedName);
+	AshFile* file = ClassLoader::searchDir(cwdBuf, qualifiedName);
 	// Search in classpath
 	if(!file) file = ClassLoader::searchDir(ClassLoader::getClassPath(), qualifiedName);
 	if(!file){
 		//TODO: error
-		return false;
+		printf("Can't import class: %s\n", qualifiedName->c_str());
 	}
 	//TODO: Do import process
 	return false;

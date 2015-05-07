@@ -6,6 +6,7 @@
 #include <string>
 #include <fstream>
 #include "platform.h"
+#include "../grammar/tokens.h"
 
 struct AshFile{
 	bool isSrc;
@@ -15,10 +16,12 @@ struct AshFile{
 };
 
 namespace ClassLoader {
-	std::string sourceExtension = ".ash", compiledExtension = ".ashc";
-	char cwdBuf[FILENAME_MAX];
+	/*std::string sourceExtension, compiledExtension;
+	char* cwdBuf;*/
+	void init();
 	std::string getCWD();
 	std::string getClassPath();
+	bool importClass(std::vector<std::string*> paths);
 	bool importClass(std::string* qualifiedName);	
 	AshFile* searchDir(std::string absPath, std::string* qualifiedName);
 }
