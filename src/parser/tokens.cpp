@@ -99,6 +99,11 @@ TokenTypeDec::TokenTypeDec(Args* a, TokenIdentifier* i, Modifiers* m, TokenBlock
 
 }
 
+void TokenTypeDec::preParse(){
+
+
+}
+
 TokenClassDec::TokenClassDec(Args* a, TokenIdentifier* i, Modifiers* m, TokenBlock* b, Types* s) : TokenTypeDec(a, i, m, b), supers(s){
 
 }

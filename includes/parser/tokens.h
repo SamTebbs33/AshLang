@@ -129,6 +129,7 @@ public:
 	Args* args;
 	TokenBlock* block;
 	TokenTypeDec(Args* a, TokenIdentifier* i, Modifiers* m, TokenBlock* b);
+	void preParse();
 };
 
 class TokenClassDec : public TokenTypeDec{

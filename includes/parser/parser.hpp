@@ -30,11 +30,11 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_YY_GRAMMAR_PARSER_HPP_INCLUDED
-# define YY_YY_GRAMMAR_PARSER_HPP_INCLUDED
+#ifndef YY_YY_SRC_PARSER_PARSER_HPP_INCLUDED
+# define YY_YY_SRC_PARSER_PARSER_HPP_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 1
+# define YYDEBUG 0
 #endif
 #if YYDEBUG
 extern int yydebug;
@@ -167,7 +167,7 @@ union YYSTYPE
 	TokenFuncCall* funcCall;
 	TokenPrefix* prefix;
 
-#line 171 "grammar/parser.hpp" /* yacc.c:1915  */
+#line 171 "src/parser/parser.hpp" /* yacc.c:1915  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
@@ -178,4 +178,4 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_GRAMMAR_PARSER_HPP_INCLUDED  */
+#endif /* !YY_YY_SRC_PARSER_PARSER_HPP_INCLUDED  */

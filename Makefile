@@ -17,3 +17,4 @@ parser: ${GRAMMARS}
 	@mkdir -p src/parser
 	@bison -d -Wnone grammar/AshGrammar.y -o src/parser/parser.cpp
 	@flex -o src/parser/lexer.cpp grammar/AshLexGrammar.l
+	@mv src/parser/parser.hpp includes/parser/parser.hpp

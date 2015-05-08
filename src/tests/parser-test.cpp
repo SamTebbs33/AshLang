@@ -3,8 +3,6 @@
 #include "../../grammar/tokens.h"
 #include "../util.h"
 
-#define println(a) printf("%s\n", a);
-
 extern int yyparse();
 extern FILE* yyin;
 extern void yyrestart(FILE* f);
