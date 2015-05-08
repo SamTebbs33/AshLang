@@ -1,4 +1,4 @@
-My ToDo List
+To Do List
 ============
 
 - [x] - **28.04.15** - Write parser and lexer grammar
