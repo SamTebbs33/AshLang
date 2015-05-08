@@ -1,12 +1,13 @@
-#include "parser/tokens.h"
-#include "loader/context.h"
+#include <parser/tokens.h>
+#include <loader/context.h>
+#include <loader/member.h>
+#include <util/util.h>
 
 TokenFile::TokenFile(TokenNamespace* n, Imports* i, std::vector<TokenTypeDec*>* v) : namespc(n), imports(i), typeDecs(v){
-
 }
 
 void TokenFile::preParse(){
-	Context::push(new FileContext("", namespc != NULL ? namespc->name : NULL));
+	Context::push(new FileContext("", namespc != NULL ? Members::toQualifiedName(namespc->name) : NULL));
 	if(namespc) namespc->preParse();
 	if(imports) foreachp(it, imports->imports) (*it)->preParse();
 	if(typeDecs) foreachp(it, typeDecs) (*it)->preParse();
@@ -29,16 +30,14 @@ TokenModifier::TokenModifier(std::string s){
 }
 
 TokenQualifiedName::TokenQualifiedName(TokenIdentifier* str){
-	paths = new std::vector<std::string*>();
-	paths->push_back(str->str);
+	this->paths = new std::vector<std::string*>();
+	this->paths->push_back(str->str);
 }
 
 TokenNamespace::TokenNamespace(){
-
 }
 
 TokenNamespace::TokenNamespace(TokenQualifiedName* name) : name(name){
-
 }
 
 void TokenNamespace::preParse(){
@@ -100,8 +99,7 @@ TokenTypeDec::TokenTypeDec(Args* a, TokenIdentifier* i, Modifiers* m, TokenBlock
 }
 
 void TokenTypeDec::preParse(){
-
-
+	Members::addAndEnterType(new Type(Members::toModifiersInt(mods), Context::getNamespace(), id->str));
 }
 
 TokenClassDec::TokenClassDec(Args* a, TokenIdentifier* i, Modifiers* m, TokenBlock* b, Types* s) : TokenTypeDec(a, i, m, b), supers(s){
@@ -117,6 +115,10 @@ TokenEnumDec::TokenEnumDec(Args* a, TokenIdentifier* i, std::vector<TokenIdentif
 }
 
 TokenFuncDec::TokenFuncDec(TokenIdentifier* i, Args* a, TokenType* t, TokenType* t2) : TokenDeclaration(i, NULL), args(a), type(t), throws(t2){
+
+}
+
+void TokenFuncDec::preParse(){
 
 }
 

@@ -1,19 +1,21 @@
 #ifndef FILE_CONTEXT_H
 #define FILE_CONTEXT_H
 
-#include "parser/tokens.h"
+#include <parser/tokens.h>
 #include <string.h>
+#include <loader/member.h>
 
 struct FileContext{
 	std::string relPath;
-	TokenQualifiedName* namespc;
-	FileContext(std::string p, TokenQualifiedName* n);
+	QualifiedName* namespc;
+	FileContext(std::string p, QualifiedName* n);
 };
 
 namespace Context{
 	FileContext* top();
 	FileContext* pop();
 	void push(FileContext* fc);
+	QualifiedName* getNamespace();
 };
 
 #endif

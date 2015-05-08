@@ -1,43 +1,39 @@
 #include <loader/classloader.h>
 #include <util/util.h>
+#include <loader/member.h>
+
 
 char cwdBuf[FILENAME_MAX];
-std::string compiledExtension = "", sourceExtension = "";
+std::string compiledExtension = ".ashc", sourceExtension = ".ash", *classPath;
 
 void ClassLoader::init(){
 	currentDir(cwdBuf, sizeof(cwdBuf));
-	sourceExtension = ".ash";
-	compiledExtension = ".ashc";
+	classPath = new std::string(getenv("ASH_PATH"));
 }
 
-std::string ClassLoader::getClassPath(){
-	return std::string(getenv("ASH_PATH"));
+std::string* ClassLoader::getClassPath(){
+	return classPath;
 }
-
-/*std::string ClassLoader::getCWD(){
-	if(currentDir(ClassLoader::cwdBuf, sizeof(ClassLoader::cwdBuf))){
-		return std::string(ClassLoader::cwdBuf);
-	}else return "";
-}*/
 
 bool ClassLoader::importClass(std::vector<std::string*> vec){
 	std::string path = "";
 	int x = 0;
 	foreach(it, vec){
+		// Append path segment
 		path += **it;
+		// Append path seperator if needed
 		if(x++ < vec.size()-1) path += PATH_SEP;
 	}
 	return importClass(&path);
 }
 
 bool ClassLoader::importClass(std::string* qualifiedName){
-	printf("Importing: %s\n", qualifiedName->c_str());
 	// Search current working directory
-	AshFile* file = ClassLoader::searchDir(cwdBuf, qualifiedName);
+	AshFile* file = ClassLoader::searchDir(std::string(cwdBuf), qualifiedName);
 	// Search in classpath
-	if(!file) file = ClassLoader::searchDir(ClassLoader::getClassPath(), qualifiedName);
 	if(!file){
-		//TODO: error
+		file = ClassLoader::searchDir(*ClassLoader::getClassPath(), qualifiedName);}
+	if(!file){
 		printf("Can't import class: %s\n", qualifiedName->c_str());
 	}
 	//TODO: Do import process
@@ -49,7 +45,6 @@ AshFile* ClassLoader::searchDir(std::string absPath, std::string* qualifiedName)
 	if(absPath.at(absPath.length()-1) != PATH_SEP) absPath += PATH_SEP;
 	// Convert abspath and qualified name to a path
 	std::string path = absPath+*qualifiedName;
-
 	// Make the path to a compiled class file
 	std::string* compiledPath = new std::string(path+compiledExtension);
 	// Attempt to open class file
@@ -67,8 +62,7 @@ AshFile* ClassLoader::searchDir(std::string absPath, std::string* qualifiedName)
 	if(stream->is_open()){
 		return new AshFile(true, srcPath, stream);
 	}
-
-	// The compiled or source file couldn't be found so clean up and return
+	// Neither the compiled class or source file could be found, so clean up and return
 	delete srcPath;
 	delete stream;
 	return NULL;

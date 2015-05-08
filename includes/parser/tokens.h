@@ -167,6 +167,7 @@ public:
 	TokenType* type;
 	TokenType* throws;
 	TokenFuncDec(TokenIdentifier* i, Args* a, TokenType* t, TokenType* t2);
+	void preParse();
 };
 
 class TokenExpression : public Token{

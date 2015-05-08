@@ -3,9 +3,9 @@
 #define STACK_SIZE 1024
 
 FileContext* contextStack[STACK_SIZE];
-unsigned short stackPtr = -1;
+unsigned short stackPtr = 0;
 
-FileContext::FileContext(std::string p, TokenQualifiedName* n) : relPath(p), namespc(n){
+FileContext::FileContext(std::string p, QualifiedName* n) : relPath(p), namespc(n) {
 
 }
 
@@ -19,4 +19,8 @@ FileContext* Context::pop(){
 
 void Context::push(FileContext* c){
 	if(stackPtr < STACK_SIZE) contextStack[stackPtr++] = c;
+}
+
+QualifiedName* Context::getNamespace(){
+    return Context::top()->namespc;
 }
