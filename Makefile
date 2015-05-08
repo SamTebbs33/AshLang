@@ -8,7 +8,7 @@ SOURCES = $(wildcard src/*.cpp) \
 
 GRAMMARS = grammar/AshGrammar.y grammar/AshLexGrammar.l
 
-all: ${SOURCES}
+build: ${SOURCES}
 	@mkdir -p bin/
 	@make parser
 	@$(CXX) $(CFLAGS) $(INCLUDES) ${SOURCES} -o bin/ashc
@@ -18,3 +18,10 @@ parser: ${GRAMMARS}
 	@bison -d -Wnone grammar/AshGrammar.y -o src/parser/parser.cpp
 	@flex -o src/parser/lexer.cpp grammar/AshLexGrammar.l
 	@mv src/parser/parser.hpp includes/parser/parser.hpp
+
+build-run:
+	make build
+	make run-test
+
+run-test:
+	@bin/ashc tests/syntax.ash

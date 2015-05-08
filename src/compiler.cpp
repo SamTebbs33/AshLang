@@ -1,5 +1,6 @@
 #include "parser/externs.h"
 #include "util/util.h"
+#include "loader/classloader.h"
 #include <stdio.h>
 
 const char* currentFile;
@@ -19,6 +20,7 @@ int main(int argc, char const *argv[]) {
         yyrestart(f);
         yyparse();
         println("Parsed file");
+        ClassLoader::init();
         if(file) file->preParse();
         return 0;
     }else println("Failed to open file");
