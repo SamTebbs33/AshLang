@@ -7,6 +7,7 @@
 struct FileContext{
 	std::string relPath;
 	TokenQualifiedName* namespc;
+	FileContext(std::string p, TokenQualifiedName* n);
 };
 
 namespace Context{

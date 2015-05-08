@@ -5,6 +5,10 @@
 FileContext* contextStack[STACK_SIZE];
 unsigned short stackPtr = -1;
 
+FileContext::FileContext(std::string p, TokenQualifiedName* n) : relPath(p), namespc(n){
+
+}
+
 FileContext* Context::top(){
  	return stackPtr >= 1 ? contextStack[stackPtr-1] : NULL;
 }
