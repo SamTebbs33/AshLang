@@ -2,7 +2,7 @@
 	#include <string>
 	#include <stdio.h>
 	#include <locale>
-	#include "tokens.h"
+	#include "parser/tokens.h"
 	#define YYERROR_VERBOSE
 
 	extern int yylex();
@@ -54,7 +54,7 @@
 }
 
 %token <id> ID PRIMITIVE
-%token <mod> PUBLIC PRIVATE PROTECTED FINAL REQUIRED NATIVE OVERRIDE STANDARD STATIC 
+%token <mod> PUBLIC PRIVATE PROTECTED FINAL REQUIRED NATIVE OVERRIDE STANDARD STATIC
 %token <str> STR
 %token <ch> CHAR
 %token <int32> INT
@@ -78,7 +78,7 @@
 %type <typeDecVec> type_decs
 %type <typeDec> type_dec class_dec protocol_dec enum_dec
 %type <mod> mod
-%type <mods> mods 
+%type <mods> mods
 %type <funcDec> class_func_dec protocol_func_dec func_dec
 %type <arg> arg
 %type <args> args type_args
@@ -112,7 +112,7 @@ namespace_dec: NAMESPACE qualified_name {$$ = new TokenNamespace($2);} | {$$ = n
 
 type_decs: type_dec  {$$ = new std::vector<TokenTypeDec*>(); $$->push_back($1);} | type_decs type_dec {$$->push_back($2);} ;
 type_dec: class_dec | protocol_dec | enum_dec ;
-class_dec: mods CLASS ID type_args type_supers BRACE_LEFT class_block BRACE_RIGHT {$$ = new TokenClassDec($4, $3, $1, $7, $5);} ; 
+class_dec: mods CLASS ID type_args type_supers BRACE_LEFT class_block BRACE_RIGHT {$$ = new TokenClassDec($4, $3, $1, $7, $5);} ;
 protocol_dec: mods PROTOCOL ID type_args type_supers BRACE_LEFT protocol_block BRACE_RIGHT {$$ = new TokenProtocolDec($4, $3, $1, $7, $5);} ;
 enum_dec: ENUM ID type_args BRACE_LEFT enum_instances enum_block BRACE_RIGHT {$$ = new TokenEnumDec($3, $2, $5, $6);} ;
 
@@ -124,7 +124,7 @@ type: ID {$$ = new TokenType($1);} | PRIMITIVE {$$ = new TokenType($1);} | type 
 args: arg {$$ = new Args();} | args COMMA arg {$1->args->push_back($3);} | {$$ = new Args();} ;
 arg: ID COLON type {$$ = new TokenArg($1, $3);} ;
 
-func_type: COLON type {$$ = $2;} | {$$ = NULL;} ; 
+func_type: COLON type {$$ = $2;} | {$$ = NULL;} ;
 type_supers: func_type {$$ = new Types($1);} | type_supers COMMA type {$1->types->push_back($3);} ;
 throws: ARROW type {$$ = $2;} | {$$ = NULL;} ;
 

@@ -1,5 +1,5 @@
-#include "tokens.h"
-#include "context.h"
+#include "parser/tokens.h"
+#include "loader/context.h"
 
 TokenFile::TokenFile(TokenNamespace* n, Imports* i, std::vector<TokenTypeDec*>* v) : namespc(n), imports(i), typeDecs(v){
 
@@ -42,7 +42,7 @@ TokenNamespace::TokenNamespace(TokenQualifiedName* name) : name(name){
 }
 
 void TokenNamespace::preParse(){
-	
+
 }
 
 TokenImport::TokenImport(TokenQualifiedName* name) : name(name){

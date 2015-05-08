@@ -2,8 +2,8 @@
 
 	#include <string>
 	#include <cstdlib>
-	#include "tokens.h"
-	#include "parser.hpp"
+	#include "parser/tokens.h"
+	#include "parser/parser.hpp"
 
 	#define SAVE_LINE yylval.line = lineNo;
 	#define RET(a) SAVE_LINE; return a;
@@ -48,7 +48,7 @@ BinaryDigit ([0|1])
 "false"							RET(BOOL_FALSE);
 
 [\n]							lineNo++;
-"//"+.*							; // Single-line comment	
+"//"+.*							; // Single-line comment
 "/*"((\*+[^/*])|([^*]))*\**"*/"	; // Multi-line comment
 [ \t\n]+						;
 <<EOF>>							lineNo = 0; return EOF;
@@ -105,8 +105,8 @@ BinaryDigit ([0|1])
 "||"							SAVE_OP; return OP_OR;
 
 "^"								SAVE_OP; return OP_XOR;
-"&"								SAVE_OP; return OP_AND;	
-"|"								SAVE_OP; return OP_OR; 
+"&"								SAVE_OP; return OP_AND;
+"|"								SAVE_OP; return OP_OR;
 "<<" 							SAVE_OP; return OP_LSHIFT;
 ">>" 							SAVE_OP; return OP_RSHIFT;
 "~" 							SAVE_OP; return OP_COMPLEMENT;
@@ -127,6 +127,6 @@ BinaryDigit ([0|1])
 "."								RET(DOT);
 ","								RET(COMMA);
 "?"								RET(QUESTION_MARK);
-.				    			{ printf("Error:%d: Unexpected token %s\n", lineNo, yytext);  }	
+.				    			{ printf("Error:%d: Unexpected token %s\n", lineNo, yytext);  }
 
 %%

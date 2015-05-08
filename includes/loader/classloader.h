@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <string>
 #include <fstream>
-#include "platform.h"
-#include "tokens.h"
+#include "util/platform.h"
+#include "parser/tokens.h"
 
 struct AshFile{
 	bool isSrc;
@@ -22,7 +22,7 @@ namespace ClassLoader {
 	std::string getCWD();
 	std::string getClassPath();
 	bool importClass(std::vector<std::string*> paths);
-	bool importClass(std::string* qualifiedName);	
+	bool importClass(std::string* qualifiedName);
 	AshFile* searchDir(std::string absPath, std::string* qualifiedName);
 }
 

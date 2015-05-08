@@ -3,8 +3,8 @@
 
 #include <string>
 #include <vector>
-#include "classloader.h"
-#include "util.h"
+#include "loader/classloader.h"
+#include "util/util.h"
 
 struct EnumVarDecKeyword{
 enum type{
@@ -20,7 +20,7 @@ enum type{
 
 class Token{
 public:
-	std::string toString();				
+	std::string toString();
 	void preParse();
 };
 

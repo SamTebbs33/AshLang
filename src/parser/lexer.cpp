@@ -1,6 +1,6 @@
-#line 2 "grammar/lexer.cpp"
+#line 2 "src/parser/lexer.cpp"
 
-#line 4 "grammar/lexer.cpp"
+#line 4 "src/parser/lexer.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -641,8 +641,8 @@ char *yytext;
 
 	#include <string>
 	#include <cstdlib>
-	#include "tokens.h"
-	#include "parser.hpp"
+	#include "parser/tokens.h"
+	#include "parser/parser.hpp"
 
 	#define SAVE_LINE yylval.line = lineNo;
 	#define RET(a) SAVE_LINE; return a;
@@ -659,7 +659,7 @@ char *yytext;
 	extern "C" int yywrap(){return 1;}
 	extern int lineNo;
 
-#line 663 "grammar/lexer.cpp"
+#line 663 "src/parser/lexer.cpp"
 
 #define INITIAL 0
 
@@ -844,7 +844,7 @@ YY_DECL
 #line 35 "grammar/AshLexGrammar.l"
 
 
-#line 848 "grammar/lexer.cpp"
+#line 848 "src/parser/lexer.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -1008,7 +1008,7 @@ lineNo++;
 case 14:
 YY_RULE_SETUP
 #line 51 "grammar/AshLexGrammar.l"
-; // Single-line comment	
+; // Single-line comment
 	YY_BREAK
 case 15:
 /* rule 15 can match eol */
@@ -1254,12 +1254,12 @@ SAVE_OP; return OP_XOR;
 case 62:
 YY_RULE_SETUP
 #line 108 "grammar/AshLexGrammar.l"
-SAVE_OP; return OP_AND;	
+SAVE_OP; return OP_AND;
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
 #line 109 "grammar/AshLexGrammar.l"
-SAVE_OP; return OP_OR; 
+SAVE_OP; return OP_OR;
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
@@ -1359,14 +1359,14 @@ RET(QUESTION_MARK);
 case 83:
 YY_RULE_SETUP
 #line 130 "grammar/AshLexGrammar.l"
-{ printf("Error:%d: Unexpected token %s\n", lineNo, yytext);  }	
+{ printf("Error:%d: Unexpected token %s\n", lineNo, yytext);  }
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
 #line 132 "grammar/AshLexGrammar.l"
 ECHO;
 	YY_BREAK
-#line 1370 "grammar/lexer.cpp"
+#line 1370 "src/parser/lexer.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
