@@ -1,5 +1,5 @@
 #include "tokens.h"
-#include "../src/context.h"
+#include "context.h"
 
 TokenFile::TokenFile(TokenNamespace* n, Imports* i, std::vector<TokenTypeDec*>* v) : namespc(n), imports(i), typeDecs(v){
 

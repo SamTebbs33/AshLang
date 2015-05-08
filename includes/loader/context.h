@@ -1,7 +1,7 @@
 #ifndef FILE_CONTEXT_H
 #define FILE_CONTEXT_H
 
-#include "../grammar/tokens.h"
+#include "tokens.h"
 #include <string.h>
 
 struct FileContext{

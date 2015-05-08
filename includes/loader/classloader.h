@@ -6,7 +6,7 @@
 #include <string>
 #include <fstream>
 #include "platform.h"
-#include "../grammar/tokens.h"
+#include "tokens.h"
 
 struct AshFile{
 	bool isSrc;

@@ -1,5 +1,5 @@
-#include "classloader.h"
-#include "util.h"
+#include <loader/classloader.h>
+#include <util/util.h>
 
 char cwdBuf[FILENAME_MAX];
 std::string compiledExtension = "", sourceExtension = "";

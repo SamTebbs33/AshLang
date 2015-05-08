@@ -3,8 +3,8 @@
 
 #include <string>
 #include <vector>
-#include "../src/classloader.h"
-#include "../src/util.h"
+#include "classloader.h"
+#include "util.h"
 
 struct EnumVarDecKeyword{
 enum type{
