@@ -6,6 +6,7 @@ TokenFile::TokenFile(TokenNamespace* n, Imports* i, std::vector<TokenTypeDec*>* 
 }
 
 void TokenFile::preParse(){
+	Context::push(new FileContext("", namespc != NULL ? namespc->name : NULL));
 	if(namespc) namespc->preParse();
 	if(imports) foreachp(it, imports->imports) (*it)->preParse();
 	if(typeDecs) foreachp(it, typeDecs) (*it)->preParse();

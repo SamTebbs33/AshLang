@@ -1,22 +1,18 @@
 #include "context.h"
 
-Context* currentContext;
+#define STACK_SIZE 1024
 
-void Contexts::setContext(Context* c){
-	currentContext = c;
+FileContext* contextStack[STACK_SIZE];
+unsigned short stackPtr = -1;
+
+FileContext* Context::top(){
+ 	return stackPtr >= 1 ? contextStack[stackPtr-1] : NULL;
 }
 
-void Contexts::addContext(Context* c){
-	if(currentContext){
-		c->parent = currentContext;
-	}
-	setContext(c);
+FileContext* Context::pop(){
+	return stackPtr >= 1 ? contextStack[--stackPtr] : NULL;
 }
 
-Context::Context() : parent(c){
-
-}
-
-FileContext::FileContext(TokenQualifiedName* n, std::string p) : namespc(n), filePath(p){
-
+void Context::push(FileContext* c){
+	if(stackPtr < STACK_SIZE) contextStack[stackPtr++] = c;
 }
