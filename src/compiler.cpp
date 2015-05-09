@@ -22,11 +22,13 @@ int main(int argc, char const *argv[]) {
         yyparse();
         println("Parsed file");
         if(file){
-            ClassLoader::init();
+            // Temporaily commented out as lldb throws an exception when getenv is used
+            // ClassLoader::init();
             println("Initialised class loader");
             file->preParse();
             println("Pre-parsed");
-            printf("Type: %s\n", Members::getCurrentType()->shortName->c_str());
+            printf("Type: %s\n", Members::getCurrentType()->name->getShortName()->c_str());
+            if(Members::getCurrentType()->funcs->size() > 0) printf("Func: %s\n", Members::getCurrentType()->funcs->at(0)->id->c_str());
         }
         return 0;
     }else println("Failed to open file");

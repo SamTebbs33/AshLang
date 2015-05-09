@@ -3,14 +3,28 @@
 #include <loader/member.h>
 #include <util/util.h>
 
+Token::Token(){
+
+}
+
+void Token::preParse(){
+
+}
+
 TokenFile::TokenFile(TokenNamespace* n, Imports* i, std::vector<TokenTypeDec*>* v) : namespc(n), imports(i), typeDecs(v){
+
+}
+
+TokenStatement::TokenStatement() : Token(){
+
 }
 
 void TokenFile::preParse(){
-	Context::push(new FileContext("", namespc != NULL ? Members::toQualifiedName(namespc->name) : NULL));
+	Context::push(new FileContext("", namespc != NULL ? Members::toQualifiedName(namespc->name, new std::string("")) : NULL));
 	if(namespc) namespc->preParse();
 	if(imports) foreachp(it, imports->imports) (*it)->preParse();
 	if(typeDecs) foreachp(it, typeDecs) (*it)->preParse();
+	println("Finished file preparse");
 }
 
 TokenIdentifier::TokenIdentifier(std::string* str) : str(str){
@@ -90,7 +104,7 @@ Args::Args(){
 	args = new std::vector<TokenArg*>();
 }
 
-TokenDeclaration::TokenDeclaration(TokenIdentifier* i, Modifiers* m) : id(i), mods(m){
+TokenDeclaration::TokenDeclaration(TokenIdentifier* i, Modifiers* m) : id(i), mods(m), TokenStatement(){
 
 }
 
@@ -99,7 +113,8 @@ TokenTypeDec::TokenTypeDec(Args* a, TokenIdentifier* i, Modifiers* m, TokenBlock
 }
 
 void TokenTypeDec::preParse(){
-	Members::addAndEnterType(new Type(Members::toModifiersInt(mods), Context::getNamespace(), id->str));
+	Members::addAndEnterType(new Type(Members::toModifiersInt(mods), Context::getNamespace()->add(id->str)));
+	if(block) block->preParse();
 }
 
 TokenClassDec::TokenClassDec(Args* a, TokenIdentifier* i, Modifiers* m, TokenBlock* b, Types* s) : TokenTypeDec(a, i, m, b), supers(s){
@@ -119,7 +134,8 @@ TokenFuncDec::TokenFuncDec(TokenIdentifier* i, Args* a, TokenType* t, TokenType*
 }
 
 void TokenFuncDec::preParse(){
-
+    println("FuncDec preParse");
+	Members::addFunction(new FuncSignature(id->str, args, Members::toModifiersInt(mods)));
 }
 
 Types::Types(TokenType* t){
@@ -134,6 +150,18 @@ TokenBlock::TokenBlock(TokenStatement* s){
 
 TokenBlock::TokenBlock(){
 	stmts = new std::vector<TokenStatement*>();
+}
+
+void TokenBlock::preParse(){
+	if(stmts){
+        if(stmts->size() == 0) return;
+		for(auto it = stmts->begin(); it != stmts->end(); it++){
+			if((*it)){
+                println("Iteration not null");
+                (*it)->preParse();
+            }
+		}
+	}
 }
 
 TokenVarDec::TokenVarDec(TokenIdentifier* i, EnumVarDecKeyword::type k) : TokenDeclaration(i, NULL), decKeyword(k){

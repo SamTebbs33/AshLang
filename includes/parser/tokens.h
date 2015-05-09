@@ -3,299 +3,302 @@
 
 #include <string>
 #include <vector>
-#include "loader/classloader.h"
-#include "util/util.h"
+#include <loader/classloader.h>
+#include <util/util.h>
 
 struct EnumVarDecKeyword{
-enum type{
-	CONST, VAR
-};
+	enum type{
+		CONST, VAR
+	};
 };
 
 struct EnumModifier{
-enum type{
-	PUBLIC=1, PRIVATE=2, PROTECTED=4, FINAL=8, REQUIRED=16, NATIVE=32, OVERRIDE=64, STANDARD=128, STATIC=256
-};
+	enum type{
+		PUBLIC=1, PRIVATE=2, PROTECTED=4, FINAL=8, REQUIRED=16, NATIVE=32, OVERRIDE=64, STANDARD=128, STATIC=256
+	};
 };
 
-class Token{
-public:
+struct Token{
+
 	std::string toString();
-	void preParse();
+	Token();
+	virtual void preParse();
 };
 
-class TokenStatement : public Token{
+struct TokenStatement : public Token{
 
+	TokenStatement();
 };
 
-class Operator{
-public:
+struct Operator{
+
 	std::string* opStr;
 	Operator(std::string* str){
 		opStr = str;
 	}
 };
 
-class TokenIdentifier : public Token{
-public:
+struct TokenIdentifier : public Token{
+
 	std::string* str;
 	TokenIdentifier(std::string* s);
 };
 
-class TokenQualifiedName : public Token{
-public:
+struct TokenQualifiedName : public Token{
+
 	std::vector<std::string*>* paths;
 	TokenQualifiedName(TokenIdentifier* str);
 };
 
-class TokenNamespace : public Token{
-public:
+struct TokenNamespace : public Token{
+
 	TokenQualifiedName* name;
 	TokenNamespace();
 	TokenNamespace(TokenQualifiedName* n);
-	void preParse();
+	virtual void preParse();
 };
 
-class TokenImport : public Token{
-public:
+struct TokenImport : public Token{
+
 	TokenQualifiedName* name;
 	TokenImport(TokenQualifiedName* i);
-	void preParse();
+	virtual void preParse();
 };
 
-class Imports{
-public:
+struct Imports{
+
 	std::vector<TokenImport*>* imports;
 	Imports();
 	Imports(TokenImport* i);
 };
 
 
-class TokenModifier : public Token{
-public:
+struct TokenModifier : public Token{
+
 	EnumModifier::type mod;
 	TokenModifier(std::string str);
 };
 
-class Modifiers{
-public:
+struct Modifiers{
+
 	std::vector<TokenModifier*>* mods;
 	Modifiers();
 	Modifiers(TokenModifier* m);
 };
 
-class TokenType : public Token{
-public:
+struct TokenType : public Token{
+
 	int arrDims;
 	TokenIdentifier* id;
 	TokenType(TokenIdentifier* i);
 };
 
-class TokenArg : public Token{
-public:
+struct TokenArg : public Token{
+
 	TokenIdentifier* id;
 	TokenType* type;
 	TokenArg(TokenIdentifier* i, TokenType* t);
 };
 
-class Args{
-public:
+struct Args{
+
 	std::vector<TokenArg*>* args;
 	Args();
 };
 
-class Types{
-public:
+struct Types{
+
 	std::vector<TokenType*>* types;
 	Types(TokenType* t);
 };
 
-class TokenBlock : public Token{
-public:
+struct TokenBlock : public Token{
+
 	std::vector<TokenStatement*>* stmts;
 	TokenBlock(TokenStatement* t);
 	TokenBlock();
+	virtual void preParse();
 };
 
-class TokenDeclaration : public TokenStatement{
-public:
+struct TokenDeclaration : public TokenStatement{
+
 	TokenIdentifier* id;
 	Modifiers* mods;
 	TokenDeclaration(TokenIdentifier* i, Modifiers* m);
 };
 
-class TokenTypeDec : public TokenDeclaration{
-public:
+struct TokenTypeDec : public TokenDeclaration{
+
 	Args* args;
 	TokenBlock* block;
 	TokenTypeDec(Args* a, TokenIdentifier* i, Modifiers* m, TokenBlock* b);
-	void preParse();
+	virtual void preParse();
 };
 
-class TokenClassDec : public TokenTypeDec{
-public:
+struct TokenClassDec : public TokenTypeDec{
+
 	Types* supers;
 	TokenClassDec(Args* a, TokenIdentifier* i, Modifiers* m, TokenBlock* b, Types* s);
 };
 
-class TokenProtocolDec : public TokenTypeDec{
-public:
+struct TokenProtocolDec : public TokenTypeDec{
+
 	Types* supers;
 	TokenProtocolDec(Args* a, TokenIdentifier* i, Modifiers* m, TokenBlock* b, Types* s);
 };
 
-class TokenEnumDec : public TokenTypeDec{
-public:
+struct TokenEnumDec : public TokenTypeDec{
+
 	std::vector<TokenIdentifier*>* instances;
 	TokenBlock* block;
 	TokenEnumDec(Args* a, TokenIdentifier* i, std::vector<TokenIdentifier*>* v, TokenBlock* b);
 };
 
-class TokenFile : public Token{
-public:
+struct TokenFile : public Token{
+
 	TokenNamespace* namespc;
 	Imports* imports;
 	std::vector<TokenTypeDec*>* typeDecs;
 	TokenFile(TokenNamespace* n, Imports* i, std::vector<TokenTypeDec*>* v);
-	void preParse();
+	virtual void preParse();
 };
 
-class TokenFuncDec : public TokenDeclaration{
-public:
+struct TokenFuncDec : public TokenDeclaration{
+
 	TokenBlock* block;
 	Args* args;
 	TokenType* type;
 	TokenType* throws;
 	TokenFuncDec(TokenIdentifier* i, Args* a, TokenType* t, TokenType* t2);
-	void preParse();
+	virtual void preParse();
 };
 
-class TokenExpression : public Token{
+struct TokenExpression : public Token{
 
 };
 
-class TokenVarDec : public TokenDeclaration{
-public:
+struct TokenVarDec : public TokenDeclaration{
+
 	EnumVarDecKeyword::type decKeyword;
 	TokenVarDec(TokenIdentifier* id, EnumVarDecKeyword::type k);
 };
 
-class TokenVarDecExplicit : public TokenVarDec{
-public:
+struct TokenVarDecExplicit : public TokenVarDec{
+
 	TokenType* type;
 	TokenVarDecExplicit(TokenIdentifier* i, EnumVarDecKeyword::type k, TokenType* t);
 };
 
-class TokenVarDecExplicitAssign : public TokenVarDecExplicit{
-public:
+struct TokenVarDecExplicitAssign : public TokenVarDecExplicit{
+
 	TokenExpression* expr;
 	TokenVarDecExplicitAssign(TokenIdentifier* i, EnumVarDecKeyword::type k, TokenType* t, TokenExpression* e);
 };
 
-class TokenVarDecImplicit : public TokenVarDec{
-public:
+struct TokenVarDecImplicit : public TokenVarDec{
+
 	TokenExpression* expr;
 	TokenVarDecImplicit(TokenIdentifier* i, EnumVarDecKeyword::type k, TokenExpression* e);
 };
 
-class TokenReturn : public TokenStatement{
-public:
+struct TokenReturn : public TokenStatement{
+
 	TokenExpression* expr;
 	TokenReturn();
 	TokenReturn(TokenExpression* e);
 };
 
-class TokenExprInfix : public TokenExpression{
-public:
+struct TokenExprInfix : public TokenExpression{
+
 	TokenExpression* expr1, *expr2;
 	Operator* op;
 	TokenExprInfix(TokenExpression* e1, Operator* o, TokenExpression* e2);
 };
 
-class TokenExprPrefix : public TokenExpression{
-public:
+struct TokenExprPrefix : public TokenExpression{
+
 	TokenExpression* expr;
 	Operator* op;
 	TokenExprPrefix(Operator* o, TokenExpression* expr);
 };
 
-class TokenExprPostfix : public TokenExpression{
-public:
+struct TokenExprPostfix : public TokenExpression{
+
 	TokenExpression* expr;
 	Operator* op;
 	TokenExprPostfix(TokenExpression* e, Operator* o);
 };
 
-class TokenExprInt : public TokenExpression{
-public:
+struct TokenExprInt : public TokenExpression{
+
 	int val;
 	TokenExprInt(int v);
 };
 
-class TokenExprStr : public TokenExpression{
-public:
+struct TokenExprStr : public TokenExpression{
+
 	std::string* str;
 	TokenExprStr(std::string* s);
 };
 
-class TokenExprChar : public TokenExpression{
-public:
+struct TokenExprChar : public TokenExpression{
+
 	char ch;
 	TokenExprChar(char c);
 };
 
-class TokenExprBool : public TokenExpression{
-public:
+struct TokenExprBool : public TokenExpression{
+
 	bool val;
 	TokenExprBool(bool b);
 };
 
-class TokenExprFloat : public TokenExpression{
-public:
+struct TokenExprFloat : public TokenExpression{
+
 	float val;
 	TokenExprFloat(float v);
 };
 
-class TokenExprFloat64 : public TokenExpression{
-public:
+struct TokenExprFloat64 : public TokenExpression{
+
 	double val;
 	TokenExprFloat64(double v);
 };
 
-class TokenExprLong : public TokenExpression{
-public:
+struct TokenExprLong : public TokenExpression{
+
 	long val;
 	TokenExprLong(long v);
 };
 
-class TokenExprTernary : public TokenExpression{
-public:
+struct TokenExprTernary : public TokenExpression{
+
 	TokenExpression* exprBool, *expr1, *expr2;
 	TokenExprTernary(TokenExpression* eBool, TokenExpression* e1, TokenExpression* e2);
 };
 
-class TokenPrefix : public TokenExpression{
+struct TokenPrefix : public TokenExpression{
 
 };
 
-class TokenVariable : public TokenPrefix{
-public:
+struct TokenVariable : public TokenPrefix{
+
 	TokenPrefix* prefix;
 	TokenIdentifier* id;
 	std::vector<TokenExpression*>* arrExprs;
 	TokenVariable(TokenIdentifier* i);
 };
 
-class TokenVarAssign : public TokenStatement{
-public:
+struct TokenVarAssign : public TokenStatement{
+
 	TokenVariable* var;
 	Operator* op;
 	TokenExpression* expr;
 	TokenVarAssign(TokenVariable* v, Operator* o, TokenExpression* e);
 };
 
-class TokenFuncCall : public TokenStatement, public TokenPrefix{
-public:
+struct TokenFuncCall : public TokenStatement, public TokenPrefix{
+
 	TokenPrefix* prefix;
 	TokenIdentifier* id;
 	std::vector<TokenExpression*>* args;

@@ -69,7 +69,7 @@ BinaryDigit ([0|1])
 "const"							RET(CONST);
 "func"							RET(FUNC);
 "class"							RET(CLASS);
-"/enum"							RET(ENUM);
+"enum"							RET(ENUM);
 "protocol"						RET(PROTOCOL);
 "import"						RET(IMPORT);
 "namespace"						RET(NAMESPACE);

@@ -5,10 +5,12 @@
 
 char cwdBuf[FILENAME_MAX];
 std::string compiledExtension = ".ashc", sourceExtension = ".ash", *classPath;
+bool isInitialised = false;
 
 void ClassLoader::init(){
 	currentDir(cwdBuf, sizeof(cwdBuf));
 	classPath = new std::string(getenv("ASH_PATH"));
+	isInitialised = true;
 }
 
 std::string* ClassLoader::getClassPath(){
@@ -28,6 +30,7 @@ bool ClassLoader::importClass(std::vector<std::string*> vec){
 }
 
 bool ClassLoader::importClass(std::string* qualifiedName){
+	if(!isInitialised) return false;
 	// Search current working directory
 	AshFile* file = ClassLoader::searchDir(std::string(cwdBuf), qualifiedName);
 	// Search in classpath

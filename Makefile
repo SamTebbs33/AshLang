@@ -1,4 +1,4 @@
-CFLAGS = -w -g -Wc++11-extensions
+CFLAGS = -std=c++11 -w -g -Wc++11-extensions
 
 INCLUDES = -Iincludes/ \
 
@@ -33,7 +33,8 @@ bd:
 
 # Tun in debug mode
 d:
-	@sudo lldb bin/ashc tests/syntax.ash
+	#@sudo lldb bin/ashc tests/syntax.ash
+	@valgrind bin/ashc tests/syntax.ash
 
 # Run
 r:

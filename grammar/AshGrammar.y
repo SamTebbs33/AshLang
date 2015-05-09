@@ -96,7 +96,6 @@
 %type <funcCall> func_call
 %type <prefix> prefix
 
-
 //%debug
 %error-verbose
 %start file
