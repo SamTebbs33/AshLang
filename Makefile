@@ -1,4 +1,4 @@
-CFLAGS = -fmax-errors=5 -std=c++11 -w -g -Wc++11-extensions
+CFLAGS = -w -g
 
 INCLUDES = -Iincludes/ \
 
