@@ -1,4 +1,13 @@
+# Automatic releases: http://docs.travis-ci.com/user/deployment/releases/
+
 language: cpp
+
 compiler:
     - g++
+    
 script: make br
+
+notifications:
+  email: # false
+    on_success: change # always, never, change
+    on_failure: change # always, never, change
