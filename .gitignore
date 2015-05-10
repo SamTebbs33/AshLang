@@ -24,7 +24,6 @@ bin/*
 *.so
 *.dylib
 *.dll
-*.dSYM
 
 # Fortran module files
 *.mod
@@ -39,4 +38,3 @@ bin/*
 *.exe
 *.out
 *.app
-
