@@ -8,6 +8,6 @@ compiler:
 script: make br
 
 notifications:
-  email: # false
+  email:
     on_success: change # always, never, change
     on_failure: change # always, never, change
