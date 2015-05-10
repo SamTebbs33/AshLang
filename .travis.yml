@@ -2,10 +2,6 @@
 
 language: cpp
 
-compiler:
-    - g++
-    - clang++
-
 script: make build-run
 
 notifications:

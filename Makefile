@@ -12,7 +12,7 @@ GRAMMARS = grammar/AshGrammar.y grammar/AshLexGrammar.l
 build: ${SOURCES}
 	@mkdir -p bin/
 	@make parser
-	@$(CXX) $(CFLAGS) $(INCLUDES) ${SOURCES} -o bin/ashc
+	@g++ $(CFLAGS) $(INCLUDES) ${SOURCES} -o bin/ashc
 
 # Build the parser
 parser: ${GRAMMARS}
