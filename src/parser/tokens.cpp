@@ -7,11 +7,15 @@ Token::Token(){
 
 }
 
-void Token::preParse(){
+void TokenPreParseable::preParse(){
 
 }
 
-TokenFile::TokenFile(TokenNamespace* n, Imports* i, std::vector<TokenTypeDec*>* v) : namespc(n), imports(i), typeDecs(v){
+TokenFile::TokenFile(TokenNamespace n, Imports i, std::vector<TokenTypeDec*> v) : namespc(n), imports(i), typeDecs(v){
+
+}
+
+TokenFile::TokenFile(){
 
 }
 
@@ -20,14 +24,17 @@ TokenStatement::TokenStatement() : Token(){
 }
 
 void TokenFile::preParse(){
-	Context::push(new FileContext("", namespc != NULL ? Members::toQualifiedName(namespc->name, new std::string("")) : NULL));
-	if(namespc) namespc->preParse();
-	if(imports) foreachp(it, imports->imports) (*it)->preParse();
-	if(typeDecs) foreachp(it, typeDecs) (*it)->preParse();
-	println("Finished file preparse");
+	Context::push(FileContext("", Members::toQualifiedName(&namespc.name, "")));
+	namespc.preParse();
+	foreach(it, imports.imports) (*it).preParse();
+	foreach(it, typeDecs) if(*it) (*it)->preParse();
 }
 
 TokenIdentifier::TokenIdentifier(std::string* str) : str(str){
+
+}
+
+TokenIdentifier::TokenIdentifier(){
 
 }
 
@@ -43,152 +50,166 @@ TokenModifier::TokenModifier(std::string s){
 	else if(s == "static") mod = EnumModifier::STATIC;
 }
 
-TokenQualifiedName::TokenQualifiedName(TokenIdentifier* str){
-	this->paths = new std::vector<std::string*>();
-	this->paths->push_back(str->str);
+TokenQualifiedName::TokenQualifiedName(TokenIdentifier id){
+	paths.push_back(*id.str);
+}
+
+TokenQualifiedName::TokenQualifiedName(){
+
 }
 
 TokenNamespace::TokenNamespace(){
+
 }
 
-TokenNamespace::TokenNamespace(TokenQualifiedName* name) : name(name){
+TokenNamespace::TokenNamespace(TokenQualifiedName name) : name(name){
+
 }
 
 void TokenNamespace::preParse(){
 
 }
 
-TokenImport::TokenImport(TokenQualifiedName* name) : name(name){
+TokenImport::TokenImport(TokenQualifiedName name) : name(name){
 
 }
 
 void TokenImport::preParse(){
-	ClassLoader::importClass(*name->paths);
+	ClassLoader::importClass(name.paths);
 }
 
-TokenReturn::TokenReturn(TokenExpression* e) : expr(e){
+TokenReturn::TokenReturn(TokenExpression e) : expr(e){
 
 }
 
-TokenReturn::TokenReturn() : expr(NULL){
+TokenReturn::TokenReturn() {
 
 }
 
 Imports::Imports(){
-	imports = new std::vector<TokenImport*>();
 }
 
-Imports::Imports(TokenImport* i){
-	imports = new std::vector<TokenImport*>();
-	imports->push_back(i);
+Imports::Imports(TokenImport i){
+	imports.push_back(i);
 }
 
 Modifiers::Modifiers(){
-	mods = new std::vector<TokenModifier*>();
 }
 
-Modifiers::Modifiers(TokenModifier* m){
-	mods = new std::vector<TokenModifier*>();
-	mods->push_back(m);
+Modifiers::Modifiers(TokenModifier m){
+	mods.push_back(m);
 }
 
-TokenType::TokenType(TokenIdentifier* i) : id(i){
+TokenType::TokenType(TokenIdentifier i) : id(i){
 
 }
 
-TokenArg::TokenArg(TokenIdentifier* i, TokenType* t) : id(i), type(t){
+TokenType::TokenType(){
+
+}
+
+TokenArg::TokenArg(TokenIdentifier i, TokenType t) : id(i), type(t){
 
 }
 
 Args::Args(){
-	args = new std::vector<TokenArg*>();
 }
 
-TokenDeclaration::TokenDeclaration(TokenIdentifier* i, Modifiers* m) : id(i), mods(m), TokenStatement(){
+TokenDeclaration::TokenDeclaration(TokenIdentifier i, Modifiers m) : id(i), mods(m), TokenStatement(){
 
 }
 
-TokenTypeDec::TokenTypeDec(Args* a, TokenIdentifier* i, Modifiers* m, TokenBlock* b) : TokenDeclaration(i, m), args(a), block(b){
+TokenDeclaration::TokenDeclaration() : id(TokenIdentifier()), mods(Modifiers()){
+
+}
+
+void TokenDeclaration::preParse(){
+}
+
+TokenTypeDec::TokenTypeDec(Args a, TokenIdentifier i, Modifiers m, TokenBlock b) : TokenDeclaration(i, m), args(a){
 
 }
 
 void TokenTypeDec::preParse(){
-	Members::addAndEnterType(new Type(Members::toModifiersInt(mods), Context::getNamespace()->add(id->str)));
-	if(block) block->preParse();
 }
 
-TokenClassDec::TokenClassDec(Args* a, TokenIdentifier* i, Modifiers* m, TokenBlock* b, Types* s) : TokenTypeDec(a, i, m, b), supers(s){
-
-}
-
-TokenProtocolDec::TokenProtocolDec(Args* a, TokenIdentifier* i, Modifiers* m, TokenBlock* b, Types* s) : TokenTypeDec(a, i, m, b), supers(s){
+TokenClassDec::TokenClassDec(Args a, TokenIdentifier i, Modifiers m, TokenBlock b, Types s) : TokenTypeDec(a, i, m, b), supers(s){
 
 }
 
-TokenEnumDec::TokenEnumDec(Args* a, TokenIdentifier* i, std::vector<TokenIdentifier*>* v, TokenBlock* b) : TokenTypeDec(a, i, new Modifiers(), b), instances(v){
+void TokenClassDec::preParse(){
+	
+}
+
+TokenProtocolDec::TokenProtocolDec(Args a, TokenIdentifier i, Modifiers m, TokenBlock b, Types  s) : TokenTypeDec(a, i, m, b), supers(s){
 
 }
 
-TokenFuncDec::TokenFuncDec(TokenIdentifier* i, Args* a, TokenType* t, TokenType* t2) : TokenDeclaration(i, NULL), args(a), type(t), throws(t2){
+void TokenProtocolDec::preParse(){
+
+}
+
+TokenEnumDec::TokenEnumDec(Args a, TokenIdentifier i, std::vector<TokenIdentifier> v, TokenBlock b) : TokenTypeDec(a, i, Modifiers(), b), instances(v){
+
+}
+
+void TokenEnumDec::preParse(){
+
+}
+
+TokenFuncDec::TokenFuncDec(Modifiers m, TokenIdentifier i, Args a, TokenType t, TokenType t2) : TokenDeclaration(i, m), args(a), type(t), throws(t2){
+
+}
+
+TokenFuncDec::TokenFuncDec() : TokenDeclaration(), type(TokenType()), throws(TokenType()){
 
 }
 
 void TokenFuncDec::preParse(){
-    println("FuncDec preParse");
-	Members::addFunction(new FuncSignature(id->str, args, Members::toModifiersInt(mods)));
+	Members::addFunction(new FuncSignature(id.str, &args, Members::toModifiersInt(mods)));
 }
 
-Types::Types(TokenType* t){
-	types = new std::vector<TokenType*>();
-	types->push_back(t);
+Types::Types(TokenType t){
+	types.push_back(t);
 }
 
-TokenBlock::TokenBlock(TokenStatement* s){
-	stmts = new std::vector<TokenStatement*>();
-	stmts->push_back(s);
-}
-
-TokenBlock::TokenBlock(){
-	stmts = new std::vector<TokenStatement*>();
-}
-
-void TokenBlock::preParse(){
-	if(stmts){
-        if(stmts->size() == 0) return;
-		for(auto it = stmts->begin(); it != stmts->end(); it++){
-			if((*it)){
-                println("Iteration not null");
-                (*it)->preParse();
-            }
-		}
-	}
-}
-
-TokenVarDec::TokenVarDec(TokenIdentifier* i, EnumVarDecKeyword::type k) : TokenDeclaration(i, NULL), decKeyword(k){
+TokenBlock::TokenBlock() : Token(){
 
 }
 
-TokenVarDecExplicit::TokenVarDecExplicit(TokenIdentifier* i, EnumVarDecKeyword::type k, TokenType* t) : TokenVarDec(i, k), type(t){
+TokenBlock::TokenBlock(TokenStatement* s) : Token(){
+	stmts.push_back(s);
+}
+
+TokenVarDec::TokenVarDec(Modifiers m, TokenIdentifier i, EnumVarDecKeyword::type k) : TokenDeclaration(i, m), decKeyword(k){
 
 }
 
-TokenVarDecExplicitAssign::TokenVarDecExplicitAssign(TokenIdentifier* i, EnumVarDecKeyword::type k, TokenType* t, TokenExpression* e) : TokenVarDecExplicit(i, k, t), expr(e){
+void TokenVarDec::preParse(){
 
 }
 
-TokenVarDecImplicit::TokenVarDecImplicit(TokenIdentifier* i, EnumVarDecKeyword::type k, TokenExpression* e) : TokenVarDec(i, k), expr(e){
+TokenVarDecExplicit::TokenVarDecExplicit(TokenIdentifier i, EnumVarDecKeyword::type k, TokenType t) : TokenVarDec(mods, i, k), type(t){
 
 }
 
-TokenExprInfix::TokenExprInfix(TokenExpression* e1, Operator* o, TokenExpression* e2) : expr1(e1), op(o), expr2(e2){
+TokenVarDecExplicitAssign::TokenVarDecExplicitAssign(TokenIdentifier i, EnumVarDecKeyword::type k, TokenType t, TokenExpression e) : TokenVarDecExplicit(i, k, t), expr(e){
 
 }
 
-TokenExprPrefix::TokenExprPrefix(Operator* o, TokenExpression* e) : op(o), expr(e){
+TokenVarDecImplicit::TokenVarDecImplicit(TokenIdentifier i, EnumVarDecKeyword::type k, TokenExpression e) : TokenVarDec(mods, i, k), expr(e){
 
 }
 
-TokenExprPostfix::TokenExprPostfix(TokenExpression* e, Operator* o) : expr(e), op(o){
+TokenExprInfix::TokenExprInfix(TokenExpression e1, Operator o, TokenExpression e2) : expr1(e1), op(o), expr2(e2){
+
+}
+
+TokenExprPrefix::TokenExprPrefix(Operator o, TokenExpression e) : op(o), expr(e){
+
+}
+
+TokenExprPostfix::TokenExprPostfix(TokenExpression e, Operator o) : expr(e), op(o){
 
 }
 
@@ -220,18 +241,17 @@ TokenExprLong::TokenExprLong(long v) : val(v){
 
 }
 
-TokenExprTernary::TokenExprTernary(TokenExpression* eB, TokenExpression* e1, TokenExpression* e2) : exprBool(eB), expr1(e1), expr2(e2){
+TokenExprTernary::TokenExprTernary(TokenExpression eB, TokenExpression e1, TokenExpression e2) : exprBool(eB), expr1(e1), expr2(e2){
 
 }
 
-TokenVariable::TokenVariable(TokenIdentifier* i) : id(i){
-	arrExprs = new std::vector<TokenExpression*>();
+TokenVariable::TokenVariable(TokenIdentifier i) : id(i){
 }
 
-TokenVarAssign::TokenVarAssign(TokenVariable* v, Operator* o, TokenExpression* e) : var(v), op(o), expr(e){
+TokenVarAssign::TokenVarAssign(TokenVariable v, Operator* o, TokenExpression e) : var(v), op(o), expr(e){
 
 }
 
-TokenFuncCall::TokenFuncCall(TokenIdentifier* i, std::vector<TokenExpression*>* e) : id(i), args(e){
+TokenFuncCall::TokenFuncCall(TokenIdentifier i, std::vector<TokenExpression> e) : id(i), args(e){
 
 }

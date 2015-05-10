@@ -3,7 +3,9 @@
 	#include <stdio.h>
 	#include <locale>
 	#include "parser/tokens.h"
+
 	#define YYERROR_VERBOSE
+	#define DEL(a) /*delete &a*/;
 
 	extern int yylex();
 	extern int yylineno;
@@ -13,7 +15,7 @@
 		fprintf(stderr, "Error:%s:%d: %s\n",currentFile, yylineno, s);
 	}
 	int lineNo = 0;
-	TokenFile* file;
+	TokenFile file;
 %}
 
 %union{
@@ -27,7 +29,6 @@
 	double float64;
 	Operator* op;
 	TokenIdentifier* id;
-	TokenFile* file;
 	TokenNamespace* namesp;
 	TokenImport* import;
 	Imports* imports;
@@ -46,9 +47,9 @@
 	TokenExpression* expr;
 	std::vector<TokenTypeDec*>* typeDecVec;
 	TokenQualifiedName* qualifiedName;
-	std::vector<TokenIdentifier*>* enumInstances;
+	std::vector<TokenIdentifier>* enumInstances;
 	TokenVariable* var;
-	std::vector<TokenExpression*>* exprVec;
+	std::vector<TokenExpression>* exprVec;
 	TokenFuncCall* funcCall;
 	TokenPrefix* prefix;
 }
@@ -71,7 +72,6 @@
 %token <op> OP_LSHIFT OP_RSHIFT OP_COMPLEMENT
 
 %type <op> op_infix op_prefix op_postfix op_assign
-%type <file> file
 %type <namesp> namespace_dec
 %type <import> import
 %type <imports> imports
@@ -84,7 +84,7 @@
 %type <args> args type_args
 %type <type> type func_type throws
 %type <types> type_supers
-%type <block> class_block protocol_block enum_block func_dec_block
+%type <block> enum_block func_dec_block class_block protocol_block
 %type <stmt> class_stmt protocol_stmt enum_stmt func_stmt var_assign
 %type <varDec> var_dec_body var_dec_explicit_assign var_dec_implicit class_var_dec protcol_var_dec func_var_dec var_dec
 %type <varDecE> var_dec_explicit
@@ -102,61 +102,61 @@
 
 %%
 
-file: namespace_dec imports type_decs {file = new TokenFile($1, $2, $3);} ;
+file: namespace_dec imports type_decs {file = TokenFile(*$1, *$2, *$3); DEL($1) DEL($2) DEL($3)} ;
 
-imports: import {$$ = new Imports($1);} | imports import {$1->imports->push_back($2);} | {$$ = new Imports();};
-import: IMPORT qualified_name {$$ = new TokenImport($2);} ;
-qualified_name: ID {$$ = new TokenQualifiedName($1);} | qualified_name DOT ID {$1->paths->push_back($3->str);};
-namespace_dec: NAMESPACE qualified_name {$$ = new TokenNamespace($2);} | {$$ = new TokenNamespace();} ;
+imports: import {$$ = new Imports(*$1); DEL($1)} | imports import {$1->imports.push_back(*$2); DEL($2)} | {$$ = new Imports();};
+import: IMPORT qualified_name {$$ = new TokenImport(*$2); DEL($2)} ;
+qualified_name: ID {$$ = new TokenQualifiedName(*$1); DEL($1)} | qualified_name DOT ID {$1->paths.push_back(*$3->str); DEL($3)};
+namespace_dec: NAMESPACE qualified_name {$$ = new TokenNamespace(*$2); DEL($2)} | {$$ = new TokenNamespace();} ;
 
 type_decs: type_dec  {$$ = new std::vector<TokenTypeDec*>(); $$->push_back($1);} | type_decs type_dec {$$->push_back($2);} ;
 type_dec: class_dec | protocol_dec | enum_dec ;
-class_dec: mods CLASS ID type_args type_supers BRACE_LEFT class_block BRACE_RIGHT {$$ = new TokenClassDec($4, $3, $1, $7, $5);} ;
-protocol_dec: mods PROTOCOL ID type_args type_supers BRACE_LEFT protocol_block BRACE_RIGHT {$$ = new TokenProtocolDec($4, $3, $1, $7, $5);} ;
-enum_dec: ENUM ID type_args BRACE_LEFT enum_instances enum_block BRACE_RIGHT {$$ = new TokenEnumDec($3, $2, $5, $6);} ;
+class_dec: mods CLASS ID type_args type_supers BRACE_LEFT class_block BRACE_RIGHT {$$ = new TokenClassDec(*$4, *$3, *$1, *$7, *$5); DEL($1)  DEL($3) DEL($4) DEL($5) DEL($7)} ;
+protocol_dec: mods PROTOCOL ID type_args type_supers BRACE_LEFT protocol_block BRACE_RIGHT {$$ = new TokenProtocolDec(*$4, *$3, *$1, *$7, *$5); DEL($1) DEL($3) DEL($4) DEL($5) DEL($7)} ;
+enum_dec: ENUM ID type_args BRACE_LEFT enum_instances enum_block BRACE_RIGHT {$$ = new TokenEnumDec(*$3, *$2, *$5, *$6); DEL($2) DEL($3) DEL($5) DEL($6)} ;
 
 mod: PUBLIC | PRIVATE | PROTECTED | FINAL | NATIVE | REQUIRED | STANDARD | STATIC | OVERRIDE ;
-mods: mod {$$ = new Modifiers($1);}  | mods mod {$1->mods->push_back($2);}  | {$$ = new Modifiers();} ;
+mods: mod {$$ = new Modifiers(*$1); DEL($1)}  | mods mod {$1->mods.push_back(*$2); DEL($2)}  | {$$ = new Modifiers();} ;
 
 type_args: PAREN_LEFT args PAREN_RIGHT {$$ = $2;} | {$$ = new Args();} ;
-type: ID {$$ = new TokenType($1);} | PRIMITIVE {$$ = new TokenType($1);} | type BRACKET_LEFT BRACKET_RIGHT {$1->arrDims++;} ;
-args: arg {$$ = new Args();} | args COMMA arg {$1->args->push_back($3);} | {$$ = new Args();} ;
-arg: ID COLON type {$$ = new TokenArg($1, $3);} ;
+type: ID {$$ = new TokenType(*$1); DEL($1)} | PRIMITIVE {$$ = new TokenType(*$1); DEL($1)} | type BRACKET_LEFT BRACKET_RIGHT {$1->arrDims++;} ;
+args: arg {$$ = new Args();} | args COMMA arg {$1->args.push_back(*$3); DEL($3)} | {$$ = new Args();} ;
+arg: ID COLON type {$$ = new TokenArg(*$1, *$3); DEL($3) DEL($1)} ;
 
 func_type: COLON type {$$ = $2;} | {$$ = NULL;} ;
-type_supers: func_type {$$ = new Types($1);} | type_supers COMMA type {$1->types->push_back($3);} ;
+type_supers: func_type {$$ = new Types($1 != NULL ? *$1 : TokenType()); DEL($1)} | type_supers COMMA type {$1->types.push_back(*$3); DEL($3)} ;
 throws: ARROW type {$$ = $2;} | {$$ = NULL;} ;
 
-class_block: class_stmt {$$ = new TokenBlock($1);} | class_block class_stmt {$1->stmts->push_back($2);} | {$$ = new TokenBlock();} ;
+class_block: class_stmt {$$ = new TokenBlock($1);} | class_block class_stmt {$1->stmts.push_back($2);} | {$$ = new TokenBlock();} ;
 class_stmt: class_func_dec | class_var_dec ;
-func_dec_block: func_stmt {$$ = new TokenBlock($1);} | func_dec_block func_stmt {$1->stmts->push_back($2);} | {$$ = new TokenBlock();} ;
-func_stmt: var_assign | var_dec | RETURN {$$ = new TokenReturn();} | RETURN expr {$$ = new TokenReturn($2);} ;
-enum_instances: ID {$$ = new std::vector<TokenIdentifier*>(); $$->push_back($1);} | enum_instances COMMA ID {$1->push_back($3);} | {$$ = new std::vector<TokenIdentifier*>();} ;
-enum_block: enum_stmt {$$ = new TokenBlock($1);} | enum_block enum_stmt {$1->stmts->push_back($2);} |  {$$ = new TokenBlock();} ;
+func_dec_block: func_stmt {$$ = new TokenBlock($1);} | func_dec_block func_stmt {$1->stmts.push_back($2);} | {$$ = new TokenBlock();} ;
+func_stmt: var_assign | var_dec | RETURN {$$ = new TokenReturn();} | RETURN expr {$$ = new TokenReturn(*$2); DEL($2)} ;
+enum_instances: ID {$$ = new std::vector<TokenIdentifier>(); $$->push_back(*$1); DEL($1)} | enum_instances COMMA ID {$1->push_back(*$3); DEL($3)} | {$$ = new std::vector<TokenIdentifier>();} ;
+enum_block: enum_stmt {$$ = new TokenBlock($1);} | enum_block enum_stmt {$1->stmts.push_back($2);} |  {$$ = new TokenBlock();} ;
 enum_stmt: class_stmt ;
-protocol_block: protocol_stmt {$$ = new TokenBlock($1);} | protocol_block protocol_stmt {$1->stmts->push_back($2);} | {$$ = new TokenBlock();} ;
+protocol_block: protocol_stmt {$$ = new TokenBlock($1);} | protocol_block protocol_stmt {$1->stmts.push_back($2);} | {$$ = new TokenBlock();} ;
 protocol_stmt: protocol_var_dec | protocol_func_dec ;
 
-func_dec: FUNC ID PAREN_LEFT args PAREN_RIGHT func_type throws {$$ = new TokenFuncDec($2, $4, $6, $7);} ;
-class_func_dec: mods func_dec BRACE_LEFT func_dec_block BRACE_RIGHT {$2->mods = $1; $2->block = $4;} ;
-protocol_func_dec: mods func_dec {$2->mods = $1; $2->block = new TokenBlock();} ;
-var_dec_body: VAR ID {$$ = new TokenVarDec($2, EnumVarDecKeyword::VAR);} | CONST ID {$$ = new TokenVarDec($2, EnumVarDecKeyword::CONST);} ;
-var_dec_explicit: var_dec_body func_type {$$ = new TokenVarDecExplicit($1->id, $1->decKeyword, $2);} ;
-var_dec_explicit_assign: var_dec_explicit OP_ASSIGN expr {$$ = new TokenVarDecExplicitAssign($1->id, $1->decKeyword, $1->type, $3);} ;
-var_dec_implicit: var_dec_body OP_ASSIGN expr {$$ = new TokenVarDecImplicit($1->id, $1->decKeyword, $3);} ;
+func_dec: mods FUNC ID PAREN_LEFT args PAREN_RIGHT func_type throws {$$ = new TokenFuncDec(*$1, *$3, *$5, $7 != NULL ? *$7 : TokenType(), $8 != NULL ? *$8 : TokenType()); DEL($3) DEL($5) DEL($7) DEL($8)} ;
+class_func_dec: func_dec BRACE_LEFT func_dec_block BRACE_RIGHT {/*$1->block = $3; DEL($3)*/} ;
+protocol_func_dec: func_dec {/*$1->block = TokenBlock();*/} ;
+var_dec_body: mods VAR ID {$$ = new TokenVarDec(*$1, *$3, EnumVarDecKeyword::VAR); DEL($3)} | mods CONST ID {$$ = new TokenVarDec(*$1, *$3, EnumVarDecKeyword::CONST); DEL($3)} ;
+var_dec_explicit: var_dec_body func_type {$$ = new TokenVarDecExplicit($1->id, $1->decKeyword, *$2);  DEL($2)};
+var_dec_explicit_assign: var_dec_explicit OP_ASSIGN expr {$$ = new TokenVarDecExplicitAssign($1->id, $1->decKeyword, $1->type, *$3); DEL($3)} ;
+var_dec_implicit: var_dec_body OP_ASSIGN expr {$$ = new TokenVarDecImplicit($1->id, $1->decKeyword, *$3); DEL($3)} ;
 var_dec: var_dec_explicit | var_dec_explicit_assign | var_dec_implicit ;
-class_var_dec: mods var_dec {$2->mods = $1;} ;
-protocol_var_dec: mods var_dec_explicit {$2->mods = $1;} ;
+class_var_dec: var_dec ;
+protocol_var_dec: var_dec_explicit ;
 
 prefix: var | func_call ;
-func_call_args: expr {$$ = new std::vector<TokenExpression*>(); $$->push_back($1);} | func_call_args COMMA expr {$1->push_back($3);} | {$$ = new std::vector<TokenExpression*>();} ;
-func_call: ID PAREN_LEFT func_call_args PAREN_RIGHT {$$ = new TokenFuncCall($1, $3);} | prefix DOT func_call {$3->prefix = $1;} ;
-var: ID {$$ = new TokenVariable($1);} | var PAREN_LEFT expr PAREN_RIGHT {$1->arrExprs->push_back($3);} | prefix DOT var {$3->prefix = $1;} ;
-var_assign: var op_assign expr {$$ = new TokenVarAssign($1, $2, $3);} ;
+func_call_args: expr {$$ = new std::vector<TokenExpression>(); $$->push_back(*$1); DEL($1)} | func_call_args COMMA expr {$1->push_back(*$3); DEL($3)} | {$$ = new std::vector<TokenExpression>();} ;
+func_call: ID PAREN_LEFT func_call_args PAREN_RIGHT {$$ = new TokenFuncCall(*$1, *$3); DEL($3) DEL($1)} | prefix DOT func_call {$3->prefix = *$1; DEL($1)} ;
+var: ID {$$ = new TokenVariable(*$1); DEL($1)} | var PAREN_LEFT expr PAREN_RIGHT {$1->arrExprs.push_back(*$3); DEL($3)} | prefix DOT var {$3->prefix = *$1; DEL($1)} ;
+var_assign: var op_assign expr {$$ = new TokenVarAssign(*$1, $2, *$3); DEL($1) DEL($3)} ;
 
-expr: expr op_infix expr {$$ = new TokenExprInfix($1, $2, $3);}
-	| op_prefix expr {$$ = new TokenExprPrefix($1, $2);}
-	| expr op_postfix {$$ = new TokenExprPostfix($1, $2);}
+expr: expr op_infix expr {$$ = new TokenExprInfix(*$1, *$2, *$3); DEL($1) DEL($3) DEL($2)}
+	| op_prefix expr {$$ = new TokenExprPrefix(*$1, *$2); DEL($2) DEL($1)}
+	| expr op_postfix {$$ = new TokenExprPostfix(*$1, *$2); DEL($1) DEL($2)}
 	| INT {$$ = new TokenExprInt($1);}
 	| STR {$$ = new TokenExprStr($1);}
 	| CHAR {$$ = new TokenExprChar($1);}
@@ -165,7 +165,7 @@ expr: expr op_infix expr {$$ = new TokenExprInfix($1, $2, $3);}
 	| FLOAT {$$ = new TokenExprFloat($1);}
 	| FLOAT64 {$$ = new TokenExprFloat64($1);}
 	| LONG {$$ = new TokenExprLong($1);}
-	| expr QUESTION_MARK expr COLON expr {$$ = new TokenExprTernary($1, $3, $5);}
+	| expr QUESTION_MARK expr COLON expr {$$ = new TokenExprTernary(*$1, *$3, *$5); DEL($1) DEL($3) DEL($5)}
 	| PAREN_LEFT expr PAREN_RIGHT {$$ = $2;}
 	| var
 	| func_call

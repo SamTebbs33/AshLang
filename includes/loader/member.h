@@ -8,16 +8,16 @@
 using ModifiersInt = unsigned short;
 
 struct QualifiedName {
-    std::vector<std::string*>* paths;
+    std::vector<std::string> paths;
+    std::string shortName;
     QualifiedName();
-    QualifiedName* add(std::string* path);
-    std::string* getShortName();
+    void add(std::string path);
 };
 
 struct Member {
     ModifiersInt mods;
-    QualifiedName* name;
-    Member(ModifiersInt m, QualifiedName* n);
+    QualifiedName name;
+    Member(ModifiersInt m, QualifiedName n);
 };
 
 struct FuncSignature {
@@ -29,7 +29,7 @@ struct FuncSignature {
 
 struct Function : Member {
     Args* args;
-    Function(ModifiersInt m, QualifiedName* n, Args* a);
+    Function(ModifiersInt m, QualifiedName n, Args* a);
 };
 
 struct Field : Member {
@@ -43,15 +43,15 @@ struct Type : Member {
     std::vector<FuncSignature*>* funcs;
     std::vector<Field*>* fields;
     std::vector<Type*>* supers;
-    Type(ModifiersInt m, QualifiedName* n);
+    Type(ModifiersInt m, QualifiedName n);
 };
 
 namespace Members {
     void addAndEnterType(Type* t);
     void addFunction(FuncSignature* f);
     void addField(Field* f);
-    QualifiedName* toQualifiedName(TokenQualifiedName* n, std::string* s);
-    ModifiersInt toModifiersInt(Modifiers* m);
+    QualifiedName toQualifiedName(TokenQualifiedName* n, std::string s);
+    ModifiersInt toModifiersInt(Modifiers m);
     Type* getCurrentType();
 } /* Members */
 

@@ -1,4 +1,4 @@
-CFLAGS = -std=c++11 -w -g -Wc++11-extensions
+CFLAGS = -fmax-errors=5 -std=c++11 -w -g -Wc++11-extensions
 
 INCLUDES = -Iincludes/ \
 
@@ -9,7 +9,7 @@ SOURCES = $(wildcard src/*.cpp) \
 GRAMMARS = grammar/AshGrammar.y grammar/AshLexGrammar.l
 
 # Build the parser and compiler
-build: ${SOURCES}
+b: ${SOURCES}
 	@mkdir -p bin/
 	@make parser
 	@$(CXX) $(CFLAGS) $(INCLUDES) ${SOURCES} -o bin/ashc
@@ -23,17 +23,16 @@ parser: ${GRAMMARS}
 
 # Build and run
 br:
-	make build
+	make b
 	make r
 
 # Build and run in debug mode
 bd:
-	make build
+	make b
 	make d
 
 # Tun in debug mode
 d:
-	#@sudo lldb bin/ashc tests/syntax.ash
 	@valgrind bin/ashc tests/syntax.ash
 
 # Run

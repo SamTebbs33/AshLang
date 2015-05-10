@@ -20,10 +20,10 @@ namespace ClassLoader {
 	char* cwdBuf;*/
 	void init();
 	std::string getCWD();
-	std::string* getClassPath();
-	bool importClass(std::vector<std::string*> paths);
-	bool importClass(std::string* qualifiedName);
-	AshFile* searchDir(std::string absPath, std::string* qualifiedName);
+	std::string getClassPath();
+	bool importClass(std::vector<std::string> paths);
+	bool importClass(std::string qualifiedName);
+	AshFile* searchDir(std::string absPath, std::string qualifiedName);
 }
 
 #endif

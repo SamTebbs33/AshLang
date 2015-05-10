@@ -130,7 +130,7 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 19 "grammar/AshGrammar.y" /* yacc.c:1915  */
+#line 21 "grammar/AshGrammar.y" /* yacc.c:1915  */
 
 	std::string* str;
 	int line;
@@ -142,7 +142,6 @@ union YYSTYPE
 	double float64;
 	Operator* op;
 	TokenIdentifier* id;
-	TokenFile* file;
 	TokenNamespace* namesp;
 	TokenImport* import;
 	Imports* imports;
@@ -161,13 +160,13 @@ union YYSTYPE
 	TokenExpression* expr;
 	std::vector<TokenTypeDec*>* typeDecVec;
 	TokenQualifiedName* qualifiedName;
-	std::vector<TokenIdentifier*>* enumInstances;
+	std::vector<TokenIdentifier>* enumInstances;
 	TokenVariable* var;
-	std::vector<TokenExpression*>* exprVec;
+	std::vector<TokenExpression>* exprVec;
 	TokenFuncCall* funcCall;
 	TokenPrefix* prefix;
 
-#line 171 "src/parser/parser.hpp" /* yacc.c:1915  */
+#line 170 "src/parser/parser.hpp" /* yacc.c:1915  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

@@ -7,15 +7,15 @@
 
 struct FileContext{
 	std::string relPath;
-	QualifiedName* namespc;
-	FileContext(std::string p, QualifiedName* n);
+	QualifiedName namespc;
+	FileContext(std::string p, QualifiedName n);
 };
 
 namespace Context{
-	FileContext* top();
-	FileContext* pop();
-	void push(FileContext* fc);
-	QualifiedName* getNamespace();
+	FileContext top();
+	FileContext pop();
+	void push(FileContext fc);
+	QualifiedName getNamespace();
 };
 
 #endif

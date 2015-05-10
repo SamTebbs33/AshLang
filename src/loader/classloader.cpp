@@ -13,41 +13,43 @@ void ClassLoader::init(){
 	isInitialised = true;
 }
 
-std::string* ClassLoader::getClassPath(){
-	return classPath;
+std::string ClassLoader::getClassPath(){
+	return *classPath;
 }
 
-bool ClassLoader::importClass(std::vector<std::string*> vec){
+bool ClassLoader::importClass(std::vector<std::string> vec){
+	if(!isInitialised) return false;
 	std::string path = "";
 	int x = 0;
 	foreach(it, vec){
 		// Append path segment
-		path += **it;
+		path += *it;
 		// Append path seperator if needed
 		if(x++ < vec.size()-1) path += PATH_SEP;
 	}
-	return importClass(&path);
+	return importClass(path);
 }
 
-bool ClassLoader::importClass(std::string* qualifiedName){
+bool ClassLoader::importClass(std::string qualifiedName){
 	if(!isInitialised) return false;
 	// Search current working directory
 	AshFile* file = ClassLoader::searchDir(std::string(cwdBuf), qualifiedName);
 	// Search in classpath
 	if(!file){
-		file = ClassLoader::searchDir(*ClassLoader::getClassPath(), qualifiedName);}
+		file = ClassLoader::searchDir(ClassLoader::getClassPath(), qualifiedName);}
 	if(!file){
-		printf("Can't import class: %s\n", qualifiedName->c_str());
+		printf("Can't import class: %s\n", qualifiedName.c_str());
 	}
 	//TODO: Do import process
+	delete file;
 	return false;
 }
 
-AshFile* ClassLoader::searchDir(std::string absPath, std::string* qualifiedName){
+AshFile* ClassLoader::searchDir(std::string absPath, std::string qualifiedName){
 	// If last char in the absolute path is not a path seperator char, then append one
 	if(absPath.at(absPath.length()-1) != PATH_SEP) absPath += PATH_SEP;
 	// Convert abspath and qualified name to a path
-	std::string path = absPath+*qualifiedName;
+	std::string path = absPath+qualifiedName;
 	// Make the path to a compiled class file
 	std::string* compiledPath = new std::string(path+compiledExtension);
 	// Attempt to open class file
