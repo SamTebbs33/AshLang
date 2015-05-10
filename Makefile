@@ -1,4 +1,4 @@
-CFLAGS = -std=c++11 -w -g -Wc++11-extensions
+CFLAGS = -std=c++11 -w -g
 
 INCLUDES = -Iincludes/ \
 
