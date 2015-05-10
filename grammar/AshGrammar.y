@@ -86,7 +86,7 @@
 %type <types> type_supers
 %type <block> enum_block func_dec_block class_block protocol_block
 %type <stmt> class_stmt protocol_stmt enum_stmt func_stmt var_assign
-%type <varDec> var_dec_body var_dec_explicit_assign var_dec_implicit class_var_dec protcol_var_dec func_var_dec var_dec
+%type <varDec> var_dec_body var_dec_explicit_assign var_dec_implicit class_var_dec protocol_var_dec var_dec
 %type <varDecE> var_dec_explicit
 %type <expr> expr
 %type <var> var
