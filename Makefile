@@ -9,7 +9,7 @@ SOURCES = $(wildcard src/*.cpp) \
 GRAMMARS = grammar/AshGrammar.y grammar/AshLexGrammar.l
 
 # Build the parser and compiler
-b: ${SOURCES}
+build: ${SOURCES}
 	@mkdir -p bin/
 	@make parser
 	@$(CXX) $(CFLAGS) $(INCLUDES) ${SOURCES} -o bin/ashc
@@ -22,19 +22,19 @@ parser: ${GRAMMARS}
 	@mv src/parser/parser.hpp includes/parser/parser.hpp
 
 # Build and run
-br:
-	make b
-	make r
+build-run:
+	make build
+	make run
 
 # Build and run in debug mode
-bd:
-	make b
-	make d
+build-debug:
+	make build
+	make debug
 
-# Tun in debug mode
-d:
+# Run in debug mode
+debug:
 	@valgrind bin/ashc tests/syntax.ash
 
 # Run
-r:
+run:
 	@bin/ashc tests/syntax.ash
