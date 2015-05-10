@@ -4,8 +4,8 @@ language: cpp
 
 compiler:
     - g++
-    
-script: make br
+
+script: make build-run
 
 notifications:
   email:
