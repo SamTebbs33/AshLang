@@ -25,18 +25,41 @@ namespace Tokens{
 	EnumModifier::type getMod(std::string s);
 }
 
+/**
+ * A member of the AST. Produced by the parser.
+ */
 struct Token{
-
+	bool errored = false;
 	Token();
 };
 
-struct TokenPreParseable{
+/**
+ * A token that should be parsed before all other tokens.
+ * i.e, type and function declarations use this to be parsed
+ * before any statements that require the function/type.
+ * @type {Token}
+ */
+struct TokenPreParseable : Token{
 	virtual void preParse() = 0;
 };
 
-struct TokenStatement : public TokenPreParseable{
+/**
+ * A token that should be analysed during the semantic analysis
+ * stage. It should also set up any data needed before code
+ * generation.
+ * @type {Token}
+ */
+struct TokenAnalysable : Token{
+	virtual void analyse() = 0;
+};
+
+/**
+ * A token that can be executed.
+ * @type {TokenAnalysable}
+ */
+struct TokenStatement : public TokenAnalysable{
 	TokenStatement();
-	virtual void preParse();
+	virtual void analyse();
 };
 
 struct Operator{
@@ -83,19 +106,21 @@ struct Imports{
 	Imports(TokenImport i);
 };
 
-struct TokenType : public Token{
+struct TokenType : public TokenAnalysable{
 
 	int arrDims;
 	TokenIdentifier id;
 	TokenType(TokenIdentifier i);
 	TokenType();
+	virtual void analyse();
 };
 
-struct TokenArg : public Token{
+struct TokenArg : public TokenAnalysable{
 
 	TokenIdentifier id;
 	TokenType type;
 	TokenArg(TokenIdentifier i, TokenType t);
+	virtual void analyse();
 };
 
 struct Args{
@@ -110,14 +135,15 @@ struct Types{
 	Types(TokenType t);
 };
 
-struct TokenBlock : public TokenPreParseable{
+struct TokenBlock : public TokenAnalysable, public TokenPreParseable{
 	std::vector<TokenStatement*> stmts;
 	TokenBlock();
 	TokenBlock(TokenStatement* s);
-	void preParse();
+	virtual void preParse();
+	virtual void analyse();
 };
 
-struct TokenDeclaration : public TokenStatement, public TokenPreParseable{
+struct TokenDeclaration : public TokenAnalysable, public TokenPreParseable, public TokenStatement{
 
 	TokenIdentifier id;
 	ModifiersInt mods;
@@ -125,6 +151,7 @@ struct TokenDeclaration : public TokenStatement, public TokenPreParseable{
 	TokenDeclaration(TokenIdentifier i);
 	TokenDeclaration();
 	virtual void preParse();
+	virtual void analyse();
 };
 
 struct TokenFuncDec : public TokenDeclaration{
@@ -136,6 +163,7 @@ struct TokenFuncDec : public TokenDeclaration{
 	TokenFuncDec(ModifiersInt m, TokenIdentifier i, Args a, TokenType t, TokenType t2);
 	TokenFuncDec();
 	void preParse();
+	virtual void analyse();
 };
 
 struct TokenTypeDec : public TokenDeclaration{
@@ -144,6 +172,7 @@ struct TokenTypeDec : public TokenDeclaration{
 	TokenTypeDec(Args a, TokenIdentifier i, ModifiersInt m, TokenBlock block);
 	TokenTypeDec(Args a, TokenIdentifier i, TokenBlock block);
 	virtual void preParse();
+	virtual void analyse();
 };
 
 struct TokenClassDec : public TokenTypeDec{
@@ -151,6 +180,7 @@ struct TokenClassDec : public TokenTypeDec{
 	Types supers;
 	TokenClassDec(Args a, TokenIdentifier i, ModifiersInt m, TokenBlock b, Types s);
 	void preParse();
+	virtual void analyse();
 };
 
 struct TokenProtocolDec : public TokenTypeDec{
@@ -158,6 +188,7 @@ struct TokenProtocolDec : public TokenTypeDec{
 	Types supers;
 	TokenProtocolDec(Args a, TokenIdentifier i, ModifiersInt m, TokenBlock b, Types s);
 	void preParse();
+	virtual void analyse();
 };
 
 struct TokenEnumDec : public TokenTypeDec{
@@ -165,9 +196,10 @@ struct TokenEnumDec : public TokenTypeDec{
 	std::vector<TokenIdentifier> instances;
 	TokenEnumDec(Args a, TokenIdentifier i, std::vector<TokenIdentifier> v, TokenBlock b);
 	void preParse();
+	virtual void analyse();
 };
 
-struct TokenFile : public TokenPreParseable{
+struct TokenFile : public TokenPreParseable, public TokenAnalysable{
 
 	TokenNamespace namespc;
 	Imports imports;
@@ -176,42 +208,48 @@ struct TokenFile : public TokenPreParseable{
 	TokenFile(TokenNamespace n, Imports i, std::vector<TokenTypeDec*> v);
 	TokenFile();
 	void preParse();
+	virtual void analyse();
 };
 
-struct TokenExpression : public Token{
-
+struct TokenExpression : public TokenAnalysable{
+	virtual void analyse();
 };
 
-struct TokenVarDec : public TokenDeclaration{
+struct TokenVarDec : public TokenDeclaration, public TokenStatement{
 
 	EnumVarDecKeyword::type decKeyword;
 	TokenVarDec(ModifiersInt m, TokenIdentifier id, EnumVarDecKeyword::type k);
-	void preParse();
+	virtual void preParse();
+	virtual void analyse();
 };
 
 struct TokenVarDecExplicit : public TokenVarDec{
 
 	TokenType type;
 	TokenVarDecExplicit(TokenIdentifier i, EnumVarDecKeyword::type k, TokenType t);
+	virtual void analyse();
 };
 
 struct TokenVarDecExplicitAssign : public TokenVarDecExplicit{
 
 	TokenExpression expr;
 	TokenVarDecExplicitAssign(TokenIdentifier i, EnumVarDecKeyword::type k, TokenType t, TokenExpression e);
+	virtual void analyse();
 };
 
 struct TokenVarDecImplicit : public TokenVarDec{
 
 	TokenExpression expr;
 	TokenVarDecImplicit(TokenIdentifier i, EnumVarDecKeyword::type k, TokenExpression e, ModifiersInt  m);
+	virtual void analyse();
 };
 
-struct TokenReturn : public TokenStatement{
+struct TokenReturn : public TokenStatement, public TokenAnalysable{
 
 	TokenExpression expr;
 	TokenReturn();
 	TokenReturn(TokenExpression e);
+	virtual void analyse();
 };
 
 struct TokenExprInfix : public TokenExpression{
@@ -219,6 +257,7 @@ struct TokenExprInfix : public TokenExpression{
 	TokenExpression expr1, expr2;
 	Operator op;
 	TokenExprInfix(TokenExpression e1, Operator o, TokenExpression e2);
+	virtual void analyse();
 };
 
 struct TokenExprPrefix : public TokenExpression{
@@ -226,6 +265,7 @@ struct TokenExprPrefix : public TokenExpression{
 	TokenExpression expr;
 	Operator op;
 	TokenExprPrefix(Operator o, TokenExpression expr);
+	virtual void analyse();
 };
 
 struct TokenExprPostfix : public TokenExpression{
@@ -233,6 +273,7 @@ struct TokenExprPostfix : public TokenExpression{
 	TokenExpression expr;
 	Operator op;
 	TokenExprPostfix(TokenExpression e, Operator o);
+	virtual void analyse();
 };
 
 struct TokenExprInt : public TokenExpression{
@@ -281,6 +322,7 @@ struct TokenExprTernary : public TokenExpression{
 
 	TokenExpression exprBool, expr1, expr2;
 	TokenExprTernary(TokenExpression eBool, TokenExpression e1, TokenExpression e2);
+	virtual void analyse();
 };
 
 struct TokenPrefix : public TokenExpression{
@@ -293,6 +335,7 @@ struct TokenVariable : public TokenPrefix{
 	TokenIdentifier id;
 	std::vector<TokenExpression> arrExprs;
 	TokenVariable(TokenIdentifier i);
+	virtual void analyse();
 };
 
 struct TokenVarAssign : public TokenStatement{
@@ -301,6 +344,7 @@ struct TokenVarAssign : public TokenStatement{
 	Operator* op;
 	TokenExpression expr;
 	TokenVarAssign(TokenVariable v, Operator* o, TokenExpression e);
+	virtual void analyse();
 };
 
 struct TokenFuncCall : public TokenStatement, public TokenPrefix{
@@ -309,6 +353,7 @@ struct TokenFuncCall : public TokenStatement, public TokenPrefix{
 	TokenIdentifier id;
 	std::vector<TokenExpression> args;
 	TokenFuncCall(TokenIdentifier i, std::vector<TokenExpression> e);
+	virtual void analyse();
 };
 
 #endif

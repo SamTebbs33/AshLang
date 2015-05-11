@@ -27,6 +27,7 @@
 	float float32;
 	char ch;
 	double float64;
+	EnumVarDecKeyword::type varDecKeyW;
 	EnumModifier::type mod;
 	Operator* op;
 	TokenIdentifier* id;
@@ -56,6 +57,7 @@
 }
 
 %token <id> ID PRIMITIVE
+%token <varDecKeyW> CONST VAR
 %token <mod> PUBLIC PRIVATE PROTECTED FINAL REQUIRED NATIVE OVERRIDE STANDARD STATIC
 %token <str> STR
 %token <ch> CHAR
@@ -64,7 +66,7 @@
 %token <float32> FLOAT
 %token <float64> FLOAT64
 %token <token> BOOL_TRUE BOOL_FALSE
-%token <token> NAMESPACE PROTOCOL CLASS IMPORT ENUM VAR FUNC CONST RETURN
+%token <token> NAMESPACE PROTOCOL CLASS IMPORT ENUM FUNC RETURN
 %token <token> BRACE_LEFT BRACE_RIGHT PAREN_LEFT PAREN_RIGHT COLON COMMA BRACKET_RIGHT BRACKET_LEFT QUESTION_MARK DOT ARROW
 %token <op> OP_EQUAL OP_NEQUAL OP_LESS OP_LESS_EQ OP_GREATER OP_GREATER_EQ
 %token <op> OP_ASSIGN OP_TYPE OP_ARROW OP_ASSIGN_PLUS OP_ASSIGN_MINUS OP_ASSIGN_MUL OP_ASSIGN_DIV OP_ASSIGN_MOD OP_ASSIGN_POW OP_ASSIGN_XOR OP_ASSIGN_AND OP_ASSIGN_OR OP_ASSIGN_LSHIFT OP_ASSIGN_RSHIFT OP_INC OP_DEC
@@ -96,6 +98,7 @@
 %type <exprVec> func_call_args
 %type <funcCall> func_call
 %type <prefix> prefix
+%type <varDecKeyW> var_dec_keyw
 
 %debug
 %error-verbose
@@ -141,7 +144,8 @@ protocol_stmt: protocol_var_dec | protocol_func_dec ;
 func_dec: mods FUNC ID PAREN_LEFT args PAREN_RIGHT func_type throws {$$ = new TokenFuncDec($1, *$3, *$5, $7 != NULL ? *$7 : TokenType(), $8 != NULL ? *$8 : TokenType()); DEL($3) DEL($5) DEL($7) DEL($8)} ;
 class_func_dec: func_dec BRACE_LEFT func_dec_block BRACE_RIGHT {$1->block = *$3; DEL($3)} ;
 protocol_func_dec: func_dec {/*$1->block = TokenBlock();*/} ;
-var_dec_body: mods VAR ID {$$ = new TokenVarDec($1, *$3, EnumVarDecKeyword::VAR); DEL($3)} | mods CONST ID {$$ = new TokenVarDec($1, *$3, EnumVarDecKeyword::CONST); DEL($3)} ;
+var_dec_keyw: CONST | VAR ;
+var_dec_body: mods var_dec_keyw ID {$$ = new TokenVarDec($1, *$3, $2); DEL($3)} ;
 var_dec_explicit: var_dec_body func_type {$$ = new TokenVarDecExplicit($1->id, $1->decKeyword, *$2);  DEL($2)};
 var_dec_explicit_assign: var_dec_explicit OP_ASSIGN expr {$$ = new TokenVarDecExplicitAssign($1->id, $1->decKeyword, $1->type, *$3); DEL($3)} ;
 var_dec_implicit: var_dec_body OP_ASSIGN expr {$$ = new TokenVarDecImplicit($1->id, $1->decKeyword, *$3, $1->mods); DEL($3)} ;

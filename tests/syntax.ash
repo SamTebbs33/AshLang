@@ -1,0 +1,5 @@
+namespace ash
+
+class SyntaxTest{
+
+}

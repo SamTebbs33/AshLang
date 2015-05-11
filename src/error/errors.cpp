@@ -11,7 +11,7 @@ void Error::error(const char* format, ...){
 }
 
 void Error::parserError(const char* msg, char* currentFile, int lineNo){
-    Error::error("SyntaxError:%s:%d: %s", currentFile, lineNo, msg);
+    Error::error("Error:%s:%d: %s\n", currentFile, lineNo, msg);
 }
 
 unsigned int getNumErrors(){

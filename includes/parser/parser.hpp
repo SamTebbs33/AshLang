@@ -47,31 +47,31 @@ extern int yydebug;
   {
     ID = 258,
     PRIMITIVE = 259,
-    PUBLIC = 260,
-    PRIVATE = 261,
-    PROTECTED = 262,
-    FINAL = 263,
-    REQUIRED = 264,
-    NATIVE = 265,
-    OVERRIDE = 266,
-    STANDARD = 267,
-    STATIC = 268,
-    STR = 269,
-    CHAR = 270,
-    INT = 271,
-    LONG = 272,
-    FLOAT = 273,
-    FLOAT64 = 274,
-    BOOL_TRUE = 275,
-    BOOL_FALSE = 276,
-    NAMESPACE = 277,
-    PROTOCOL = 278,
-    CLASS = 279,
-    IMPORT = 280,
-    ENUM = 281,
-    VAR = 282,
-    FUNC = 283,
-    CONST = 284,
+    CONST = 260,
+    VAR = 261,
+    PUBLIC = 262,
+    PRIVATE = 263,
+    PROTECTED = 264,
+    FINAL = 265,
+    REQUIRED = 266,
+    NATIVE = 267,
+    OVERRIDE = 268,
+    STANDARD = 269,
+    STATIC = 270,
+    STR = 271,
+    CHAR = 272,
+    INT = 273,
+    LONG = 274,
+    FLOAT = 275,
+    FLOAT64 = 276,
+    BOOL_TRUE = 277,
+    BOOL_FALSE = 278,
+    NAMESPACE = 279,
+    PROTOCOL = 280,
+    CLASS = 281,
+    IMPORT = 282,
+    ENUM = 283,
+    FUNC = 284,
     RETURN = 285,
     BRACE_LEFT = 286,
     BRACE_RIGHT = 287,
@@ -140,6 +140,7 @@ union YYSTYPE
 	float float32;
 	char ch;
 	double float64;
+	EnumVarDecKeyword::type varDecKeyW;
 	EnumModifier::type mod;
 	Operator* op;
 	TokenIdentifier* id;
@@ -167,7 +168,7 @@ union YYSTYPE
 	TokenPrefix* prefix;
 
 
-#line 171 "src/parser/parser.hpp" /* yacc.c:1915  */
+#line 172 "src/parser/parser.hpp" /* yacc.c:1915  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
