@@ -1,4 +1,4 @@
-CFLAGS = -std=c++14 -g -w
+CFLAGS = -g -w
 
 INCLUDES = -Iincludes/ \
 
