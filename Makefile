@@ -1,10 +1,11 @@
-CFLAGS = -g -w
+CFLAGS = -g -w -std=c++11
 
 INCLUDES = -Iincludes/ \
 
 SOURCES = $(wildcard src/*.cpp) \
 		  $(wildcard src/loader/*.cpp) \
 		  $(wildcard src/parser/*.cpp) \
+		  $(wildcard src/error/*.cpp) \
 
 GRAMMARS = grammar/AshGrammar.y grammar/AshLexGrammar.l
 

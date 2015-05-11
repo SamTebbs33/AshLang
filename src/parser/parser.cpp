@@ -65,9 +65,9 @@
 #line 1 "grammar/AshGrammar.y" /* yacc.c:339  */
 
 	#include <string>
-	#include <stdio.h>
 	#include <locale>
-	#include "parser/tokens.h"
+	#include <parser/tokens.h>
+	#include <error/errors.h>
 
 	#define YYERROR_VERBOSE
 	#define DEL(a) delete a;
@@ -77,7 +77,7 @@
 	extern const char* yytext;
 	extern char* currentFile;
 	void yyerror(const char* s){
-		fprintf(stderr, "Error:%s:%d: %s\n",currentFile, yylineno, s);
+		Error::parserError(s, currentFile, yylineno);
 	}
 	int lineNo = 0;
 	TokenFile file;

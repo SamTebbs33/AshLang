@@ -3,13 +3,14 @@
 #include <loader/classloader.h>
 #include <stdio.h>
 #include <loader/member.h>
+#include <error/errors.h>
 #include <ctime>
 
 const char* currentFile;
 
 int main(int argc, char const *argv[]) {
     if (argc < 2) {
-        println("### File path expected");
+        Error::error("!: Expected a file path argument\n");
         return -1;
     }
 
@@ -25,9 +26,9 @@ int main(int argc, char const *argv[]) {
         t = clock() - t;
         printf("### Parsed file: %f seconds\n", ((float)t) / CLOCKS_PER_SEC);
         fclose(yyin);
-        ClassLoader::init();
-        file.preParse();
-        Members::printTypes();
+        //ClassLoader::init();
+        //file.preParse();
+        //Members::printTypes();
         return 0;
     }else println("### Failed to open file");
 
