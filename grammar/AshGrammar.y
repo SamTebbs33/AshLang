@@ -5,7 +5,7 @@
 	#include "parser/tokens.h"
 
 	#define YYERROR_VERBOSE
-	#define DEL(a) /*delete &a*/;
+	#define DEL(a) delete a;
 
 	extern int yylex();
 	extern int yylineno;
@@ -27,14 +27,14 @@
 	float float32;
 	char ch;
 	double float64;
+	EnumModifier::type mod;
 	Operator* op;
 	TokenIdentifier* id;
 	TokenNamespace* namesp;
 	TokenImport* import;
 	Imports* imports;
 	TokenTypeDec* typeDec;
-	TokenModifier* mod;
-	Modifiers* mods;
+	ModifiersInt mods;
 	TokenFuncDec* funcDec;
 	TokenArg* arg;
 	Args* args;
@@ -52,6 +52,7 @@
 	std::vector<TokenExpression>* exprVec;
 	TokenFuncCall* funcCall;
 	TokenPrefix* prefix;
+
 }
 
 %token <id> ID PRIMITIVE
@@ -96,7 +97,7 @@
 %type <funcCall> func_call
 %type <prefix> prefix
 
-//%debug
+%debug
 %error-verbose
 %start file
 
@@ -111,12 +112,12 @@ namespace_dec: NAMESPACE qualified_name {$$ = new TokenNamespace(*$2); DEL($2)} 
 
 type_decs: type_dec  {$$ = new std::vector<TokenTypeDec*>(); $$->push_back($1);} | type_decs type_dec {$$->push_back($2);} ;
 type_dec: class_dec | protocol_dec | enum_dec ;
-class_dec: mods CLASS ID type_args type_supers BRACE_LEFT class_block BRACE_RIGHT {$$ = new TokenClassDec(*$4, *$3, *$1, *$7, *$5); DEL($1)  DEL($3) DEL($4) DEL($5) DEL($7)} ;
-protocol_dec: mods PROTOCOL ID type_args type_supers BRACE_LEFT protocol_block BRACE_RIGHT {$$ = new TokenProtocolDec(*$4, *$3, *$1, *$7, *$5); DEL($1) DEL($3) DEL($4) DEL($5) DEL($7)} ;
+class_dec: mods CLASS ID type_args type_supers BRACE_LEFT class_block BRACE_RIGHT {$$ = new TokenClassDec(*$4, *$3, $1, *$7, *$5); DEL($3) DEL($4) DEL($5) DEL($7)} ;
+protocol_dec: mods PROTOCOL ID type_args type_supers BRACE_LEFT protocol_block BRACE_RIGHT {$$ = new TokenProtocolDec(*$4, *$3, $1, *$7, *$5); DEL($3) DEL($4) DEL($5) DEL($7)} ;
 enum_dec: ENUM ID type_args BRACE_LEFT enum_instances enum_block BRACE_RIGHT {$$ = new TokenEnumDec(*$3, *$2, *$5, *$6); DEL($2) DEL($3) DEL($5) DEL($6)} ;
 
 mod: PUBLIC | PRIVATE | PROTECTED | FINAL | NATIVE | REQUIRED | STANDARD | STATIC | OVERRIDE ;
-mods: mod {$$ = new Modifiers(*$1); DEL($1)}  | mods mod {$1->mods.push_back(*$2); DEL($2)}  | {$$ = new Modifiers();} ;
+mods: mod {$$ = $1;} | mods mod {$$ |= $2;}  | {$$ = 0;} ;
 
 type_args: PAREN_LEFT args PAREN_RIGHT {$$ = $2;} | {$$ = new Args();} ;
 type: ID {$$ = new TokenType(*$1); DEL($1)} | PRIMITIVE {$$ = new TokenType(*$1); DEL($1)} | type BRACKET_LEFT BRACKET_RIGHT {$1->arrDims++;} ;
@@ -137,13 +138,13 @@ enum_stmt: class_stmt ;
 protocol_block: protocol_stmt {$$ = new TokenBlock($1);} | protocol_block protocol_stmt {$1->stmts.push_back($2);} | {$$ = new TokenBlock();} ;
 protocol_stmt: protocol_var_dec | protocol_func_dec ;
 
-func_dec: mods FUNC ID PAREN_LEFT args PAREN_RIGHT func_type throws {$$ = new TokenFuncDec(*$1, *$3, *$5, $7 != NULL ? *$7 : TokenType(), $8 != NULL ? *$8 : TokenType()); DEL($3) DEL($5) DEL($7) DEL($8)} ;
-class_func_dec: func_dec BRACE_LEFT func_dec_block BRACE_RIGHT {/*$1->block = $3; DEL($3)*/} ;
+func_dec: mods FUNC ID PAREN_LEFT args PAREN_RIGHT func_type throws {$$ = new TokenFuncDec($1, *$3, *$5, $7 != NULL ? *$7 : TokenType(), $8 != NULL ? *$8 : TokenType()); DEL($3) DEL($5) DEL($7) DEL($8)} ;
+class_func_dec: func_dec BRACE_LEFT func_dec_block BRACE_RIGHT {$1->block = *$3; DEL($3)} ;
 protocol_func_dec: func_dec {/*$1->block = TokenBlock();*/} ;
-var_dec_body: mods VAR ID {$$ = new TokenVarDec(*$1, *$3, EnumVarDecKeyword::VAR); DEL($3)} | mods CONST ID {$$ = new TokenVarDec(*$1, *$3, EnumVarDecKeyword::CONST); DEL($3)} ;
+var_dec_body: mods VAR ID {$$ = new TokenVarDec($1, *$3, EnumVarDecKeyword::VAR); DEL($3)} | mods CONST ID {$$ = new TokenVarDec($1, *$3, EnumVarDecKeyword::CONST); DEL($3)} ;
 var_dec_explicit: var_dec_body func_type {$$ = new TokenVarDecExplicit($1->id, $1->decKeyword, *$2);  DEL($2)};
 var_dec_explicit_assign: var_dec_explicit OP_ASSIGN expr {$$ = new TokenVarDecExplicitAssign($1->id, $1->decKeyword, $1->type, *$3); DEL($3)} ;
-var_dec_implicit: var_dec_body OP_ASSIGN expr {$$ = new TokenVarDecImplicit($1->id, $1->decKeyword, *$3); DEL($3)} ;
+var_dec_implicit: var_dec_body OP_ASSIGN expr {$$ = new TokenVarDecImplicit($1->id, $1->decKeyword, *$3, $1->mods); DEL($3)} ;
 var_dec: var_dec_explicit | var_dec_explicit_assign | var_dec_implicit ;
 class_var_dec: var_dec ;
 protocol_var_dec: var_dec_explicit ;

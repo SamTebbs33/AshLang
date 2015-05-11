@@ -15,7 +15,7 @@
 	#define SAVE_CHAR yylval.ch = yytext[1];
 	#define SAVE_OP yylval.op = new Operator(new std::string(yytext));
 	#define SAVE_ID yylval.id = new TokenIdentifier(new std::string(yytext));
-	#define SAVE_MOD yylval.mod = new TokenModifier(std::string(yytext));
+	#define SAVE_MOD yylval.mod = Tokens::getMod(std::string(yytext));
 
 	extern "C" int yywrap(){return 1;}
 	extern int lineNo;

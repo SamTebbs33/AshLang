@@ -34,7 +34,7 @@
 # define YY_YY_SRC_PARSER_PARSER_HPP_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+# define YYDEBUG 1
 #endif
 #if YYDEBUG
 extern int yydebug;
@@ -140,14 +140,14 @@ union YYSTYPE
 	float float32;
 	char ch;
 	double float64;
+	EnumModifier::type mod;
 	Operator* op;
 	TokenIdentifier* id;
 	TokenNamespace* namesp;
 	TokenImport* import;
 	Imports* imports;
 	TokenTypeDec* typeDec;
-	TokenModifier* mod;
-	Modifiers* mods;
+	ModifiersInt mods;
 	TokenFuncDec* funcDec;
 	TokenArg* arg;
 	Args* args;
@@ -166,7 +166,8 @@ union YYSTYPE
 	TokenFuncCall* funcCall;
 	TokenPrefix* prefix;
 
-#line 170 "src/parser/parser.hpp" /* yacc.c:1915  */
+
+#line 171 "src/parser/parser.hpp" /* yacc.c:1915  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

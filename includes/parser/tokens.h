@@ -1,6 +1,8 @@
 #ifndef	TOKENS_H
 #define TOKENS_H
 
+using ModifiersInt = unsigned short;
+
 #include <string>
 #include <deque>
 #include <vector>
@@ -15,9 +17,13 @@ struct EnumVarDecKeyword{
 
 struct EnumModifier{
 	enum type{
-		PUBLIC=1, PRIVATE=2, PROTECTED=4, FINAL=8, REQUIRED=16, NATIVE=32, OVERRIDE=64, STANDARD=128, STATIC=256
+		PUBLIC=1, PRIVATE=2, PROTECTED=4, FINAL=8, REQUIRED=16, NATIVE=32, OVERRIDE=64, STANDARD=128, STATIC=256, INVALID=512
 	};
 };
+
+namespace Tokens{
+	EnumModifier::type getMod(std::string s);
+}
 
 struct Token{
 
@@ -25,12 +31,12 @@ struct Token{
 };
 
 struct TokenPreParseable{
-	virtual void preParse();
+	virtual void preParse() = 0;
 };
 
-struct TokenStatement : public Token{
-
+struct TokenStatement : public TokenPreParseable{
 	TokenStatement();
+	virtual void preParse();
 };
 
 struct Operator{
@@ -77,20 +83,6 @@ struct Imports{
 	Imports(TokenImport i);
 };
 
-
-struct TokenModifier : public Token{
-
-	EnumModifier::type mod;
-	TokenModifier(std::string str);
-};
-
-struct Modifiers{
-
-	std::vector<TokenModifier> mods;
-	Modifiers();
-	Modifiers(TokenModifier m);
-};
-
 struct TokenType : public Token{
 
 	int arrDims;
@@ -118,17 +110,19 @@ struct Types{
 	Types(TokenType t);
 };
 
-struct TokenBlock : public Token{
+struct TokenBlock : public TokenPreParseable{
 	std::vector<TokenStatement*> stmts;
 	TokenBlock();
 	TokenBlock(TokenStatement* s);
+	void preParse();
 };
 
 struct TokenDeclaration : public TokenStatement, public TokenPreParseable{
 
 	TokenIdentifier id;
-	Modifiers mods;
-	TokenDeclaration(TokenIdentifier i, Modifiers m);
+	ModifiersInt mods;
+	TokenDeclaration(TokenIdentifier i, ModifiersInt m);
+	TokenDeclaration(TokenIdentifier i);
 	TokenDeclaration();
 	virtual void preParse();
 };
@@ -139,7 +133,7 @@ struct TokenFuncDec : public TokenDeclaration{
 	Args args;
 	TokenType type;
 	TokenType throws;
-	TokenFuncDec(Modifiers m, TokenIdentifier i, Args a, TokenType t, TokenType t2);
+	TokenFuncDec(ModifiersInt m, TokenIdentifier i, Args a, TokenType t, TokenType t2);
 	TokenFuncDec();
 	void preParse();
 };
@@ -147,21 +141,22 @@ struct TokenFuncDec : public TokenDeclaration{
 struct TokenTypeDec : public TokenDeclaration{
 	TokenBlock block;
 	Args args;
-	TokenTypeDec(Args a, TokenIdentifier i, Modifiers m, TokenBlock block);
+	TokenTypeDec(Args a, TokenIdentifier i, ModifiersInt m, TokenBlock block);
+	TokenTypeDec(Args a, TokenIdentifier i, TokenBlock block);
 	virtual void preParse();
 };
 
 struct TokenClassDec : public TokenTypeDec{
 
 	Types supers;
-	TokenClassDec(Args a, TokenIdentifier i, Modifiers m, TokenBlock b, Types s);
+	TokenClassDec(Args a, TokenIdentifier i, ModifiersInt m, TokenBlock b, Types s);
 	void preParse();
 };
 
 struct TokenProtocolDec : public TokenTypeDec{
 
 	Types supers;
-	TokenProtocolDec(Args a, TokenIdentifier i, Modifiers m, TokenBlock b, Types s);
+	TokenProtocolDec(Args a, TokenIdentifier i, ModifiersInt m, TokenBlock b, Types s);
 	void preParse();
 };
 
@@ -176,6 +171,7 @@ struct TokenFile : public TokenPreParseable{
 
 	TokenNamespace namespc;
 	Imports imports;
+	// Using pointers to prevent vector slicing
 	std::vector<TokenTypeDec*> typeDecs;
 	TokenFile(TokenNamespace n, Imports i, std::vector<TokenTypeDec*> v);
 	TokenFile();
@@ -189,7 +185,7 @@ struct TokenExpression : public Token{
 struct TokenVarDec : public TokenDeclaration{
 
 	EnumVarDecKeyword::type decKeyword;
-	TokenVarDec(Modifiers m, TokenIdentifier id, EnumVarDecKeyword::type k);
+	TokenVarDec(ModifiersInt m, TokenIdentifier id, EnumVarDecKeyword::type k);
 	void preParse();
 };
 
@@ -208,7 +204,7 @@ struct TokenVarDecExplicitAssign : public TokenVarDecExplicit{
 struct TokenVarDecImplicit : public TokenVarDec{
 
 	TokenExpression expr;
-	TokenVarDecImplicit(TokenIdentifier i, EnumVarDecKeyword::type k, TokenExpression e);
+	TokenVarDecImplicit(TokenIdentifier i, EnumVarDecKeyword::type k, TokenExpression e, ModifiersInt  m);
 };
 
 struct TokenReturn : public TokenStatement{

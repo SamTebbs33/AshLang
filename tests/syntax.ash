@@ -1,7 +1,11 @@
-namespace ash
+namespace ash.tests
 
-class Test {
-    public func f(){
+import ash.io.File
+
+public class SyntaxTest {
+
+    public func test(){
 
     }
+
 }
