@@ -10,7 +10,7 @@ const char* currentFile;
 
 int main(int argc, char const *argv[]) {
     if (argc < 2) {
-        Error::error("!: Expected a file path argument\n");
+        Error::compilerError("Expected a file path argument\n");
         return -1;
     }
 
@@ -19,16 +19,19 @@ int main(int argc, char const *argv[]) {
     yydebug = 0;
 
     if (yyin) {
+
         printf("### Parsing file: %s\n", currentFile);
         yyrestart(yyin);
         clock_t t = clock();
         yyparse();
         t = clock() - t;
-        printf("### Parsed file: %f seconds\n", ((float)t) / CLOCKS_PER_SEC);
+        double seconds = ((double)t) / CLOCKS_PER_SEC;
+        printf("### Parsed file: %f ms\n", seconds * 1000);
         fclose(yyin);
-        //ClassLoader::init();
-        //file.preParse();
-        //Members::printTypes();
+
+        ClassLoader::init();
+        file.preParse();
+        Members::printTypes();
         return 0;
     }else println("### Failed to open file");
 

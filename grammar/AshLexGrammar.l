@@ -5,18 +5,18 @@
 	#include "parser/tokens.h"
 	#include "parser/parser.hpp"
 
-	#define SAVE_LINE yylval.line = yylineno;
-	#define RET(a) SAVE_LINE; return a;
-	#define SAVE_STR SAVE_LINE; yylval.str = new std::string(yytext, yyleng);
-	#define SAVE_INT(b) SAVE_LINE; yylval.int32 = strtol(yytext, NULL, b);
-	#define SAVE_FLOAT64 SAVE_LINE; yylval.float64 = atof(yytext);
-	#define SAVE_FLOAT SAVE_LINE; yylval.float32 = (float)atof(yytext);
-	#define SAVE_TOKEN(t) SAVE_LINE; yylval.token = t;
-	#define SAVE_CHAR SAVE_LINE; yylval.ch = yytext[1];
-	#define SAVE_OP SAVE_LINE; yylval.op = new Operator(new std::string(yytext));
-	#define SAVE_ID SAVE_LINE; yylval.id = new TokenIdentifier(new std::string(yytext));
-	#define SAVE_MOD SAVE_LINE; yylval.mod = Tokens::getMod(std::string(yytext));
-	#define SAVE_VAR_KEYW(a) SAVE_LINE; yylval.varDecKeyW = a;
+	#define SAVE_LINE(a) a->line = yylineno;
+	#define RET(a) return a;
+	#define SAVE_STR ; yylval.str = new std::string(yytext, yyleng);
+	#define SAVE_INT(b) ; yylval.int32 = strtol(yytext, NULL, b);
+	#define SAVE_FLOAT64 ; yylval.float64 = atof(yytext);
+	#define SAVE_FLOAT ; yylval.float32 = (float)atof(yytext);
+	#define SAVE_TOKEN(t) ; yylval.token = t;
+	#define SAVE_CHAR ; yylval.ch = yytext[1];
+	#define SAVE_OP ; yylval.op = new Operator(new std::string(yytext));
+	#define SAVE_ID yylval.id = new TokenIdentifier(new std::string(yytext)); SAVE_LINE(yylval.id);
+	#define SAVE_MOD yylval.mod = Tokens::getMod(std::string(yytext));
+	#define SAVE_VAR_KEYW(a) yylval.varDecKeyW = a;
 
 	extern "C" int yywrap(){return 1;}
 

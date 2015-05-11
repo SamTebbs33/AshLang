@@ -3,6 +3,8 @@
 
 using ModifiersInt = unsigned short;
 
+#define SAVE_LINE(a) Token::setLine(a.line);
+
 #include <string>
 #include <deque>
 #include <vector>
@@ -29,7 +31,7 @@ namespace Tokens{
  * A member of the AST. Produced by the parser.
  */
 struct Token{
-	bool errored = false;
+	unsigned int line;
 	Token();
 };
 
@@ -40,6 +42,7 @@ struct Token{
  * @type {Token}
  */
 struct TokenPreParseable : Token{
+	TokenPreParseable();
 	virtual void preParse() = 0;
 };
 
@@ -50,6 +53,7 @@ struct TokenPreParseable : Token{
  * @type {Token}
  */
 struct TokenAnalysable : Token{
+	TokenAnalysable();
 	virtual void analyse() = 0;
 };
 

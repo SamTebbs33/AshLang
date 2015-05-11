@@ -1,7 +1,7 @@
 #include <loader/member.h>
 
 // Map which contains Type objects paired with unqualified names
-std::map<std::string*, Type*> types;
+std::map<std::string, Type*> types;
 Type* currentType;
 
 QualifiedName::QualifiedName(){
@@ -56,7 +56,11 @@ void Type::print(){
 
 void Members::addAndEnterType(Type* t){
     currentType = t;
-    types.insert(std::map<std::string*, Type*>::value_type(&t->name.shortName, t));
+    types.insert(std::map<std::string, Type*>::value_type(t->name.shortName, t));
+}
+
+bool Members::typeExists(std::string shortName){
+    return types.find(shortName) != types.end();
 }
 
 void Members::addFunction(FuncSignature* f){

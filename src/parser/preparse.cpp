@@ -1,6 +1,7 @@
 #include <parser/tokens.h>
 #include <loader/context.h>
 #include <loader/member.h>
+#include <error/errors.h>
 
 void TokenFile::preParse(){
 	Context::push(FileContext("", Members::toQualifiedName(&namespc.name, "")));
@@ -20,11 +21,15 @@ void TokenBlock::preParse(){}
 void TokenDeclaration::preParse(){}
 
 void TokenTypeDec::preParse(){
-	// Create the qualified name of this type
-	QualifiedName name = Context::getNamespace();
-	name.add(*id.str);
-	Members::addAndEnterType(new Type(mods, name));
-	block.preParse();
+	if(!Members::typeExists(*id.str)){
+		// Create the qualified name of this type
+		QualifiedName name = Context::getNamespace();
+		name.add(*id.str);
+		Members::addAndEnterType(new Type(mods, name));
+		block.preParse();
+	}else{
+		Error::semanticError("Type already exists (" + *id.str + ")");
+	}
 }
 
 void TokenClassDec::preParse(){

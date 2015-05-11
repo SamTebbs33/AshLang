@@ -18,11 +18,15 @@ EnumModifier::type Tokens::getMod(std::string s){
 
 Token::Token(){}
 
+TokenPreParseable::TokenPreParseable(){}
+
+TokenAnalysable::TokenAnalysable(){}
+
 TokenFile::TokenFile(TokenNamespace n, Imports i, std::vector<TokenTypeDec*> v) : namespc(n), imports(i), typeDecs(v){}
 
 TokenFile::TokenFile(){}
 
-TokenStatement::TokenStatement() : TokenAnalysable(){}
+TokenStatement::TokenStatement(){}
 
 TokenIdentifier::TokenIdentifier(std::string* str) : str(str){}
 
@@ -42,7 +46,7 @@ TokenImport::TokenImport(TokenQualifiedName name) : name(name){}
 
 TokenReturn::TokenReturn(TokenExpression e) : expr(e){}
 
-TokenReturn::TokenReturn() {}
+TokenReturn::TokenReturn(){}
 
 Imports::Imports(){}
 
@@ -58,9 +62,11 @@ TokenArg::TokenArg(TokenIdentifier i, TokenType t) : id(i), type(t){}
 
 Args::Args(){}
 
-TokenDeclaration::TokenDeclaration(TokenIdentifier i, ModifiersInt m) : id(i), mods(m){}
+TokenDeclaration::TokenDeclaration(TokenIdentifier i, ModifiersInt m) : id(i), mods(m){
+}
 
-TokenDeclaration::TokenDeclaration(TokenIdentifier i) : id(i){}
+TokenDeclaration::TokenDeclaration(TokenIdentifier i) : id(i){
+}
 
 TokenDeclaration::TokenDeclaration() : id(TokenIdentifier()){}
 

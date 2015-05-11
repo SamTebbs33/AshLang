@@ -10,9 +10,8 @@
 	extern int yylex();
 	extern int yylineno;
 	extern const char* yytext;
-	extern char* currentFile;
 	void yyerror(const char* s){
-		Error::parserError(s, currentFile, yylineno);
+		Error::parserError(s, yylineno);
 	}
 	int lineNo = 0;
 	TokenFile file;

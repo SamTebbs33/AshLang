@@ -51,6 +51,7 @@ namespace Members {
     Type* getCurrentType();
     QualifiedName getCurrentTypeQualifiedName();
     void printTypes();
+    bool typeExists(std::string shortName);
 } /* Members */
 
 #endif /* end of include guard: TYPES_H */
