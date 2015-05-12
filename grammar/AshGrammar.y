@@ -41,6 +41,7 @@
 	TokenType* type;
 	Types* types;
 	TokenBlock* block;
+	ClassBlock* classBlock;
 	TokenStatement* stmt;
 	TokenVarDec* varDec;
 	TokenVarDecExplicit* varDecE;
@@ -86,8 +87,9 @@
 %type <args> args type_args
 %type <type> type func_type throws
 %type <types> type_supers
-%type <block> enum_block func_dec_block class_block protocol_block
-%type <stmt> class_stmt protocol_stmt enum_stmt func_stmt var_assign
+%type <block> enum_block func_dec_block
+%type <classBlock> class_block protocol_block
+%type <stmt> enum_stmt func_stmt var_assign
 %type <varDec> var_dec_body var_dec_explicit_assign var_dec_implicit class_var_dec protocol_var_dec var_dec
 %type <varDecE> var_dec_explicit
 %type <expr> expr
@@ -114,9 +116,9 @@ namespace_dec: NAMESPACE qualified_name {$$ = new TokenNamespace(*$2); DEL($2)} 
 
 type_decs: type_dec  {$$ = new std::vector<TokenTypeDec*>(); $$->push_back($1);} | type_decs type_dec {$$->push_back($2);} ;
 type_dec: class_dec | protocol_dec | enum_dec ;
-class_dec: mods CLASS ID type_args type_supers BRACE_LEFT class_block BRACE_RIGHT {$$ = new TokenClassDec(*$4, *$3, $1, *$7, *$5); DEL($3) DEL($4) DEL($5) DEL($7)} ;
-protocol_dec: mods PROTOCOL ID type_args type_supers BRACE_LEFT protocol_block BRACE_RIGHT {$$ = new TokenProtocolDec(*$4, *$3, $1, *$7, *$5); DEL($3) DEL($4) DEL($5) DEL($7)} ;
-enum_dec: ENUM ID type_args BRACE_LEFT enum_instances enum_block BRACE_RIGHT {$$ = new TokenEnumDec(*$3, *$2, *$5, *$6); DEL($2) DEL($3) DEL($5) DEL($6)} ;
+class_dec: mods CLASS ID type_args type_supers BRACE_LEFT class_block BRACE_RIGHT {$$ = new TokenClassDec(*$4, *$3, $1, *$5, *$7); DEL($3) DEL($4) DEL($5) DEL($7)} ;
+protocol_dec: mods PROTOCOL ID type_args type_supers BRACE_LEFT protocol_block BRACE_RIGHT {$$ = new TokenProtocolDec(*$4, *$3, $1, *$5, *$7); DEL($3) DEL($4) DEL($5) DEL($7)} ;
+enum_dec: ENUM ID type_args BRACE_LEFT enum_instances enum_block BRACE_RIGHT {$$ = new TokenEnumDec(*$3, *$2, *$5); DEL($2) DEL($3) DEL($5)} ;
 
 mod: PUBLIC | PRIVATE | PROTECTED | FINAL | NATIVE | REQUIRED | STANDARD | STATIC | OVERRIDE ;
 mods: mod {$$ = $1;} | mods mod {$$ |= $2;}  | {$$ = 0;} ;
@@ -130,15 +132,13 @@ func_type: COLON type {$$ = $2;} | {$$ = NULL;} ;
 type_supers: func_type {$$ = new Types($1 != NULL ? *$1 : TokenType()); DEL($1)} | type_supers COMMA type {$1->types.push_back(*$3); DEL($3)} ;
 throws: ARROW type {$$ = $2;} | {$$ = NULL;} ;
 
-class_block: class_stmt {$$ = new TokenBlock($1);} | class_block class_stmt {$1->stmts.push_back($2);} | {$$ = new TokenBlock();} ;
-class_stmt: class_func_dec | class_var_dec ;
+class_block: class_func_dec {$$ = new ClassBlock($1);} | class_block class_func_dec {$1->funcDecs.push_back($2);} | class_var_dec {$$ = new ClassBlock($1);} | class_block class_var_dec {$$->varDecs.push_back($2);} | {$$ = new ClassBlock();} ;
 func_dec_block: func_stmt {$$ = new TokenBlock($1);} | func_dec_block func_stmt {$1->stmts.push_back($2);} | {$$ = new TokenBlock();} ;
 func_stmt: var_assign | var_dec | RETURN {$$ = new TokenReturn();} | RETURN expr {$$ = new TokenReturn(*$2); DEL($2)} ;
 enum_instances: ID {$$ = new std::vector<TokenIdentifier>(); $$->push_back(*$1); DEL($1)} | enum_instances COMMA ID {$1->push_back(*$3); DEL($3)} | {$$ = new std::vector<TokenIdentifier>();} ;
 enum_block: enum_stmt {$$ = new TokenBlock($1);} | enum_block enum_stmt {$1->stmts.push_back($2);} |  {$$ = new TokenBlock();} ;
-enum_stmt: class_stmt ;
-protocol_block: protocol_stmt {$$ = new TokenBlock($1);} | protocol_block protocol_stmt {$1->stmts.push_back($2);} | {$$ = new TokenBlock();} ;
-protocol_stmt: protocol_var_dec | protocol_func_dec ;
+enum_stmt: class_func_dec ;
+protocol_block: protocol_func_dec {$$ = new ClassBlock($1);} | protocol_block protocol_func_dec {$1->funcDecs.push_back($2);} | protocol_var_dec {$$ = new ClassBlock($1);} | protocol_block protocol_var_dec {$$->varDecs.push_back($2);} | {$$ = new ClassBlock();} ;
 
 func_dec: mods FUNC ID PAREN_LEFT args PAREN_RIGHT func_type throws {$$ = new TokenFuncDec($1, *$3, *$5, $7 != NULL ? *$7 : TokenType(), $8 != NULL ? *$8 : TokenType()); DEL($3) DEL($5) DEL($7) DEL($8)} ;
 class_func_dec: func_dec BRACE_LEFT func_dec_block BRACE_RIGHT {$1->block = *$3; DEL($3)} ;

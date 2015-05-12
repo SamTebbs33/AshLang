@@ -23,6 +23,17 @@ struct EnumModifier{
 	};
 };
 
+struct EnumType{
+    enum type{
+        CLASS,
+        PROTOCOL,
+        ENUM,
+		NUM_TYPES
+    };
+};
+
+extern const char* typeStrs[];
+
 namespace Tokens{
 	EnumModifier::type getMod(std::string s);
 }
@@ -61,8 +72,9 @@ struct TokenAnalysable : Token{
  * A token that can be executed.
  * @type {TokenAnalysable}
  */
-struct TokenStatement : public TokenAnalysable{
+struct TokenStatement : public TokenAnalysable, public TokenPreParseable{
 	TokenStatement();
+	virtual void preParse();
 	virtual void analyse();
 };
 
@@ -79,6 +91,7 @@ struct TokenIdentifier : public Token{
 	std::string* str;
 	TokenIdentifier(std::string* s);
 	TokenIdentifier();
+	bool operator==(TokenIdentifier n);
 };
 
 struct TokenQualifiedName : public Token{
@@ -117,6 +130,7 @@ struct TokenType : public TokenAnalysable{
 	TokenType(TokenIdentifier i);
 	TokenType();
 	virtual void analyse();
+	bool operator==(TokenType n);
 };
 
 struct TokenArg : public TokenAnalysable{
@@ -125,12 +139,15 @@ struct TokenArg : public TokenAnalysable{
 	TokenType type;
 	TokenArg(TokenIdentifier i, TokenType t);
 	virtual void analyse();
+	bool operator==(TokenArg n);
+	bool operator!=(TokenArg n);
 };
 
 struct Args{
 
 	std::vector<TokenArg> args;
 	Args();
+	bool operator==(Args n);
 };
 
 struct Types{
@@ -139,11 +156,14 @@ struct Types{
 	Types(TokenType t);
 };
 
-struct TokenBlock : public TokenAnalysable, public TokenPreParseable{
+struct TokenBlock : public TokenAnalysable{
 	std::vector<TokenStatement*> stmts;
 	TokenBlock();
 	TokenBlock(TokenStatement* s);
-	virtual void preParse();
+	virtual void analyse();
+};
+
+struct TokenExpression : public TokenAnalysable{
 	virtual void analyse();
 };
 
@@ -155,67 +175,6 @@ struct TokenDeclaration : public TokenAnalysable, public TokenPreParseable, publ
 	TokenDeclaration(TokenIdentifier i);
 	TokenDeclaration();
 	virtual void preParse();
-	virtual void analyse();
-};
-
-struct TokenFuncDec : public TokenDeclaration{
-
-	TokenBlock block;
-	Args args;
-	TokenType type;
-	TokenType throws;
-	TokenFuncDec(ModifiersInt m, TokenIdentifier i, Args a, TokenType t, TokenType t2);
-	TokenFuncDec();
-	void preParse();
-	virtual void analyse();
-};
-
-struct TokenTypeDec : public TokenDeclaration{
-	TokenBlock block;
-	Args args;
-	TokenTypeDec(Args a, TokenIdentifier i, ModifiersInt m, TokenBlock block);
-	TokenTypeDec(Args a, TokenIdentifier i, TokenBlock block);
-	virtual void preParse();
-	virtual void analyse();
-};
-
-struct TokenClassDec : public TokenTypeDec{
-
-	Types supers;
-	TokenClassDec(Args a, TokenIdentifier i, ModifiersInt m, TokenBlock b, Types s);
-	void preParse();
-	virtual void analyse();
-};
-
-struct TokenProtocolDec : public TokenTypeDec{
-
-	Types supers;
-	TokenProtocolDec(Args a, TokenIdentifier i, ModifiersInt m, TokenBlock b, Types s);
-	void preParse();
-	virtual void analyse();
-};
-
-struct TokenEnumDec : public TokenTypeDec{
-
-	std::vector<TokenIdentifier> instances;
-	TokenEnumDec(Args a, TokenIdentifier i, std::vector<TokenIdentifier> v, TokenBlock b);
-	void preParse();
-	virtual void analyse();
-};
-
-struct TokenFile : public TokenPreParseable, public TokenAnalysable{
-
-	TokenNamespace namespc;
-	Imports imports;
-	// Using pointers to prevent vector slicing
-	std::vector<TokenTypeDec*> typeDecs;
-	TokenFile(TokenNamespace n, Imports i, std::vector<TokenTypeDec*> v);
-	TokenFile();
-	void preParse();
-	virtual void analyse();
-};
-
-struct TokenExpression : public TokenAnalysable{
 	virtual void analyse();
 };
 
@@ -245,6 +204,78 @@ struct TokenVarDecImplicit : public TokenVarDec{
 
 	TokenExpression expr;
 	TokenVarDecImplicit(TokenIdentifier i, EnumVarDecKeyword::type k, TokenExpression e, ModifiersInt  m);
+	virtual void analyse();
+};
+
+struct TokenFuncDec : public TokenDeclaration{
+
+	TokenBlock block;
+	Args args;
+	TokenType type;
+	TokenType throws;
+	TokenFuncDec(ModifiersInt m, TokenIdentifier i, Args a, TokenType t, TokenType t2);
+	TokenFuncDec();
+	void preParse();
+	virtual void analyse();
+};
+
+struct ClassBlock : public TokenPreParseable{
+	std::vector<TokenFuncDec*> funcDecs;
+	std::vector<TokenVarDec*> varDecs;
+	ClassBlock(TokenFuncDec* funcDec);
+	ClassBlock(TokenVarDec* varDec);
+	ClassBlock();
+	void preParse();
+};
+
+struct TokenTypeDec : public TokenDeclaration{
+	bool errored = false;
+	Args args;
+	std::vector<TokenFuncDec> funcDecs;
+	std::vector<TokenVarDec> varDecs;
+	TokenTypeDec(Args a, TokenIdentifier i, ModifiersInt m);
+	TokenTypeDec(Args a, TokenIdentifier i);
+	virtual void preParse();
+	virtual void analyse();
+	virtual EnumType::type getType();
+};
+
+struct TokenClassDec : public TokenTypeDec{
+	ClassBlock block;
+	Types supers;
+	TokenClassDec(Args a, TokenIdentifier i, ModifiersInt m, Types s, ClassBlock b);
+	void preParse();
+	virtual void analyse();
+	virtual EnumType::type getType();
+};
+
+struct TokenProtocolDec : public TokenTypeDec{
+	ClassBlock block;
+	Types supers;
+	TokenProtocolDec(Args a, TokenIdentifier i, ModifiersInt m, Types s, ClassBlock b);
+	void preParse();
+	virtual void analyse();
+	virtual EnumType::type getType();
+};
+
+struct TokenEnumDec : public TokenTypeDec{
+
+	std::vector<TokenIdentifier> instances;
+	TokenEnumDec(Args a, TokenIdentifier i, std::vector<TokenIdentifier> v);
+	void preParse();
+	virtual void analyse();
+	virtual EnumType::type getType();
+};
+
+struct TokenFile : public TokenPreParseable, public TokenAnalysable{
+
+	TokenNamespace namespc;
+	Imports imports;
+	// Using pointers to prevent vector slicing
+	std::vector<TokenTypeDec*> typeDecs;
+	TokenFile(TokenNamespace n, Imports i, std::vector<TokenTypeDec*> v);
+	TokenFile();
+	void preParse();
 	virtual void analyse();
 };
 

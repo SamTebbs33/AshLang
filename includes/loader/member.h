@@ -12,6 +12,7 @@ struct QualifiedName {
     QualifiedName();
     void add(std::string path);
     std::string toString();
+    bool operator==(QualifiedName n);
 };
 
 struct Member {
@@ -25,6 +26,7 @@ struct FuncSignature : Member{
     Args* args;
     FuncSignature(QualifiedName i, Args* a, ModifiersInt m);
     void print();
+    bool operator==(FuncSignature f);
 };
 
 struct Field : Member {
@@ -33,12 +35,11 @@ struct Field : Member {
 
 struct Type : Member {
     std::vector<FuncSignature*> constructors;
-    // Map this type's functions to their signature (args and ID)
-    // std::map<FuncSignature*, Function*>* funcs;
     std::vector<FuncSignature*> funcs;
     std::vector<Field*> fields;
     std::vector<Type*> supers;
-    Type(ModifiersInt m, QualifiedName n);
+    EnumType::type type;
+    Type(ModifiersInt m, QualifiedName n, EnumType::type t);
     void print();
 };
 
@@ -52,6 +53,8 @@ namespace Members {
     QualifiedName getCurrentTypeQualifiedName();
     void printTypes();
     bool typeExists(std::string shortName);
+    bool funcExistsInType(std::string typeShortName, FuncSignature funcSignature);
+    bool funcExistsInCurrentType(FuncSignature funcSignature);
 } /* Members */
 
 #endif /* end of include guard: TYPES_H */

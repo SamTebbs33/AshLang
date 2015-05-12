@@ -17,6 +17,9 @@ void QualifiedName::add(std::string s){
     }
 }
 
+bool QualifiedName::operator==(QualifiedName n){
+    return n.fullName == fullName;
+}
 
 Member::Member(ModifiersInt m, QualifiedName n) : name(n), mods(m){
 
@@ -37,13 +40,17 @@ void FuncSignature::print(){
     //TODO: Print args
 }
 
+bool FuncSignature::operator==(FuncSignature f){
+    return *f.args == *args && f.name == name;
+}
 
-Type::Type(ModifiersInt m, QualifiedName n) : Member(m, n){
+
+Type::Type(ModifiersInt m, QualifiedName n, EnumType::type t) : Member(m, n), type(t){
 
 }
 
 void Type::print(){
-    println("Type");
+    println(typeStrs[type]);
     Member::print();
     println("- Constructors");
     foreach(it, constructors) if(*it) (*it)->print();
@@ -61,6 +68,28 @@ void Members::addAndEnterType(Type* t){
 
 bool Members::typeExists(std::string shortName){
     return types.find(shortName) != types.end();
+}
+
+bool Members::funcExistsInType(std::string typeShortName, FuncSignature signature){
+    //printf("Looking for %s in %s\n", signature.name.shortName.c_str(), typeShortName.c_str());
+    auto type = types.find(typeShortName);
+    // If the type exists in the map
+    if(type != types.end()){
+        std::vector<FuncSignature*>* funcs = &(*type).second->funcs;
+        // Iterate over the type's functions
+        foreachp(it, funcs){
+            if(*it){
+                if(signature == **it){
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+bool Members::funcExistsInCurrentType(FuncSignature signature){
+    return funcExistsInType(Members::getCurrentTypeQualifiedName().shortName, signature);
 }
 
 void Members::addFunction(FuncSignature* f){

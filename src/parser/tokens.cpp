@@ -3,6 +3,12 @@
 #include <loader/member.h>
 #include <util/util.h>
 
+const char* typeStrs[EnumType::NUM_TYPES] = {
+	"Class",
+	"Protocol",
+	"Enum"
+};
+
 EnumModifier::type Tokens::getMod(std::string s){
 	if(s == "public") return EnumModifier::PUBLIC;
 	else if(s == "private") return EnumModifier::PRIVATE;
@@ -32,6 +38,10 @@ TokenIdentifier::TokenIdentifier(std::string* str) : str(str){}
 
 TokenIdentifier::TokenIdentifier(){}
 
+bool TokenIdentifier::operator==(TokenIdentifier id){
+	return *id.str == *str;
+}
+
 TokenQualifiedName::TokenQualifiedName(TokenIdentifier id){
 	paths.push_back(*id.str);
 }
@@ -58,9 +68,27 @@ TokenType::TokenType(TokenIdentifier i) : id(i){}
 
 TokenType::TokenType(){}
 
+bool TokenType::operator==(TokenType type){
+	return id == type.id && arrDims == type.arrDims;
+}
+
 TokenArg::TokenArg(TokenIdentifier i, TokenType t) : id(i), type(t){}
 
+bool TokenArg::operator==(TokenArg arg){
+	return arg.type == type;
+}
+
+bool TokenArg::operator!=(TokenArg arg){
+	return !(arg.type == type);
+}
+
 Args::Args(){}
+
+bool Args::operator==(Args a){
+	int i = 0;
+	foreach(it, a.args) if(*it != args.at(i++)) return false;
+	return true;
+}
 
 TokenDeclaration::TokenDeclaration(TokenIdentifier i, ModifiersInt m) : id(i), mods(m){
 }
@@ -70,15 +98,15 @@ TokenDeclaration::TokenDeclaration(TokenIdentifier i) : id(i){
 
 TokenDeclaration::TokenDeclaration() : id(TokenIdentifier()){}
 
-TokenTypeDec::TokenTypeDec(Args a, TokenIdentifier i, ModifiersInt m, TokenBlock b) : TokenDeclaration(i, m), args(a){}
+TokenTypeDec::TokenTypeDec(Args a, TokenIdentifier i, ModifiersInt m) : TokenDeclaration(i, m), args(a){}
 
-TokenTypeDec::TokenTypeDec(Args a, TokenIdentifier i, TokenBlock b) : TokenDeclaration(i), args(a){}
+TokenTypeDec::TokenTypeDec(Args a, TokenIdentifier i) : TokenDeclaration(i), args(a){}
 
-TokenClassDec::TokenClassDec(Args a, TokenIdentifier i, ModifiersInt m, TokenBlock b, Types s) : TokenTypeDec(a, i, m, b), supers(s){}
+TokenClassDec::TokenClassDec(Args a, TokenIdentifier i, ModifiersInt m, Types s, ClassBlock b) : TokenTypeDec(a, i, m), block(b), supers(s){}
 
-TokenProtocolDec::TokenProtocolDec(Args a, TokenIdentifier i, ModifiersInt m, TokenBlock b, Types  s) : TokenTypeDec(a, i, m, b), supers(s){}
+TokenProtocolDec::TokenProtocolDec(Args a, TokenIdentifier i, ModifiersInt m, Types  s, ClassBlock b) : TokenTypeDec(a, i, m), block(b), supers(s){}
 
-TokenEnumDec::TokenEnumDec(Args a, TokenIdentifier i, std::vector<TokenIdentifier> v, TokenBlock b) : TokenTypeDec(a, i, b), instances(v){}
+TokenEnumDec::TokenEnumDec(Args a, TokenIdentifier i, std::vector<TokenIdentifier> v) : TokenTypeDec(a, i), instances(v){}
 
 TokenFuncDec::TokenFuncDec(ModifiersInt m, TokenIdentifier i, Args a, TokenType t, TokenType t2) : TokenDeclaration(i, m), args(a), type(t), throws(t2){}
 
@@ -93,6 +121,16 @@ TokenBlock::TokenBlock() : TokenAnalysable(){}
 TokenBlock::TokenBlock(TokenStatement* s) : TokenBlock(){
 	stmts.push_back(s);
 }
+
+ClassBlock::ClassBlock(TokenFuncDec* funcDec){
+	funcDecs.push_back(funcDec);
+}
+
+ClassBlock::ClassBlock(TokenVarDec* varDec){
+	varDecs.push_back(varDec);
+}
+
+ClassBlock::ClassBlock(){}
 
 TokenVarDec::TokenVarDec(ModifiersInt m, TokenIdentifier i, EnumVarDecKeyword::type k) : TokenDeclaration(i, m), decKeyword(k){}
 

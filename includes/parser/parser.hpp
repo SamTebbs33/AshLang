@@ -155,6 +155,7 @@ union YYSTYPE
 	TokenType* type;
 	Types* types;
 	TokenBlock* block;
+	ClassBlock* classBlock;
 	TokenStatement* stmt;
 	TokenVarDec* varDec;
 	TokenVarDecExplicit* varDecE;
@@ -168,7 +169,7 @@ union YYSTYPE
 	TokenPrefix* prefix;
 
 
-#line 172 "src/parser/parser.hpp" /* yacc.c:1915  */
+#line 173 "src/parser/parser.hpp" /* yacc.c:1915  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
