@@ -33,6 +33,6 @@ void Error::semanticError(std::string str){
     Error::error(Colours::red("Error"), ":%s: %s\n", currentFile, str.c_str());
 }
 
-unsigned int getNumErrors(){
+unsigned int Error::getNumErrors(){
     return numErrors;
 }

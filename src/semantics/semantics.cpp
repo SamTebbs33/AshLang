@@ -9,3 +9,43 @@ bool Semantics::checkTypeExists(std::string shortName){
     }
     return true;
 }
+
+bool Semantics::checkSuperIsNotCurrentType(std::string shortName){
+    if(Members::getCurrentTypeQualifiedName().shortName == shortName){
+        Error::semanticError("A type cannot extend itself (" + shortName + ")");
+        return false;
+    }
+    return true;
+}
+
+bool Semantics::checkVarNotExistsInType(std::string varShortName, std::string typeShortName){
+    if(!Members::varExistsInType(typeShortName, varShortName)){
+        return true;
+    }
+    Error::semanticError("Variable already exists (" + varShortName + ")");
+    return false;
+}
+
+bool Semantics::checkVarExistsInType(std::string varShortName, std::string typeShortName){
+    if(!Members::varExistsInType(typeShortName, varShortName)){
+        Error::semanticError("Variable doesn't exist or isn't visible from the current context (" + varShortName + ")");
+        return false;
+    }
+    return true;
+}
+
+bool Semantics::checkVarNotExistsInCurrentType(std::string varShortName){
+    if(!Members::varExistsInCurrentType(varShortName)){
+        return true;
+    }
+    Error::semanticError("Variable already exists (" + varShortName + ")");
+    return false;
+}
+
+bool Semantics::checkVarExistsInCurrentType(std::string varShortName){
+    if(!Members::varExistsInCurrentType(varShortName)){
+        Error::semanticError("Variable doesn't exist or isn't visible from the current context (" + varShortName + ")");
+        return false;
+    }
+    return true;
+}

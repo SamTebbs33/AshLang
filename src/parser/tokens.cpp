@@ -34,16 +34,16 @@ TokenFile::TokenFile(){}
 
 TokenStatement::TokenStatement(){}
 
-TokenIdentifier::TokenIdentifier(std::string* str) : str(str){}
+TokenIdentifier::TokenIdentifier(std::string str) : str(str){}
 
 TokenIdentifier::TokenIdentifier(){}
 
 bool TokenIdentifier::operator==(TokenIdentifier id){
-	return *id.str == *str;
+	return id.str == str;
 }
 
 TokenQualifiedName::TokenQualifiedName(TokenIdentifier id){
-	paths.push_back(*id.str);
+	paths.push_back(id.str);
 }
 
 TokenQualifiedName::TokenQualifiedName(){}

@@ -110,7 +110,7 @@ file: namespace_dec imports type_decs {file = TokenFile(*$1, *$2, *$3); DEL($1) 
 
 imports: import {$$ = new Imports(*$1); DEL($1)} | imports import {$1->imports.push_back(*$2); DEL($2)} | {$$ = new Imports();};
 import: IMPORT qualified_name {$$ = new TokenImport(*$2); DEL($2)} ;
-qualified_name: ID {$$ = new TokenQualifiedName(*$1); DEL($1)} | qualified_name DOT ID {$1->paths.push_back(*$3->str); DEL($3)};
+qualified_name: ID {$$ = new TokenQualifiedName(*$1); DEL($1)} | qualified_name DOT ID {$1->paths.push_back($3->str); DEL($3)};
 namespace_dec: NAMESPACE qualified_name {$$ = new TokenNamespace(*$2); DEL($2)} | {$$ = new TokenNamespace();} ;
 
 type_decs: type_dec  {$$ = new std::vector<TokenTypeDec*>(); $$->push_back($1);} | type_decs type_dec {$$->push_back($2);} ;
@@ -127,8 +127,8 @@ type: ID {$$ = new TokenType(*$1); DEL($1)} | PRIMITIVE {$$ = new TokenType(*$1)
 args: arg {$$ = new Args();} | args COMMA arg {$1->args.push_back(*$3); DEL($3)} | {$$ = new Args();} ;
 arg: ID COLON type {$$ = new TokenArg(*$1, *$3); DEL($3) DEL($1)} ;
 
-func_type: COLON type {$$ = $2;} | {$$ = NULL;} ;
-type_supers: func_type {$$ = new Types($1 != NULL ? *$1 : TokenType()); DEL($1)} | type_supers COMMA type {$1->types.push_back(*$3); DEL($3)} ;
+func_type: COLON type {$$ = $2;} | {$$ = new TokenType();} ;
+type_supers: func_type {$$ = new Types(*$1); DEL($1)} | type_supers COMMA type {$1->types.push_back(*$3); DEL($3)} ;
 throws: ARROW type {$$ = $2;} | {$$ = NULL;} ;
 
 class_block: class_func_dec {$$ = new ClassBlock($1);} | class_block class_func_dec {$1->funcDecs.push_back($2);} | class_var_dec {$$ = new ClassBlock($1);} | class_block class_var_dec {$$->varDecs.push_back($2);} | {$$ = new ClassBlock();} ;

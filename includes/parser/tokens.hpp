@@ -88,8 +88,8 @@ struct Operator{
 
 struct TokenIdentifier : public Token{
 
-	std::string* str;
-	TokenIdentifier(std::string* s);
+	std::string str;
+	TokenIdentifier(std::string s);
 	TokenIdentifier();
 	bool operator==(TokenIdentifier n);
 };
@@ -181,6 +181,7 @@ struct TokenDeclaration : public TokenAnalysable, public TokenPreParseable, publ
 struct TokenVarDec : public TokenDeclaration, public TokenStatement{
 
 	EnumVarDecKeyword::type decKeyword;
+	bool errored = false;
 	TokenVarDec(ModifiersInt m, TokenIdentifier id, EnumVarDecKeyword::type k);
 	virtual void preParse();
 	virtual void analyse();
@@ -219,13 +220,14 @@ struct TokenFuncDec : public TokenDeclaration{
 	virtual void analyse();
 };
 
-struct ClassBlock : public TokenPreParseable{
+struct ClassBlock : public TokenPreParseable, public TokenAnalysable{
 	std::vector<TokenFuncDec*> funcDecs;
 	std::vector<TokenVarDec*> varDecs;
 	ClassBlock(TokenFuncDec* funcDec);
 	ClassBlock(TokenVarDec* varDec);
 	ClassBlock();
 	void preParse();
+	void analyse();
 };
 
 struct TokenTypeDec : public TokenDeclaration{

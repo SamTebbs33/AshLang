@@ -30,7 +30,6 @@ void Member::print(){
     printf("\t- Mods: %d\n", mods);
 }
 
-
 FuncSignature::FuncSignature(QualifiedName n, Args* a, ModifiersInt m) : Member(m, n), args(a){
 
 }
@@ -129,4 +128,28 @@ void Members::printTypes(){
             t->print();
         }
     }
+}
+
+bool Members::varExistsInType(std::string typeShortName, std::string varShortName){
+    Type* type = Members::getType(typeShortName);
+    if(!type){
+        foreach(it, type->fields){
+            if(*it) if((*it)->name.shortName == varShortName) return true;
+        }
+    }
+    return false;
+}
+
+bool Members::varExistsInCurrentType(std::string varShortName){
+    Type* type = Members::getCurrentType();
+    if(!type){
+        foreach(it, type->fields){
+            if(*it) if((*it)->name.shortName == varShortName) return true;
+        }
+    }
+    return false;
+}
+
+Type* Members::getType(std::string shortName){
+    return types.find(shortName)->second;
 }

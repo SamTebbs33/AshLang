@@ -19,7 +19,6 @@ int main(int argc, char const *argv[]) {
     yydebug = 0;
 
     if (yyin) {
-
         printf("### Parsing file: %s\n", currentFile);
         yyrestart(yyin);
         clock_t t = clock();
@@ -28,6 +27,8 @@ int main(int argc, char const *argv[]) {
         double seconds = ((double)t) / CLOCKS_PER_SEC;
         printf("### Parsed file: %f ms\n", seconds * 1000);
         fclose(yyin);
+
+        if(Error::getNumErrors() > 0) return 0;
 
         ClassLoader::init();
         file.preParse();

@@ -23,13 +23,13 @@ void TokenImport::preParse(){
 void TokenDeclaration::preParse(){}
 
 void TokenTypeDec::preParse(){
-	if(!Members::typeExists(*id.str)){
+	if(!Members::typeExists(id.str)){
 		// Create the qualified name of this type
 		QualifiedName name = Context::getNamespace();
-		name.add(*id.str);
+		name.add(id.str);
 		Members::addAndEnterType(new Type(mods, name, getType()));
 	}else{
-		Error::semanticError("Type already exists (" + *id.str + ")");
+		Error::semanticError("Type already exists (" + id.str + ")");
 		errored = true;
 	}
 }
@@ -76,7 +76,7 @@ EnumType::type TokenEnumDec::getType(){
 void TokenFuncDec::preParse(){
 	QualifiedName name = Members::getCurrentTypeQualifiedName();
 	// Form a qualified name to this function
-	name.add(*id.str);
+	name.add(id.str);
 	FuncSignature* signature = new FuncSignature(name, &args, mods);
 	if(!Members::funcExistsInCurrentType(*signature)) Members::addFunction(signature);
 	else Error::semanticError("Function with identical signature already exists (" + name.shortName + ")");

@@ -4,7 +4,8 @@
 void TokenStatement::analyse(){}
 
 void TokenType::analyse(){
-    if(!Semantics::checkTypeExists(*id.str)) errored = true;
+
+    if(id.str != "") if(!Semantics::checkTypeExists(id.str)) errored = true;
 }
 
 void TokenArg::analyse(){}
@@ -15,9 +16,23 @@ void TokenDeclaration::analyse(){}
 
 void TokenFuncDec::analyse(){}
 
+void ClassBlock::analyse(){
+    foreach(it, varDecs) if(*it) (*it)->analyse();
+    foreach(it, funcDecs) if(*it) (*it)->analyse();
+}
+
 void TokenTypeDec::analyse(){}
 
-void TokenClassDec::analyse(){}
+void TokenClassDec::analyse(){
+    if(!TokenTypeDec::errored){
+        foreach(it, supers.types){
+            (*it).analyse();
+            // Ensure the class is not attempting to extend itself
+            if(!Semantics::checkSuperIsNotCurrentType((*it).id.str)) errored = true;
+        }
+    }
+    block.analyse();
+}
 
 void TokenProtocolDec::analyse(){}
 
@@ -29,7 +44,9 @@ void TokenFile::analyse(){
 
 void TokenExpression::analyse(){}
 
-void TokenVarDec::analyse(){}
+void TokenVarDec::analyse(){
+    if(Semantics::checkVarNotExistsInCurrentType(id.str)) errored = true;
+}
 
 void TokenVarDecExplicit::analyse(){}
 

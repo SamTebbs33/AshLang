@@ -653,7 +653,7 @@ char *yytext;
 	#define SAVE_TOKEN(t) ; yylval.token = t;
 	#define SAVE_CHAR ; yylval.ch = yytext[1];
 	#define SAVE_OP ; yylval.op = new Operator(new std::string(yytext));
-	#define SAVE_ID yylval.id = new TokenIdentifier(new std::string(yytext)); SAVE_LINE(yylval.id);
+	#define SAVE_ID yylval.id = new TokenIdentifier(std::string(yytext)); SAVE_LINE(yylval.id);
 	#define SAVE_MOD yylval.mod = Tokens::getMod(std::string(yytext));
 	#define SAVE_VAR_KEYW(a) yylval.varDecKeyW = a;
 

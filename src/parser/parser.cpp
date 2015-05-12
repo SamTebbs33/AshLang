@@ -1567,7 +1567,7 @@ yyreduce:
 
   case 8:
 #line 113 "grammar/AshGrammar.y" /* yacc.c:1661  */
-    {(yyvsp[-2].qualifiedName)->paths.push_back(*(yyvsp[0].id)->str); DEL((yyvsp[0].id))}
+    {(yyvsp[-2].qualifiedName)->paths.push_back((yyvsp[0].id)->str); DEL((yyvsp[0].id))}
 #line 1572 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
@@ -1693,13 +1693,13 @@ yyreduce:
 
   case 41:
 #line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
-    {(yyval.type) = NULL;}
+    {(yyval.type) = new TokenType();}
 #line 1698 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 42:
 #line 131 "grammar/AshGrammar.y" /* yacc.c:1661  */
-    {(yyval.types) = new Types((yyvsp[0].type) != NULL ? *(yyvsp[0].type) : TokenType()); DEL((yyvsp[0].type))}
+    {(yyval.types) = new Types(*(yyvsp[0].type)); DEL((yyvsp[0].type))}
 #line 1704 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 

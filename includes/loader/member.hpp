@@ -50,11 +50,14 @@ namespace Members {
     QualifiedName toQualifiedName(TokenQualifiedName* n);
     QualifiedName toQualifiedName(TokenQualifiedName* n, std::string s);
     Type* getCurrentType();
+    Type* getType(std::string typeShortName);
     QualifiedName getCurrentTypeQualifiedName();
     void printTypes();
     bool typeExists(std::string shortName);
     bool funcExistsInType(std::string typeShortName, FuncSignature funcSignature);
     bool funcExistsInCurrentType(FuncSignature funcSignature);
+    bool varExistsInType(std::string typeShortName, std::string varShortName);
+    bool varExistsInCurrentType(std::string varShortName);
 } /* Members */
 
 #endif /* end of include guard: TYPES_H */
