@@ -6,6 +6,7 @@ SOURCES = $(wildcard src/*.cpp) \
 		  $(wildcard src/loader/*.cpp) \
 		  $(wildcard src/parser/*.cpp) \
 		  $(wildcard src/error/*.cpp) \
+		  $(wildcard src/semantics/*.cpp) \
 
 GRAMMARS = grammar/AshGrammar.y grammar/AshLexGrammar.l
 

@@ -1,4 +1,4 @@
-#include <error/colours.h>
+#include <error/colours.hpp>
 
 bool Colours::colourTerm() {
     std::string term = getenv("TERM");

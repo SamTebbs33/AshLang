@@ -8,8 +8,8 @@ using ModifiersInt = unsigned short;
 #include <string>
 #include <deque>
 #include <vector>
-#include <loader/classloader.h>
-#include <util/util.h>
+#include <loader/classloader.hpp>
+#include <util/util.hpp>
 
 struct EnumVarDecKeyword{
 	enum type{

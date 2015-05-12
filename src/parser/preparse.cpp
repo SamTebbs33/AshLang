@@ -1,7 +1,7 @@
-#include <parser/tokens.h>
-#include <loader/context.h>
-#include <loader/member.h>
-#include <error/errors.h>
+#include <parser/tokens.hpp>
+#include <loader/context.hpp>
+#include <loader/member.hpp>
+#include <error/errors.hpp>
 
 void TokenFile::preParse(){
 	Context::push(FileContext("", Members::toQualifiedName(&namespc.name, "")));

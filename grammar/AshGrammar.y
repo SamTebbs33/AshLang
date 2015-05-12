@@ -1,8 +1,7 @@
 %{
 	#include <string>
-	#include <locale>
-	#include <parser/tokens.h>
-	#include <error/errors.h>
+	#include <parser/tokens.hpp>
+	#include <error/errors.hpp>
 
 	#define YYERROR_VERBOSE
 	#define DEL(a) delete a;

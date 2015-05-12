@@ -1,4 +1,4 @@
-#include <loader/member.h>
+#include <loader/member.hpp>
 
 // Map which contains Type objects paired with unqualified names
 std::map<std::string, Type*> types;

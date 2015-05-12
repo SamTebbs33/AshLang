@@ -63,7 +63,7 @@ let b:current_syntax = "ash"
 " Link the rules to highlighting groups: http://vimdoc.sourceforge.net/htmldoc/syntax.html#syntax
 " PreCondit = pink
 " Operator = orange
-hi def link langType	    Function	
+hi def link langType	    Function
 hi def link langKeywords	StorageClass
 hi def link mod				StorageClass
 hi def link operator		Keyword

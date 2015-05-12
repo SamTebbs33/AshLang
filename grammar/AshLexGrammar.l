@@ -2,8 +2,8 @@
 
 	#include <string>
 	#include <cstdlib>
-	#include "parser/tokens.h"
-	#include "parser/parser.hpp"
+	#include <parser/tokens.hpp>
+	#include <parser/parser.hpp>
 
 	#define SAVE_LINE(a) a->line = yylineno;
 	#define RET(a) return a;

@@ -1,8 +1,11 @@
-#include <parser/tokens.h>
+#include <parser/tokens.hpp>
+#include <semantics/semantics.hpp>
 
 void TokenStatement::analyse(){}
 
-void TokenType::analyse(){}
+void TokenType::analyse(){
+
+}
 
 void TokenArg::analyse(){}
 

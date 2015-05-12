@@ -1,9 +1,9 @@
-#include <parser/externs.h>
-#include <util/util.h>
-#include <loader/classloader.h>
-#include <stdio.h>
-#include <loader/member.h>
-#include <error/errors.h>
+#include <parser/externs.hpp>
+#include <util/util.hpp>
+#include <loader/classloader.hpp>
+#include <stdio.hpp>
+#include <loader/member.hpp>
+#include <error/errors.hpp>
 #include <ctime>
 
 const char* currentFile;

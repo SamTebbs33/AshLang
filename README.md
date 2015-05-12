@@ -1,4 +1,4 @@
-# AshLang [![Build Status](https://travis-ci.org/SamTebbs33/AshLang.svg?branch=master)](https://travis-ci.org/SamTebbs33/AshLang)
+# AshLang [![BuildStatus](https://travis-ci.org/SamTebbs33/AshLang.svg?branch=master)](https://travis-ci.org/SamTebbs33/AshLang)
 
 The re-write of my programming language
 

@@ -1,9 +1,9 @@
 #ifndef FILE_CONTEXT_H
 #define FILE_CONTEXT_H
 
-#include <parser/tokens.h>
+#include <parser/tokens.hpp>
 #include <string.h>
-#include <loader/member.h>
+#include <loader/member.hpp>
 
 struct FileContext{
 	std::string relPath;

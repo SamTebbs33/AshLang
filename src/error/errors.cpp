@@ -1,4 +1,4 @@
-#include <error/errors.h>
+#include <error/errors.hpp>
 
 unsigned int numErrors = 0;
 extern char* currentFile;

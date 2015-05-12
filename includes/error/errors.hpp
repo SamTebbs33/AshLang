@@ -3,8 +3,8 @@
 
 #include <stdio.h>
 #include <stdarg.h>
-#include <parser/tokens.h>
-#include <error/colours.h>
+#include <parser/tokens.hpp>
+#include <error/colours.hpp>
 
 namespace Error {
     void parserError(const char* msg, int lineNo);

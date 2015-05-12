@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <string>
 #include <fstream>
-#include <util/platform.h>
-#include <parser/tokens.h>
+#include <util/platform.hpp>
+#include <parser/tokens.hpp>
 
 struct AshFile{
 	bool isSrc;

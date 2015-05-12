@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <map>
-#include <parser/tokens.h>
+#include <parser/tokens.hpp>
 
 struct QualifiedName {
     std::vector<std::string> paths;

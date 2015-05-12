@@ -1,7 +1,7 @@
 #ifndef EXTERNS_H
 #define EXTERNS_H
 
-#include <parser/tokens.h>
+#include <parser/tokens.hpp>
 #include <stdio.h>
 
 extern int yyparse();
