@@ -2,6 +2,9 @@
 
 The re-write of my programming language
 
-This language is intended to be a hobby language at first, I will probably think about expanding it to be production-code quality in the future, once the fundamentals like bytcode generation and interpretation are implemented!
+This language is intended to be a hobby language at first, I will probably think about expanding it to be production-code quality in the future, once the fundamentals like bytecode generation and interpretation are implemented!
 
-For a list of things I need to do, see [the todo list](docs/todo.md)
+# Docs
+* [To-do list](docs/todo.md)
+* [Goals](docs/goals.md)
+* [Ideas](docs/ideas.md)
