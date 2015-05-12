@@ -1,7 +1,7 @@
 #include <loader/classloader.hpp>
 #include <util/util.hpp>
 #include <loader/member.hpp>
-#include <errors/error.hpp>
+#include <error/errors.hpp>
 
 char cwdBuf[FILENAME_MAX];
 std::string compiledExtension = ".ashc", sourceExtension = ".ash", *classPath;

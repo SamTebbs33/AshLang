@@ -65,9 +65,8 @@
 #line 1 "grammar/AshGrammar.y" /* yacc.c:339  */
 
 	#include <string>
-	#include <locale>
-	#include <parser/tokens.h>
-	#include <error/errors.h>
+	#include <parser/tokens.hpp>
+	#include <error/errors.hpp>
 
 	#define YYERROR_VERBOSE
 	#define DEL(a) delete a;
@@ -81,7 +80,7 @@
 	int lineNo = 0;
 	TokenFile file;
 
-#line 85 "src/parser/parser.cpp" /* yacc.c:339  */
+#line 84 "src/parser/parser.cpp" /* yacc.c:339  */
 
 # ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -201,7 +200,7 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 20 "grammar/AshGrammar.y" /* yacc.c:355  */
+#line 19 "grammar/AshGrammar.y" /* yacc.c:355  */
 
 	std::string* str;
 	int line;
@@ -240,7 +239,7 @@ union YYSTYPE
 	TokenPrefix* prefix;
 
 
-#line 244 "src/parser/parser.cpp" /* yacc.c:355  */
+#line 243 "src/parser/parser.cpp" /* yacc.c:355  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
@@ -255,7 +254,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 259 "src/parser/parser.cpp" /* yacc.c:358  */
+#line 258 "src/parser/parser.cpp" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -541,21 +540,21 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   110,   110,   112,   112,   112,   113,   114,   114,   115,
-     115,   117,   117,   118,   118,   118,   119,   120,   121,   123,
-     123,   123,   123,   123,   123,   123,   123,   123,   124,   124,
-     124,   126,   126,   127,   127,   127,   128,   128,   128,   129,
-     131,   131,   132,   132,   133,   133,   135,   135,   135,   135,
-     135,   136,   136,   136,   137,   137,   137,   137,   138,   138,
-     138,   139,   139,   139,   140,   141,   141,   141,   141,   141,
-     143,   144,   145,   146,   146,   147,   148,   149,   150,   151,
-     151,   151,   152,   153,   155,   155,   156,   156,   156,   157,
-     157,   158,   158,   158,   159,   161,   162,   163,   164,   165,
-     166,   167,   168,   169,   170,   171,   172,   173,   174,   175,
+       0,   109,   109,   111,   111,   111,   112,   113,   113,   114,
+     114,   116,   116,   117,   117,   117,   118,   119,   120,   122,
+     122,   122,   122,   122,   122,   122,   122,   122,   123,   123,
+     123,   125,   125,   126,   126,   126,   127,   127,   127,   128,
+     130,   130,   131,   131,   132,   132,   134,   134,   134,   134,
+     134,   135,   135,   135,   136,   136,   136,   136,   137,   137,
+     137,   138,   138,   138,   139,   140,   140,   140,   140,   140,
+     142,   143,   144,   145,   145,   146,   147,   148,   149,   150,
+     150,   150,   151,   152,   154,   154,   155,   155,   155,   156,
+     156,   157,   157,   157,   158,   160,   161,   162,   163,   164,
+     165,   166,   167,   168,   169,   170,   171,   172,   173,   174,
+     177,   177,   177,   177,   177,   177,   177,   177,   177,   177,
+     177,   177,   178,   178,   178,   178,   178,   178,   178,   178,
      178,   178,   178,   178,   178,   178,   178,   178,   178,   178,
-     178,   178,   179,   179,   179,   179,   179,   179,   179,   179,
-     179,   179,   179,   179,   179,   179,   179,   179,   179,   179,
-     179,   179,   181,   181,   181,   181,   182,   182
+     178,   178,   180,   180,   180,   180,   181,   181
 };
 #endif
 
@@ -1531,499 +1530,499 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 110 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 109 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {file = TokenFile(*(yyvsp[-2].namesp), *(yyvsp[-1].imports), *(yyvsp[0].typeDecVec)); DEL((yyvsp[-2].namesp)) DEL((yyvsp[-1].imports)) DEL((yyvsp[0].typeDecVec))}
-#line 1537 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1536 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 3:
-#line 112 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 111 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.imports) = new Imports(*(yyvsp[0].import)); DEL((yyvsp[0].import))}
-#line 1543 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1542 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 4:
-#line 112 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 111 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyvsp[-1].imports)->imports.push_back(*(yyvsp[0].import)); DEL((yyvsp[0].import))}
-#line 1549 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1548 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 5:
-#line 112 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 111 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.imports) = new Imports();}
-#line 1555 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1554 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 6:
-#line 113 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 112 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.import) = new TokenImport(*(yyvsp[0].qualifiedName)); DEL((yyvsp[0].qualifiedName))}
-#line 1561 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1560 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 7:
-#line 114 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 113 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.qualifiedName) = new TokenQualifiedName(*(yyvsp[0].id)); DEL((yyvsp[0].id))}
-#line 1567 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1566 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 8:
-#line 114 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 113 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyvsp[-2].qualifiedName)->paths.push_back(*(yyvsp[0].id)->str); DEL((yyvsp[0].id))}
-#line 1573 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1572 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 9:
-#line 115 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 114 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.namesp) = new TokenNamespace(*(yyvsp[0].qualifiedName)); DEL((yyvsp[0].qualifiedName))}
-#line 1579 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1578 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 10:
-#line 115 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 114 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.namesp) = new TokenNamespace();}
-#line 1585 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1584 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 11:
-#line 117 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 116 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.typeDecVec) = new std::vector<TokenTypeDec*>(); (yyval.typeDecVec)->push_back((yyvsp[0].typeDec));}
-#line 1591 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1590 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 12:
-#line 117 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 116 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.typeDecVec)->push_back((yyvsp[0].typeDec));}
-#line 1597 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1596 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 16:
-#line 119 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 118 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.typeDec) = new TokenClassDec(*(yyvsp[-4].args), *(yyvsp[-5].id), (yyvsp[-7].mods), *(yyvsp[-3].types), *(yyvsp[-1].classBlock)); DEL((yyvsp[-5].id)) DEL((yyvsp[-4].args)) DEL((yyvsp[-3].types)) DEL((yyvsp[-1].classBlock))}
-#line 1603 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1602 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 17:
-#line 120 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 119 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.typeDec) = new TokenProtocolDec(*(yyvsp[-4].args), *(yyvsp[-5].id), (yyvsp[-7].mods), *(yyvsp[-3].types), *(yyvsp[-1].classBlock)); DEL((yyvsp[-5].id)) DEL((yyvsp[-4].args)) DEL((yyvsp[-3].types)) DEL((yyvsp[-1].classBlock))}
-#line 1609 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1608 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 18:
-#line 121 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 120 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.typeDec) = new TokenEnumDec(*(yyvsp[-4].args), *(yyvsp[-5].id), *(yyvsp[-2].enumInstances)); DEL((yyvsp[-5].id)) DEL((yyvsp[-4].args)) DEL((yyvsp[-2].enumInstances))}
-#line 1615 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1614 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 28:
-#line 124 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 123 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.mods) = (yyvsp[0].mod);}
-#line 1621 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1620 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 29:
-#line 124 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 123 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.mods) |= (yyvsp[0].mod);}
-#line 1627 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1626 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 30:
-#line 124 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 123 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.mods) = 0;}
-#line 1633 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1632 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 31:
-#line 126 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 125 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.args) = (yyvsp[-1].args);}
-#line 1639 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1638 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 32:
-#line 126 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 125 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.args) = new Args();}
-#line 1645 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1644 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 33:
-#line 127 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 126 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.type) = new TokenType(*(yyvsp[0].id)); DEL((yyvsp[0].id))}
-#line 1651 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1650 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 34:
-#line 127 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 126 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.type) = new TokenType(*(yyvsp[0].id)); DEL((yyvsp[0].id))}
-#line 1657 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1656 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 35:
-#line 127 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 126 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyvsp[-2].type)->arrDims++;}
-#line 1663 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1662 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 36:
-#line 128 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 127 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.args) = new Args();}
-#line 1669 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1668 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 37:
-#line 128 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 127 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyvsp[-2].args)->args.push_back(*(yyvsp[0].arg)); DEL((yyvsp[0].arg))}
-#line 1675 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1674 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 38:
-#line 128 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 127 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.args) = new Args();}
-#line 1681 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1680 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 39:
-#line 129 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 128 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.arg) = new TokenArg(*(yyvsp[-2].id), *(yyvsp[0].type)); DEL((yyvsp[0].type)) DEL((yyvsp[-2].id))}
-#line 1687 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1686 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 40:
-#line 131 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.type) = (yyvsp[0].type);}
-#line 1693 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1692 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 41:
-#line 131 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 130 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.type) = NULL;}
-#line 1699 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1698 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 42:
-#line 132 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 131 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.types) = new Types((yyvsp[0].type) != NULL ? *(yyvsp[0].type) : TokenType()); DEL((yyvsp[0].type))}
-#line 1705 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1704 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 43:
-#line 132 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 131 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyvsp[-2].types)->types.push_back(*(yyvsp[0].type)); DEL((yyvsp[0].type))}
-#line 1711 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1710 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 44:
-#line 133 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 132 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.type) = (yyvsp[0].type);}
-#line 1717 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1716 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 45:
-#line 133 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 132 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.type) = NULL;}
-#line 1723 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1722 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 46:
-#line 135 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 134 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.classBlock) = new ClassBlock((yyvsp[0].funcDec));}
-#line 1729 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1728 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 47:
-#line 135 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 134 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyvsp[-1].classBlock)->funcDecs.push_back((yyvsp[0].funcDec));}
-#line 1735 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1734 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 48:
-#line 135 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 134 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.classBlock) = new ClassBlock((yyvsp[0].varDec));}
-#line 1741 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1740 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 49:
-#line 135 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 134 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.classBlock)->varDecs.push_back((yyvsp[0].varDec));}
-#line 1747 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1746 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 50:
-#line 135 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 134 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.classBlock) = new ClassBlock();}
-#line 1753 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1752 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 51:
-#line 136 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 135 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.block) = new TokenBlock((yyvsp[0].stmt));}
-#line 1759 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1758 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 52:
-#line 136 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 135 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyvsp[-1].block)->stmts.push_back((yyvsp[0].stmt));}
-#line 1765 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1764 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 53:
-#line 136 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 135 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.block) = new TokenBlock();}
-#line 1771 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1770 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 56:
-#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 136 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.stmt) = new TokenReturn();}
-#line 1777 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1776 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 57:
-#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 136 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.stmt) = new TokenReturn(*(yyvsp[0].expr)); DEL((yyvsp[0].expr))}
-#line 1783 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1782 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 58:
-#line 138 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.enumInstances) = new std::vector<TokenIdentifier>(); (yyval.enumInstances)->push_back(*(yyvsp[0].id)); DEL((yyvsp[0].id))}
-#line 1789 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1788 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 59:
-#line 138 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyvsp[-2].enumInstances)->push_back(*(yyvsp[0].id)); DEL((yyvsp[0].id))}
-#line 1795 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1794 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 60:
-#line 138 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 137 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.enumInstances) = new std::vector<TokenIdentifier>();}
-#line 1801 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1800 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 61:
-#line 139 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 138 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.block) = new TokenBlock((yyvsp[0].stmt));}
-#line 1807 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1806 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 62:
-#line 139 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 138 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyvsp[-1].block)->stmts.push_back((yyvsp[0].stmt));}
-#line 1813 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1812 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 63:
-#line 139 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 138 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.block) = new TokenBlock();}
-#line 1819 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1818 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 65:
-#line 141 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 140 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.classBlock) = new ClassBlock((yyvsp[0].funcDec));}
-#line 1825 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1824 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 66:
-#line 141 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 140 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyvsp[-1].classBlock)->funcDecs.push_back((yyvsp[0].funcDec));}
-#line 1831 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1830 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 67:
-#line 141 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 140 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.classBlock) = new ClassBlock((yyvsp[0].varDec));}
-#line 1837 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1836 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 68:
-#line 141 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 140 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.classBlock)->varDecs.push_back((yyvsp[0].varDec));}
-#line 1843 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1842 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 69:
-#line 141 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 140 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.classBlock) = new ClassBlock();}
-#line 1849 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1848 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 70:
-#line 143 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 142 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.funcDec) = new TokenFuncDec((yyvsp[-7].mods), *(yyvsp[-5].id), *(yyvsp[-3].args), (yyvsp[-1].type) != NULL ? *(yyvsp[-1].type) : TokenType(), (yyvsp[0].type) != NULL ? *(yyvsp[0].type) : TokenType()); DEL((yyvsp[-5].id)) DEL((yyvsp[-3].args)) DEL((yyvsp[-1].type)) DEL((yyvsp[0].type))}
-#line 1855 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1854 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 71:
-#line 144 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 143 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyvsp[-3].funcDec)->block = *(yyvsp[-1].block); DEL((yyvsp[-1].block))}
-#line 1861 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1860 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 72:
-#line 145 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 144 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {/*$1->block = TokenBlock();*/}
-#line 1867 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1866 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 75:
-#line 147 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 146 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.varDec) = new TokenVarDec((yyvsp[-2].mods), *(yyvsp[0].id), (yyvsp[-1].varDecKeyW)); DEL((yyvsp[0].id))}
-#line 1873 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1872 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 76:
-#line 148 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 147 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.varDecE) = new TokenVarDecExplicit((yyvsp[-1].varDec)->id, (yyvsp[-1].varDec)->decKeyword, *(yyvsp[0].type));  DEL((yyvsp[0].type))}
-#line 1879 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1878 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 77:
-#line 149 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 148 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.varDec) = new TokenVarDecExplicitAssign((yyvsp[-2].varDecE)->id, (yyvsp[-2].varDecE)->decKeyword, (yyvsp[-2].varDecE)->type, *(yyvsp[0].expr)); DEL((yyvsp[0].expr))}
-#line 1885 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1884 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 78:
-#line 150 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 149 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.varDec) = new TokenVarDecImplicit((yyvsp[-2].varDec)->id, (yyvsp[-2].varDec)->decKeyword, *(yyvsp[0].expr), (yyvsp[-2].varDec)->mods); DEL((yyvsp[0].expr))}
-#line 1891 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1890 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 86:
-#line 156 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 155 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.exprVec) = new std::vector<TokenExpression>(); (yyval.exprVec)->push_back(*(yyvsp[0].expr)); DEL((yyvsp[0].expr))}
-#line 1897 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1896 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 87:
-#line 156 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 155 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyvsp[-2].exprVec)->push_back(*(yyvsp[0].expr)); DEL((yyvsp[0].expr))}
-#line 1903 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1902 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 88:
-#line 156 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 155 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.exprVec) = new std::vector<TokenExpression>();}
-#line 1909 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1908 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 89:
-#line 157 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 156 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.funcCall) = new TokenFuncCall(*(yyvsp[-3].id), *(yyvsp[-1].exprVec)); DEL((yyvsp[-1].exprVec)) DEL((yyvsp[-3].id))}
-#line 1915 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1914 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 90:
-#line 157 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 156 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyvsp[0].funcCall)->prefix = *(yyvsp[-2].prefix); DEL((yyvsp[-2].prefix))}
-#line 1921 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1920 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 91:
-#line 158 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 157 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.var) = new TokenVariable(*(yyvsp[0].id)); DEL((yyvsp[0].id))}
-#line 1927 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1926 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 92:
-#line 158 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 157 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyvsp[-3].var)->arrExprs.push_back(*(yyvsp[-1].expr)); DEL((yyvsp[-1].expr))}
-#line 1933 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1932 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 93:
-#line 158 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 157 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyvsp[0].var)->prefix = *(yyvsp[-2].prefix); DEL((yyvsp[-2].prefix))}
-#line 1939 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1938 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 94:
-#line 159 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 158 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.stmt) = new TokenVarAssign(*(yyvsp[-2].var), (yyvsp[-1].op), *(yyvsp[0].expr)); DEL((yyvsp[-2].var)) DEL((yyvsp[0].expr))}
-#line 1945 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1944 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 95:
-#line 161 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 160 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.expr) = new TokenExprInfix(*(yyvsp[-2].expr), *(yyvsp[-1].op), *(yyvsp[0].expr)); DEL((yyvsp[-2].expr)) DEL((yyvsp[0].expr)) DEL((yyvsp[-1].op))}
-#line 1951 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1950 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 96:
-#line 162 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 161 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.expr) = new TokenExprPrefix(*(yyvsp[-1].op), *(yyvsp[0].expr)); DEL((yyvsp[0].expr)) DEL((yyvsp[-1].op))}
-#line 1957 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1956 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 97:
-#line 163 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 162 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.expr) = new TokenExprPostfix(*(yyvsp[-1].expr), *(yyvsp[0].op)); DEL((yyvsp[-1].expr)) DEL((yyvsp[0].op))}
-#line 1963 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1962 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 98:
-#line 164 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 163 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.expr) = new TokenExprInt((yyvsp[0].int32));}
-#line 1969 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1968 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 99:
-#line 165 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 164 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.expr) = new TokenExprStr((yyvsp[0].str));}
-#line 1975 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1974 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 100:
-#line 166 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 165 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.expr) = new TokenExprChar((yyvsp[0].ch));}
-#line 1981 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1980 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 101:
-#line 167 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 166 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.expr) = new TokenExprBool(true);}
-#line 1987 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1986 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 102:
-#line 168 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 167 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.expr) = new TokenExprBool(false);}
-#line 1993 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1992 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 103:
-#line 169 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 168 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.expr) = new TokenExprFloat((yyvsp[0].float32));}
-#line 1999 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 1998 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 104:
-#line 170 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 169 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.expr) = new TokenExprFloat64((yyvsp[0].float64));}
-#line 2005 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 2004 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 105:
-#line 171 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 170 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.expr) = new TokenExprLong((yyvsp[0].int64));}
-#line 2011 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 2010 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 106:
-#line 172 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 171 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.expr) = new TokenExprTernary(*(yyvsp[-4].expr), *(yyvsp[-2].expr), *(yyvsp[0].expr)); DEL((yyvsp[-4].expr)) DEL((yyvsp[-2].expr)) DEL((yyvsp[0].expr))}
-#line 2017 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 2016 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
   case 107:
-#line 173 "grammar/AshGrammar.y" /* yacc.c:1661  */
+#line 172 "grammar/AshGrammar.y" /* yacc.c:1661  */
     {(yyval.expr) = (yyvsp[-1].expr);}
-#line 2023 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 2022 "src/parser/parser.cpp" /* yacc.c:1661  */
     break;
 
 
-#line 2027 "src/parser/parser.cpp" /* yacc.c:1661  */
+#line 2026 "src/parser/parser.cpp" /* yacc.c:1661  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2251,4 +2250,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 184 "grammar/AshGrammar.y" /* yacc.c:1906  */
+#line 183 "grammar/AshGrammar.y" /* yacc.c:1906  */
+

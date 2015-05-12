@@ -124,7 +124,7 @@ struct Imports{
 };
 
 struct TokenType : public TokenAnalysable{
-
+	bool errored;
 	int arrDims;
 	TokenIdentifier id;
 	TokenType(TokenIdentifier i);

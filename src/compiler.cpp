@@ -1,7 +1,7 @@
 #include <parser/externs.hpp>
 #include <util/util.hpp>
 #include <loader/classloader.hpp>
-#include <stdio.hpp>
+#include <stdio.h>
 #include <loader/member.hpp>
 #include <error/errors.hpp>
 #include <ctime>
@@ -31,6 +31,7 @@ int main(int argc, char const *argv[]) {
 
         ClassLoader::init();
         file.preParse();
+        file.analyse();
         Members::printTypes();
         return 0;
     }else println("### Failed to open file");

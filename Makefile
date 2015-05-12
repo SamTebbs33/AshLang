@@ -46,3 +46,12 @@ debug:
 run:
 	@echo "### Running ashc"
 	@bin/ashc tests/syntax.ash
+
+git:
+	@echo "### Pulling and adding"
+	@git pull
+	@git add --all
+	@echo "### Committing"
+	@git commit -m "${M}"
+	@echo "### Pushing"
+	@git push

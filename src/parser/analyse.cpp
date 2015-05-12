@@ -4,7 +4,7 @@
 void TokenStatement::analyse(){}
 
 void TokenType::analyse(){
-
+    if(!Semantics::checkTypeExists(*id.str)) errored = true;
 }
 
 void TokenArg::analyse(){}
@@ -23,7 +23,9 @@ void TokenProtocolDec::analyse(){}
 
 void TokenEnumDec::analyse(){}
 
-void TokenFile::analyse(){}
+void TokenFile::analyse(){
+    foreach(it, typeDecs) if(*it) (*it)->analyse();
+}
 
 void TokenExpression::analyse(){}
 
