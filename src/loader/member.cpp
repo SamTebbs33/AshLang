@@ -26,8 +26,8 @@ Member::Member(ModifiersInt m, QualifiedName n) : name(n), mods(m){
 }
 
 void Member::print(){
-    printf("- Name: %s\n", name.fullName.c_str());
-    printf("- Mods: %d\n", mods);
+    printf("\t- Name: %s\n", name.fullName.c_str());
+    printf("\t- Mods: %d\n", mods);
 }
 
 
@@ -52,11 +52,11 @@ Type::Type(ModifiersInt m, QualifiedName n, EnumType::type t) : Member(m, n), ty
 void Type::print(){
     println(typeStrs[type]);
     Member::print();
-    println("- Constructors");
+    println("\t- Constructors");
     foreach(it, constructors) if(*it) (*it)->print();
-    println("- Functions");
+    println("\t- Functions");
     foreach(it, funcs) if(*it) (*it)->print();
-    println("- Fields");
+    println("\t- Fields");
     foreach(it, fields) if(*it) (*it)->print();
 }
 

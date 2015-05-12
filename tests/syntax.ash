@@ -1,5 +1,9 @@
 namespace ash
 
-protocol SyntaxTest {
+class SyntaxTest : PTest {
     func foo()
+}
+
+protocol PTest {
+
 }

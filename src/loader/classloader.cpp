@@ -1,7 +1,7 @@
 #include <loader/classloader.h>
 #include <util/util.h>
 #include <loader/member.h>
-
+#include <errors/error.h>
 
 char cwdBuf[FILENAME_MAX];
 std::string compiledExtension = ".ashc", sourceExtension = ".ash", *classPath;
@@ -38,11 +38,16 @@ bool ClassLoader::importClass(std::string qualifiedName){
 	if(!file){
 		file = ClassLoader::searchDir(ClassLoader::getClassPath(), qualifiedName);}
 	if(!file){
-		printf("Can't import class: %s\n", qualifiedName.c_str());
+		Error::semanticError("Can't find class in classpath (" + qualifiedName +")");
+	}else{
+		parseLoadedFile(file);
 	}
-	//TODO: Do import process
 	delete file;
 	return false;
+}
+
+void ClassLoader::parseLoadedFile(AshFile* file){
+
 }
 
 AshFile* ClassLoader::searchDir(std::string absPath, std::string qualifiedName){

@@ -24,6 +24,7 @@ namespace ClassLoader {
 	bool importClass(std::vector<std::string> paths);
 	bool importClass(std::string qualifiedName);
 	AshFile* searchDir(std::string absPath, std::string qualifiedName);
+	void parseLoadedFile(AshFile* file);
 }
 
 #endif
