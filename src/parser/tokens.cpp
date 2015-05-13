@@ -42,6 +42,10 @@ bool TokenIdentifier::operator==(TokenIdentifier id){
 	return id.str == str;
 }
 
+bool TokenIdentifier::operator==(std::string s){
+	return str == s;
+}
+
 TokenQualifiedName::TokenQualifiedName(TokenIdentifier id){
 	paths.push_back(id.str);
 }
@@ -70,6 +74,14 @@ TokenType::TokenType(){}
 
 bool TokenType::operator==(TokenType type){
 	return id == type.id && arrDims == type.arrDims;
+}
+
+bool TokenType::operator==(std::string str){
+	return id == str;
+}
+
+bool TokenType::operator!=(const char* str){
+	return id.str != std::string(str);
 }
 
 TokenArg::TokenArg(TokenIdentifier i, TokenType t) : id(i), type(t){}

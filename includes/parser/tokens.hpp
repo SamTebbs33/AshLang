@@ -92,6 +92,7 @@ struct TokenIdentifier : public Token{
 	TokenIdentifier(std::string s);
 	TokenIdentifier();
 	bool operator==(TokenIdentifier n);
+	bool operator==(std::string str);
 };
 
 struct TokenQualifiedName : public Token{
@@ -131,10 +132,12 @@ struct TokenType : public TokenAnalysable{
 	TokenType();
 	virtual void analyse();
 	bool operator==(TokenType n);
+	bool operator==(std::string str);
+	bool operator!=(const char* str);
 };
 
 struct TokenArg : public TokenAnalysable{
-
+	bool errored = false;
 	TokenIdentifier id;
 	TokenType type;
 	TokenArg(TokenIdentifier i, TokenType t);
@@ -151,7 +154,6 @@ struct Args{
 };
 
 struct Types{
-
 	std::vector<TokenType> types;
 	Types(TokenType t);
 };
@@ -209,7 +211,7 @@ struct TokenVarDecImplicit : public TokenVarDec{
 };
 
 struct TokenFuncDec : public TokenDeclaration{
-
+	bool errored = false;
 	TokenBlock block;
 	Args args;
 	TokenType type;

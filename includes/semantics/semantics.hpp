@@ -3,6 +3,7 @@
 
 #include <string>
 #include <semantics/semantics.hpp>
+#include <parser/tokens.hpp>
 
 namespace Semantics{
     bool checkTypeExists(std::string shortName);
@@ -11,6 +12,8 @@ namespace Semantics{
     bool checkVarNotExistsInType(std::string varShortName, std::string typeShortName);
     bool checkVarExistsInCurrentType(std::string varShortName);
     bool checkVarNotExistsInCurrentType(std::string varShortName);
+    bool checkFuncThrowsExtendsThrowable(std::string throwsShortName);
+    bool checkForNoDuplicates(Args args, TokenArg arg);
 }
 
 #endif /* end of include guard: SEMANTICS_H */

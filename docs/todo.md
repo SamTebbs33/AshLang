@@ -8,5 +8,6 @@ To Do List
 - [x] - #5 - **11.05.15** - Finish a basic error reporting system
 - [x] - #6 - **12.05.15** - Finish pre-parsing procedure (defining functions and types before semantic analysis)
 - [ ] - #7 - Work on semantic analysis stage
-- [ ] - #8 - Finish initial class import procedure
-- [ ] - #9 - Work on bytecode generation
+- [ ] - #8 - Work on adding supers to Type definitions
+- [ ] - #9 - Finish initial class import procedure
+- [ ] - #10 - Work on bytecode generation

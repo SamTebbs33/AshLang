@@ -4,17 +4,35 @@
 void TokenStatement::analyse(){}
 
 void TokenType::analyse(){
-
     if(id.str != "") if(!Semantics::checkTypeExists(id.str)) errored = true;
 }
 
-void TokenArg::analyse(){}
+void TokenArg::analyse(){
+    type.analyse();
+    // If the type errored or if the variable used for the argument already exists
+    if(type.errored || Semantics::checkVarNotExistsInCurrentType(id.str)) errored = true;
+}
 
-void TokenBlock::analyse(){}
+void TokenBlock::analyse(){
+    foreach(it, stmts){
+        if(*it) (*it)->analyse();
+    }
+}
 
 void TokenDeclaration::analyse(){}
 
-void TokenFuncDec::analyse(){}
+void TokenFuncDec::analyse(){
+    foreach(it, args.args){
+        (*it).analyse();
+        if((*it).errored) errored = true;
+        if(!Semantics::checkForNoDuplicates(args, (*it))) errored = true;
+    }
+    type.analyse();
+    if(type.errored) errored = true;
+    // Ensure that the type used for the throws declaration is an instance of Throwable
+    if(throws != "") Semantics::checkFuncThrowsExtendsThrowable(throws.id.str);
+    block.analyse();
+}
 
 void ClassBlock::analyse(){
     foreach(it, varDecs) if(*it) (*it)->analyse();

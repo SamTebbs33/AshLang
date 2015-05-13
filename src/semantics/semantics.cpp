@@ -1,6 +1,7 @@
 #include <semantics/semantics.hpp>
 #include <loader/member.hpp>
 #include <error/errors.hpp>
+#include <util/util.hpp>
 
 bool Semantics::checkTypeExists(std::string shortName){
     if(!Members::typeExists(shortName)){
@@ -48,4 +49,22 @@ bool Semantics::checkVarExistsInCurrentType(std::string varShortName){
         return false;
     }
     return true;
+}
+
+bool Semantics::checkFuncThrowsExtendsThrowable(std::string throwsShortName){
+    Type* type = Members::getType(throwsShortName);
+    if(type){
+        //TODO: Check for supers
+    }
+}
+
+bool Semantics::checkForNoDuplicates(Args args, TokenArg arg){
+    bool hasDupes = false;
+    foreach(it2, args.args){
+        if(arg.id == (*it2).id){
+            Error::semanticError("Duplicate argument identifiers (" + arg.id.str +")");
+            hasDupes = true;
+        }
+    }
+    return !hasDupes;
 }
