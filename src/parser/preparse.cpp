@@ -2,6 +2,7 @@
 #include <loader/context.hpp>
 #include <loader/member.hpp>
 #include <error/errors.hpp>
+#include <semantics/semantics.hpp>
 
 void TokenFile::preParse(){
 	Context::push(FileContext("", Members::toQualifiedName(&namespc.name, "")));
@@ -82,4 +83,16 @@ void TokenFuncDec::preParse(){
 	else Error::semanticError("Function with identical signature already exists (" + name.shortName + ")");
 }
 
-void TokenVarDec::preParse(){}
+void TokenVarDec::preParse(){
+	if(Context::inType()){
+		if(!Context::inFunc()){
+			// Ensure the variable doesn't exist already, if not then push a new field to the current type
+			if(!Semantics::checkVarNotExistsInCurrentType(id.str)) errored = true;
+			else{
+				QualifiedName name = Members::getCurrentTypeQualifiedName();
+				name.add(id.str);
+				Members::addField(new Field(mods, name));
+			}
+		}
+	}
+}

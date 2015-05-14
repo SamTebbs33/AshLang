@@ -5,7 +5,7 @@
 
 std::stack<FileContext>* stack = new std::stack<FileContext>();
 TypeContext currentTypeContext;
-bool inTypeContext = false;
+bool inTypeContext = false, inFuncContext = false;
 
 FileContext::FileContext(std::string p, QualifiedName n) : relPath(p), namespc(n) {
 
@@ -35,6 +35,14 @@ void Context::enterTypeContext(TypeContext tc){
 
 void Context::exitTypeContext(){
     inTypeContext = false;
+}
+
+bool Context::inType(){
+    return inTypeContext;
+}
+
+bool Context::inFunc(){
+    return inFuncContext;
 }
 
 QualifiedName Context::getNamespace(){

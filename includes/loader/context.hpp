@@ -23,6 +23,8 @@ namespace Context{
 	void push(FileContext fc);
 	void enterTypeContext(TypeContext tc);
 	void exitTypeContext();
+	bool inType();
+	bool inFunc();
 	QualifiedName getNamespace();
 };
 

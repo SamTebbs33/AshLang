@@ -1,4 +1,5 @@
 #include <loader/member.hpp>
+#include <loader/context.hpp>
 
 // Map which contains Type objects paired with unqualified names
 std::map<std::string, Type*> types;
@@ -59,10 +60,12 @@ void Type::print(){
     foreach(it, fields) if(*it) (*it)->print();
 }
 
+Field::Field(ModifiersInt m, QualifiedName n) : Member(m, n){}
 
 void Members::addAndEnterType(Type* t){
     currentType = t;
     types.insert(std::map<std::string, Type*>::value_type(t->name.shortName, t));
+    Context::enterTypeContext(TypeContext(t));
 }
 
 bool Members::typeExists(std::string shortName){
@@ -92,7 +95,11 @@ bool Members::funcExistsInCurrentType(FuncSignature signature){
 }
 
 void Members::addFunction(FuncSignature* f){
-    currentType->funcs.push_back(f);
+    if(currentType) currentType->funcs.push_back(f);
+}
+
+void Members::addField(Field* f){
+    if(currentType) currentType->fields.push_back(f);
 }
 
 QualifiedName Members::toQualifiedName(TokenQualifiedName* n, std::string shortName){
@@ -132,7 +139,7 @@ void Members::printTypes(){
 
 bool Members::varExistsInType(std::string typeShortName, std::string varShortName){
     Type* type = Members::getType(typeShortName);
-    if(!type){
+    if(type){
         foreach(it, type->fields){
             if(*it) if((*it)->name.shortName == varShortName) return true;
         }
@@ -142,7 +149,7 @@ bool Members::varExistsInType(std::string typeShortName, std::string varShortNam
 
 bool Members::varExistsInCurrentType(std::string varShortName){
     Type* type = Members::getCurrentType();
-    if(!type){
+    if(type){
         foreach(it, type->fields){
             if(*it) if((*it)->name.shortName == varShortName) return true;
         }

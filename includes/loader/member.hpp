@@ -30,7 +30,7 @@ struct FuncSignature : Member{
 };
 
 struct Field : Member {
-
+    Field(ModifiersInt m, QualifiedName n);
 };
 
 struct Type : Member {
