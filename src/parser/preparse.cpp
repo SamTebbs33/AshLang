@@ -86,7 +86,7 @@ void TokenFuncDec::preParse(){
 void TokenVarDec::preParse(){
 	if(Context::inType()){
 		if(!Context::inFunc()){
-			// Ensure the variable doesn't exist already, if not then push a new field to the current type
+			// Ensure the variable doesn't exist already, if it doesn't then push a new field to the current type
 			if(!Semantics::checkVarNotExistsInCurrentType(id.str)) errored = true;
 			else{
 				QualifiedName name = Members::getCurrentTypeQualifiedName();

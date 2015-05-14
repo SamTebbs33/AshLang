@@ -2,8 +2,10 @@
 #include <loader/member.hpp>
 #include <error/errors.hpp>
 #include <util/util.hpp>
+#include <semantics/stdtypes.hpp>
 
 bool Semantics::checkTypeExists(std::string shortName){
+    if(StdTypes::isPrimitiveType(shortName)) return true;
     if(!Members::typeExists(shortName)){
         Error::semanticError("Type doesn't exist or isn't visible from the current context (" + shortName + ")");
         return false;

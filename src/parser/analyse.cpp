@@ -71,11 +71,11 @@ void TokenFile::analyse(){
 
 void TokenExpression::analyse(){}
 
-void TokenVarDec::analyse(){
-    if(Semantics::checkVarNotExistsInCurrentType(id.str)) errored = true;
-}
+void TokenVarDec::analyse(){}
 
-void TokenVarDecExplicit::analyse(){}
+void TokenVarDecExplicit::analyse(){
+    type.analyse();
+}
 
 void TokenVarDecExplicitAssign::analyse(){}
 

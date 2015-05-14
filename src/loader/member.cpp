@@ -18,6 +18,11 @@ void QualifiedName::add(std::string s){
     }
 }
 
+QualifiedName QualifiedName::addThis(std::string s){
+    add(s);
+    return *this;
+}
+
 bool QualifiedName::operator==(QualifiedName n){
     return n.fullName == fullName;
 }

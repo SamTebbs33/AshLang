@@ -11,6 +11,7 @@ struct QualifiedName {
     std::string fullName;
     QualifiedName();
     void add(std::string path);
+    QualifiedName addThis(std::string path);
     std::string toString();
     bool operator==(QualifiedName n);
 };

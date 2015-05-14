@@ -4,6 +4,7 @@
 #include <string>
 #include <semantics/semantics.hpp>
 #include <parser/tokens.hpp>
+#include <semantics/stdtypes.hpp>
 
 namespace Semantics{
     bool checkTypeExists(std::string shortName);
