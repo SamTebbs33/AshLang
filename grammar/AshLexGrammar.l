@@ -5,6 +5,11 @@
 	#include <parser/tokens.hpp>
 	#include <parser/parser.hpp>
 
+	int yycolumn = 1;
+	#define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno; \
+		yylloc.first_column = yycolumn; yylloc.last_column = yycolumn+yyleng-1;\
+		yycolumn += yyleng;
+
 	#define SAVE_LINE(a) a->line = yylineno;
 	#define RET(a) return a;
 	#define SAVE_STR ; yylval.str = new std::string(yytext, yyleng);
@@ -46,9 +51,10 @@ BinaryDigit ([0|1])
 "true"							RET(BOOL_TRUE);
 "false"							RET(BOOL_FALSE);
 
+\n								yycolumn = 1;
 "//"+.*							; // Single-line comment
 "/*"((\*+[^/*])|([^*]))*\**"*/"	; // Multi-line comment
-[ \t\n]+						;
+[ \t]+						;
 <<EOF>>							return EOF;
 
 ("int"|"bool"|"int8"|"int16"|"int64"|"uint"|"uint8"|"uint16"|"uint64"|"float"|"float64"|"char")			SAVE_ID; return PRIMITIVE;
@@ -63,8 +69,8 @@ BinaryDigit ([0|1])
 "standard"						SAVE_MOD; RET(STANDARD);
 "static"						SAVE_MOD; RET(STATIC);
 
-"var"							SAVE_VAR_KEYW(EnumVarDecKeyword::VAR);
-"const"							SAVE_VAR_KEYW(EnumVarDecKeyword::CONST);
+"var"							SAVE_VAR_KEYW(EnumVarDecKeyword::VAR); RET(VAR);
+"const"							SAVE_VAR_KEYW(EnumVarDecKeyword::CONST); RET(CONST);
 "func"							RET(FUNC);
 "class"							RET(CLASS);
 "enum"							RET(ENUM);

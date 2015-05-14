@@ -7,7 +7,7 @@
 #include <error/colours.hpp>
 
 namespace Error {
-    void parserError(const char* msg, int lineNo);
+    void parserError(const char* msg, YYLTYPE location);
     void semanticError(std::string msg);
     void compilerError(std::string msg);
     void error(std::string errType, const char* format, ...);

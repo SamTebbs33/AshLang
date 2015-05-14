@@ -9,8 +9,9 @@
 	extern int yylex();
 	extern int yylineno;
 	extern const char* yytext;
-	void yyerror(const char* s){
-		Error::parserError(s, yylineno);
+	extern YYLTYPE yylloc;
+	void yyerror(const char* msg){
+		Error::parserError(msg, yylloc);
 	}
 	int lineNo = 0;
 	TokenFile file;
@@ -87,9 +88,9 @@
 %type <type> type func_type throws
 %type <types> type_supers
 %type <block> enum_block func_dec_block
-%type <classBlock> class_block protocol_block
+%type <classBlock> protocol_block class_block
 %type <stmt> enum_stmt func_stmt var_assign
-%type <varDec> var_dec_body var_dec_explicit_assign var_dec_implicit class_var_dec protocol_var_dec var_dec
+%type <varDec> var_dec_body var_dec_explicit_assign var_dec_implicit protocol_var_dec var_dec
 %type <varDecE> var_dec_explicit
 %type <expr> expr
 %type <var> var
@@ -103,61 +104,163 @@
 %debug
 %error-verbose
 %start file
+%locations
 
 %%
 
 file: namespace_dec imports type_decs {file = TokenFile(*$1, *$2, *$3); DEL($1) DEL($2) DEL($3)} ;
 
-imports: import {$$ = new Imports(*$1); DEL($1)} | imports import {$1->imports.push_back(*$2); DEL($2)} | {$$ = new Imports();};
-import: IMPORT qualified_name {$$ = new TokenImport(*$2); DEL($2)} ;
-qualified_name: ID {$$ = new TokenQualifiedName(*$1); DEL($1)} | qualified_name DOT ID {$1->paths.push_back($3->str); DEL($3)};
-namespace_dec: NAMESPACE qualified_name {$$ = new TokenNamespace(*$2); DEL($2)} | {$$ = new TokenNamespace();} ;
+imports:
+	import {$$ = new Imports(*$1); DEL($1)}
+	| imports import {$1->imports.push_back(*$2); DEL($2)}
+	| {$$ = new Imports();};
 
-type_decs: type_dec  {$$ = new std::vector<TokenTypeDec*>(); $$->push_back($1);} | type_decs type_dec {$$->push_back($2);} ;
-type_dec: class_dec | protocol_dec | enum_dec ;
+import: IMPORT qualified_name {$$ = new TokenImport(*$2); DEL($2)} ;
+
+qualified_name:
+	ID {$$ = new TokenQualifiedName(*$1); DEL($1)}
+	| qualified_name DOT ID {$1->paths.push_back($3->str); DEL($3)};
+
+namespace_dec:
+	NAMESPACE qualified_name {$$ = new TokenNamespace(*$2); DEL($2)}
+	| {$$ = new TokenNamespace();} ;
+
+type_decs:
+	type_dec {$$ = new std::vector<TokenTypeDec*>(); $$->push_back($1);}
+	| type_decs type_dec {$$->push_back($2);} ;
+
+type_dec:
+	class_dec
+	| protocol_dec
+	| enum_dec ;
+
 class_dec: mods CLASS ID type_args type_supers BRACE_LEFT class_block BRACE_RIGHT {$$ = new TokenClassDec(*$4, *$3, $1, *$5, *$7); DEL($3) DEL($4) DEL($5) DEL($7)} ;
+
 protocol_dec: mods PROTOCOL ID type_args type_supers BRACE_LEFT protocol_block BRACE_RIGHT {$$ = new TokenProtocolDec(*$4, *$3, $1, *$5, *$7); DEL($3) DEL($4) DEL($5) DEL($7)} ;
+
 enum_dec: ENUM ID type_args BRACE_LEFT enum_instances enum_block BRACE_RIGHT {$$ = new TokenEnumDec(*$3, *$2, *$5); DEL($2) DEL($3) DEL($5)} ;
 
-mod: PUBLIC | PRIVATE | PROTECTED | FINAL | NATIVE | REQUIRED | STANDARD | STATIC | OVERRIDE ;
-mods: mod {$$ = $1;} | mods mod {$$ |= $2;}  | {$$ = 0;} ;
+mod:
+	PUBLIC
+	| PRIVATE
+	| PROTECTED
+	| FINAL
+	| NATIVE
+	| REQUIRED
+	| STANDARD
+	| STATIC
+	| OVERRIDE ;
 
-type_args: PAREN_LEFT args PAREN_RIGHT {$$ = $2;} | {$$ = new Args();} ;
-type: ID {$$ = new TokenType(*$1); DEL($1)} | PRIMITIVE {$$ = new TokenType(*$1); DEL($1)} | type BRACKET_LEFT BRACKET_RIGHT {$1->arrDims++;} ;
-args: arg {$$ = new Args();} | args COMMA arg {$1->args.push_back(*$3); DEL($3)} | {$$ = new Args();} ;
+mods:
+	mod {$$ = $1;}
+	| mods mod {$$ |= $2;}
+	| {$$ = 0;} ;
+
+type_args:
+	PAREN_LEFT args PAREN_RIGHT {$$ = $2;}
+	| {$$ = new Args();} ;
+
+type:
+	ID {$$ = new TokenType(*$1); DEL($1)}
+	| PRIMITIVE {$$ = new TokenType(*$1); DEL($1)}
+	| type BRACKET_LEFT BRACKET_RIGHT {$1->arrDims++;} ;
+
+args:
+	arg {$$ = new Args();}
+	| args COMMA arg {$1->args.push_back(*$3); DEL($3)}
+	| {$$ = new Args();} ;
+
 arg: ID COLON type {$$ = new TokenArg(*$1, *$3); DEL($3) DEL($1)} ;
 
-func_type: COLON type {$$ = $2;} | {$$ = new TokenType();} ;
-type_supers: func_type {$$ = new Types(*$1); DEL($1)} | type_supers COMMA type {$1->types.push_back(*$3); DEL($3)} ;
-throws: ARROW type {$$ = $2;} | {$$ = NULL;} ;
+func_type: COLON type {$$ = $2;}
+	| {$$ = new TokenType();} ;
 
-class_block: class_func_dec {$$ = new ClassBlock($1);} | class_block class_func_dec {$1->funcDecs.push_back($2);} | class_var_dec {$$ = new ClassBlock($1);} | class_block class_var_dec {$$->varDecs.push_back($2);} | {$$ = new ClassBlock();} ;
-func_dec_block: func_stmt {$$ = new TokenBlock($1);} | func_dec_block func_stmt {$1->stmts.push_back($2);} | {$$ = new TokenBlock();} ;
-func_stmt: var_assign | var_dec | RETURN {$$ = new TokenReturn();} | RETURN expr {$$ = new TokenReturn(*$2); DEL($2)} ;
-enum_instances: ID {$$ = new std::vector<TokenIdentifier>(); $$->push_back(*$1); DEL($1)} | enum_instances COMMA ID {$1->push_back(*$3); DEL($3)} | {$$ = new std::vector<TokenIdentifier>();} ;
-enum_block: enum_stmt {$$ = new TokenBlock($1);} | enum_block enum_stmt {$1->stmts.push_back($2);} |  {$$ = new TokenBlock();} ;
-enum_stmt: class_func_dec ;
-protocol_block: protocol_func_dec {$$ = new ClassBlock($1);} | protocol_block protocol_func_dec {$1->funcDecs.push_back($2);} | protocol_var_dec {$$ = new ClassBlock($1);} | protocol_block protocol_var_dec {$$->varDecs.push_back($2);} | {$$ = new ClassBlock();} ;
+type_supers:
+	func_type {$$ = new Types(*$1); DEL($1)}
+	| type_supers COMMA type {$1->types.push_back(*$3); DEL($3)} ;
+
+throws:
+	ARROW type {$$ = $2;}
+	| {$$ = NULL;} ;
+
+class_block:
+	var_dec {$$ = new ClassBlock($1);}
+	| class_block var_dec {$$->varDecs.push_back($2);}
+	| class_func_dec {$$ = new ClassBlock($1);}
+	| class_block class_func_dec {$1->funcDecs.push_back($2);}
+	| {$$ = new ClassBlock();} ;
+
+func_dec_block:
+	func_stmt {$$ = new TokenBlock($1);}
+	| func_dec_block func_stmt {$1->stmts.push_back($2);}
+	| {$$ = new TokenBlock();} ;
+
+func_stmt:
+	var_assign
+	| var_dec
+	| RETURN {$$ = new TokenReturn();}
+	| RETURN expr {$$ = new TokenReturn(*$2); DEL($2)} ;
+
+enum_instances:
+	ID {$$ = new std::vector<TokenIdentifier>(); $$->push_back(*$1); DEL($1)}
+	| enum_instances COMMA ID {$1->push_back(*$3); DEL($3)}
+	| {$$ = new std::vector<TokenIdentifier>();} ;
+
+enum_block:
+	class_func_dec {$$ = new TokenBlock($1);}
+	| enum_block class_func_dec {$1->stmts.push_back($2);}
+	| {$$ = new TokenBlock();} ;
+
+protocol_block:
+	protocol_func_dec {$$ = new ClassBlock($1);}
+	| protocol_block protocol_func_dec {$1->funcDecs.push_back($2);}
+	| var_dec_explicit {$$ = new ClassBlock($1);}
+	| protocol_block var_dec_explicit {$$->varDecs.push_back($2);}
+	| {$$ = new ClassBlock();} ;
 
 func_dec: mods FUNC ID PAREN_LEFT args PAREN_RIGHT func_type throws {$$ = new TokenFuncDec($1, *$3, *$5, $7 != NULL ? *$7 : TokenType(), $8 != NULL ? *$8 : TokenType()); DEL($3) DEL($5) DEL($7) DEL($8)} ;
-class_func_dec: func_dec BRACE_LEFT func_dec_block BRACE_RIGHT {$1->block = *$3; DEL($3)} ;
-protocol_func_dec: func_dec {/*$1->block = TokenBlock();*/} ;
-var_dec_keyw: CONST | VAR ;
-var_dec_body: mods var_dec_keyw ID {$$ = new TokenVarDec($1, *$3, $2); DEL($3)} ;
-var_dec_explicit: var_dec_body func_type {$$ = new TokenVarDecExplicit($1->id, $1->decKeyword, *$2);  DEL($2)};
-var_dec_explicit_assign: var_dec_explicit OP_ASSIGN expr {$$ = new TokenVarDecExplicitAssign($1->id, $1->decKeyword, $1->type, *$3); DEL($3)} ;
-var_dec_implicit: var_dec_body OP_ASSIGN expr {$$ = new TokenVarDecImplicit($1->id, $1->decKeyword, *$3, $1->mods); DEL($3)} ;
-var_dec: var_dec_explicit | var_dec_explicit_assign | var_dec_implicit ;
-class_var_dec: var_dec ;
-protocol_var_dec: var_dec_explicit ;
 
-prefix: var | func_call ;
-func_call_args: expr {$$ = new std::vector<TokenExpression>(); $$->push_back(*$1); DEL($1)} | func_call_args COMMA expr {$1->push_back(*$3); DEL($3)} | {$$ = new std::vector<TokenExpression>();} ;
-func_call: ID PAREN_LEFT func_call_args PAREN_RIGHT {$$ = new TokenFuncCall(*$1, *$3); DEL($3) DEL($1)} | prefix DOT func_call {$3->prefix = *$1; DEL($1)} ;
-var: ID {$$ = new TokenVariable(*$1); DEL($1)} | var PAREN_LEFT expr PAREN_RIGHT {$1->arrExprs.push_back(*$3); DEL($3)} | prefix DOT var {$3->prefix = *$1; DEL($1)} ;
+class_func_dec: func_dec BRACE_LEFT func_dec_block BRACE_RIGHT {$1->block = *$3; DEL($3)} ;
+
+protocol_func_dec: func_dec {/*$1->block = TokenBlock();*/} ;
+
+var_dec_keyw: CONST {printf("Matched const %d\n", yylineno);} | VAR ;
+
+var_dec_body: mods VAR ID {$$ = new TokenVarDec($1, *$3, $2); DEL($3)} ;
+
+var_dec_explicit: var_dec_body func_type {$$ = new TokenVarDecExplicit($1->id, $1->decKeyword, *$2);  DEL($2)};
+
+var_dec_explicit_assign: var_dec_explicit OP_ASSIGN expr {$$ = new TokenVarDecExplicitAssign($1->id, $1->decKeyword, $1->type, *$3); DEL($3)} ;
+
+var_dec_implicit: var_dec_body OP_ASSIGN expr {$$ = new TokenVarDecImplicit($1->id, $1->decKeyword, *$3, $1->mods); DEL($3)} ;
+
+var_dec:
+	var_dec_explicit
+	| var_dec_explicit_assign
+	| var_dec_implicit ;
+
+prefix:
+	var
+	| func_call ;
+
+func_call_args:
+	expr {$$ = new std::vector<TokenExpression>(); $$->push_back(*$1); DEL($1)}
+	| func_call_args COMMA expr {$1->push_back(*$3); DEL($3)}
+	| {$$ = new std::vector<TokenExpression>();} ;
+
+func_call:
+	ID PAREN_LEFT func_call_args PAREN_RIGHT {$$ = new TokenFuncCall(*$1, *$3); DEL($3) DEL($1)}
+	| prefix DOT func_call {$3->prefix = *$1; DEL($1)} ;
+
+var:
+	ID {$$ = new TokenVariable(*$1); DEL($1)}
+	| var BRACKET_LEFT expr BRACKET_RIGHT {$1->arrExprs.push_back(*$3); DEL($3)}
+	| prefix DOT var {$3->prefix = *$1; DEL($1)} ;
+
 var_assign: var op_assign expr {$$ = new TokenVarAssign(*$1, $2, *$3); DEL($1) DEL($3)} ;
 
-expr: expr op_infix expr {$$ = new TokenExprInfix(*$1, *$2, *$3); DEL($1) DEL($3) DEL($2)}
+expr:
+	expr op_infix expr {$$ = new TokenExprInfix(*$1, *$2, *$3); DEL($1) DEL($3) DEL($2)}
 	| op_prefix expr {$$ = new TokenExprPrefix(*$1, *$2); DEL($2) DEL($1)}
 	| expr op_postfix {$$ = new TokenExprPostfix(*$1, *$2); DEL($1) DEL($2)}
 	| INT {$$ = new TokenExprInt($1);}

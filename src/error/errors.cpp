@@ -20,8 +20,8 @@ void Error::compilerError(std::string msg){
  * Emit a parser (syntax) error
  * @type {void}
  */
-void Error::parserError(const char* msg, int lineNo){
-    Error::error(Colours::red("Error"), ":%s:%d: %s\n", currentFile, lineNo, msg);
+void Error::parserError(const char* msg, YYLTYPE location){
+    Error::error(Colours::red("Error"), ":%s:%d-%d: %s\n", currentFile, location.first_line, location.first_column, msg);
 }
 
 /**

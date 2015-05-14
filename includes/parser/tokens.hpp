@@ -4,6 +4,15 @@
 using ModifiersInt = unsigned short;
 
 #define SAVE_LINE(a) Token::setLine(a.line);
+#define YYLTYPE_IS_DECLARED
+
+typedef struct YYLTYPE
+{
+  int first_line;
+  int first_column;
+  int last_line;
+  int last_column;
+} YYLTYPE;
 
 #include <string>
 #include <deque>

@@ -27,16 +27,6 @@ parser: ${GRAMMARS}
 	@flex -o src/parser/lexer.cpp grammar/AshLexGrammar.l
 	@mv src/parser/parser.hpp includes/parser/parser.hpp
 
-# Build and run
-build-run:
-	@make build
-	@make run
-
-# Build and run in debug mode
-build-debug:
-	@make build
-	@make debug
-
 # Run in debug mode
 debug:
 	@echo "### Debugging ashc"

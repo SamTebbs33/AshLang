@@ -52,7 +52,16 @@ void TokenClassDec::analyse(){
     block.analyse();
 }
 
-void TokenProtocolDec::analyse(){}
+void TokenProtocolDec::analyse(){
+    if(!TokenTypeDec::errored){
+        foreach(it, supers.types){
+            (*it).analyse();
+            // Ensure the protocol is not attempting to implement itself
+            if(!Semantics::checkSuperIsNotCurrentType((*it).id.str)) errored = true;
+        }
+    }
+    block.analyse();
+}
 
 void TokenEnumDec::analyse(){}
 
