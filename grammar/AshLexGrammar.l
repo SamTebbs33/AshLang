@@ -22,7 +22,7 @@
 	#define SAVE_ID yylval.id = new TokenIdentifier(std::string(yytext)); SAVE_LINE(yylval.id);
 	#define SAVE_MOD yylval.mod = Tokens::getMod(std::string(yytext));
 	#define SAVE_VAR_KEYW(a) yylval.varDecKeyW = a;
-
+	
 	extern "C" int yywrap(){return 1;}
 
 %}

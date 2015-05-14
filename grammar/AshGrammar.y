@@ -13,6 +13,7 @@
 	void yyerror(const char* msg){
 		Error::parserError(msg, yylloc);
 	}
+
 	int lineNo = 0;
 	TokenFile file;
 %}

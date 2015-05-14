@@ -11,10 +11,18 @@ struct FileContext{
 	FileContext(std::string p, QualifiedName n);
 };
 
+struct TypeContext{
+	Type* type;
+	TypeContext(Type* t);
+	TypeContext();
+};
+
 namespace Context{
 	FileContext top();
 	FileContext pop();
 	void push(FileContext fc);
+	void enterTypeContext(TypeContext tc);
+	void exitTypeContext();
 	QualifiedName getNamespace();
 };
 
