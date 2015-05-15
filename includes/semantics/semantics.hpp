@@ -9,8 +9,11 @@ struct TokenArg;
 struct TypeI {
     std::string typeShortName;
     int arrDims;
+    int enumPrimitive;
     TypeI(std::string name);
     TypeI(std::string name, int dims);
+    TypeI(std::string name, int dims, int primitive);
+    bool operator==(TypeI t);
     std::string toString();
 };
 

@@ -5,13 +5,18 @@
 #include <semantics/stdtypes.hpp>
 #include <parser/tokens.hpp>
 
-TypeI::TypeI(std::string t) : TypeI(t, 0){}
-TypeI::TypeI(std::string t, int dims) : typeShortName(t), arrDims(dims){}
+TypeI::TypeI(std::string t) : TypeI(t, 0, 0){}
+TypeI::TypeI(std::string t, int dims) : TypeI(t, dims, 0){}
+TypeI::TypeI(std::string t, int dims, int enumPrimitive) : typeShortName(t), arrDims(dims), enumPrimitive(enumPrimitive){}
 
 std::string TypeI::toString(){
     std::string result = typeShortName;
     for(int i = 0; i < arrDims; i++) result += "[]";
     return result;
+}
+
+bool TypeI::operator==(TypeI t){
+    return t.typeShortName == typeShortName && t.arrDims == arrDims && t.enumPrimitive == enumPrimitive;
 }
 
 bool Semantics::checkTypeExists(std::string shortName){
@@ -91,7 +96,23 @@ bool Semantics::checkForNoDuplicates(Args* args, TokenArg* arg){
 }
 
 TypeI Semantics::getPrecedentType(TypeI t1, TypeI t2){
-    //TODO: Actually do what it's supposed to do
+    // If either type is not a primitive.
+    // No support yet for operations between objects
+    if(t1.enumPrimitive == 0 || t1.enumPrimitive == 0) return TypeI("");
+
+    // No support yet for oeprations between arrays
+    if(t1.arrDims != 0 || t1.arrDims != 0) return TypeI("");
+
+    // If the types aren't arrays or objects, then return either if they are the same type
+    if(t1 == t2) return t1;
+
+    int primitive = t1.enumPrimitive | t2.enumPrimitive;
+
+    // This loop relies on the fact that each EnumPrimitiveType is double the previous
+    // and that the enum instances are ordered by precedence
+    for(int i = 1; i < EnumPrimitiveType::NUM_TYPES; i *= 2){
+        if(primitive | i) return StdTypes::getAsTypeI((EnumPrimitiveType::type)i);
+    }
     return t1;
 }
 

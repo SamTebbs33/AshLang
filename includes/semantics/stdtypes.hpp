@@ -6,19 +6,20 @@
 
 struct EnumPrimitiveType{
     enum type{
-        BOOL,
-        CHAR,
-        INT8,
-        INT16,
-        INT,
-        INT64,
-        UINT8,
-        UINT16,
-        UINT,
-        UINT64,
-        FLOAT,
-        FLOAT64,
-        NUM_TYPES
+        NONE = 0,
+        BOOL = 1,
+        FLOAT64 = 2,
+        FLOAT = 4,
+        UINT64 = 8,
+        UINT = 16,
+        UINT16 = 32,
+        UINT8 = 64,
+        INT64 = 128,
+        INT = 256,
+        INT16 = 512,
+        INT8 = 1024,
+        CHAR = 2048,
+        NUM_TYPES = 4096
     };
 };
 

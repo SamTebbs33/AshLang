@@ -5,7 +5,8 @@ const char* primitiveTypeStrs[EnumPrimitiveType::NUM_TYPES] = {"bool", "char", "
 
 bool StdTypes::isPrimitiveType(TypeI type){
     if(type.arrDims > 0) return false;
-    for(int i = 0; i < EnumPrimitiveType::NUM_TYPES; i++) if(type.typeShortName == primitiveTypeStrs[i]) return true;
+    // Start at 1, since the first EnumPrimitiveType (0) signifies that a type is not a primitive.
+    for(int i = 1; i < EnumPrimitiveType::NUM_TYPES; i++) if(type.typeShortName == primitiveTypeStrs[i]) return true;
     return false;
 }
 
