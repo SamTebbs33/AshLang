@@ -4,21 +4,11 @@
 using ModifiersInt = unsigned short;
 
 #define SAVE_LINE(a) Token::setLine(a.line);
-#define YYLTYPE_IS_DECLARED
-
-typedef struct YYLTYPE
-{
-  int first_line;
-  int first_column;
-  int last_line;
-  int last_column;
-} YYLTYPE;
 
 #include <string>
 #include <deque>
 #include <vector>
-#include <loader/classloader.hpp>
-#include <util/util.hpp>
+#include <semantics/semantics.hpp>
 
 struct EnumVarDecKeyword{
 	enum type{
@@ -176,6 +166,7 @@ struct TokenBlock : public TokenAnalysable{
 
 struct TokenExpression : public TokenAnalysable{
 	virtual void analyse();
+    virtual TypeI getExprType();
 };
 
 struct TokenDeclaration : public TokenAnalysable, public TokenPreParseable, public TokenStatement{
@@ -301,11 +292,12 @@ struct TokenReturn : public TokenStatement, public TokenAnalysable{
 };
 
 struct TokenExprInfix : public TokenExpression{
-
+    bool errored = false;
 	TokenExpression expr1, expr2;
 	Operator op;
 	TokenExprInfix(TokenExpression e1, Operator o, TokenExpression e2);
 	virtual void analyse();
+    virtual TypeI getExprType();
 };
 
 struct TokenExprPrefix : public TokenExpression{
@@ -314,6 +306,7 @@ struct TokenExprPrefix : public TokenExpression{
 	Operator op;
 	TokenExprPrefix(Operator o, TokenExpression expr);
 	virtual void analyse();
+    virtual TypeI getExprType();
 };
 
 struct TokenExprPostfix : public TokenExpression{
@@ -322,48 +315,56 @@ struct TokenExprPostfix : public TokenExpression{
 	Operator op;
 	TokenExprPostfix(TokenExpression e, Operator o);
 	virtual void analyse();
+    virtual TypeI getExprType();
 };
 
 struct TokenExprInt : public TokenExpression{
 
 	int val;
 	TokenExprInt(int v);
+    virtual TypeI getExprType();
 };
 
 struct TokenExprStr : public TokenExpression{
 
 	std::string* str;
 	TokenExprStr(std::string* s);
+    virtual TypeI getExprType();
 };
 
 struct TokenExprChar : public TokenExpression{
 
 	char ch;
 	TokenExprChar(char c);
+    virtual TypeI getExprType();
 };
 
 struct TokenExprBool : public TokenExpression{
 
 	bool val;
 	TokenExprBool(bool b);
+    virtual TypeI getExprType();
 };
 
 struct TokenExprFloat : public TokenExpression{
 
 	float val;
 	TokenExprFloat(float v);
+    virtual TypeI getExprType();
 };
 
 struct TokenExprFloat64 : public TokenExpression{
 
 	double val;
 	TokenExprFloat64(double v);
+    virtual TypeI getExprType();
 };
 
 struct TokenExprLong : public TokenExpression{
 
 	long val;
 	TokenExprLong(long v);
+    virtual TypeI getExprType();
 };
 
 struct TokenExprTernary : public TokenExpression{
@@ -371,6 +372,7 @@ struct TokenExprTernary : public TokenExpression{
 	TokenExpression exprBool, expr1, expr2;
 	TokenExprTernary(TokenExpression eBool, TokenExpression e1, TokenExpression e2);
 	virtual void analyse();
+    virtual TypeI getExprType();
 };
 
 struct TokenPrefix : public TokenExpression{
@@ -384,6 +386,7 @@ struct TokenVariable : public TokenPrefix{
 	std::vector<TokenExpression> arrExprs;
 	TokenVariable(TokenIdentifier i);
 	virtual void analyse();
+    virtual TypeI getExprType();
 };
 
 struct TokenVarAssign : public TokenStatement{

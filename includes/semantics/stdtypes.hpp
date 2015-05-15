@@ -2,6 +2,7 @@
 #define STDTYPES_H
 
 #include <loader/member.hpp>
+#include <semantics/semantics.hpp>
 
 struct EnumPrimitiveType{
     enum type{
@@ -22,8 +23,12 @@ struct EnumPrimitiveType{
 };
 
 namespace StdTypes{
-    bool isPrimitiveType(std::string typeName);
+    bool isPrimitiveType(TypeI typeName);
+    bool isStandardType(TypeI typeShortName);
     QualifiedName getStringQualifiedName();
+    std::string getShortName(EnumPrimitiveType::type primitive);
+    std::string getStringShortName();
+    TypeI getAsTypeI(EnumPrimitiveType::type primtive);
 }
 
 #endif /* end of include guard: STDTYPES_H */

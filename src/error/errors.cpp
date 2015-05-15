@@ -1,4 +1,6 @@
 #include <error/errors.hpp>
+#include <error/colours.hpp>
+#include <parser/yyltype.hpp>
 
 unsigned int numErrors = 0;
 extern char* currentFile;
@@ -20,8 +22,8 @@ void Error::compilerError(std::string msg){
  * Emit a parser (syntax) error
  * @type {void}
  */
-void Error::parserError(const char* msg, YYLTYPE location){
-    Error::error(Colours::red("Error"), ":%s:%d-%d: %s\n", currentFile, location.first_line, location.first_column, msg);
+void Error::parserError(const char* msg, YYLTYPE* location){
+    Error::error(Colours::red("Error"), ":%s:%d-%d: %s\n", currentFile, location->first_line, location->first_column, msg);
 }
 
 /**

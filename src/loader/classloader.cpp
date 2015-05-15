@@ -1,5 +1,6 @@
 #include <loader/classloader.hpp>
 #include <util/util.hpp>
+#include <util/platform.hpp>
 #include <loader/member.hpp>
 #include <error/errors.hpp>
 

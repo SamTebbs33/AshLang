@@ -1,10 +1,11 @@
-#include <parser/externs.hpp>
-#include <util/util.hpp>
-#include <loader/classloader.hpp>
 #include <stdio.h>
-#include <loader/member.hpp>
-#include <error/errors.hpp>
 #include <ctime>
+#include <parser/externs.hpp>
+#include <error/errors.hpp>
+#include <loader/classloader.hpp>
+#include <loader/member.hpp>
+#include <util/util.hpp>
+#include <parser/tokens.hpp>
 
 const char* currentFile;
 
@@ -29,11 +30,12 @@ int main(int argc, char const *argv[]) {
         fclose(yyin);
 
         if(Error::getNumErrors() > 0) return 0;
-
-        ClassLoader::init();
-        file.preParse();
-        file.analyse();
-        Members::printTypes();
+        if(file){
+            ClassLoader::init();
+            file->preParse();
+            file->analyse();
+            Members::printTypes();
+        }
         return 0;
     }else println("### Failed to open file");
 

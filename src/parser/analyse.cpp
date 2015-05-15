@@ -1,5 +1,6 @@
 #include <parser/tokens.hpp>
 #include <semantics/semantics.hpp>
+#include <util/util.hpp>
 
 void TokenStatement::analyse(){}
 
@@ -25,7 +26,7 @@ void TokenFuncDec::analyse(){
     foreach(it, args.args){
         (*it).analyse();
         if((*it).errored) errored = true;
-        if(!Semantics::checkForNoDuplicates(args, (*it))) errored = true;
+        if(!Semantics::checkForNoDuplicates(&args, &(*it))) errored = true;
     }
     type.analyse();
     if(type.errored) errored = true;
@@ -77,7 +78,10 @@ void TokenVarDecExplicit::analyse(){
     type.analyse();
 }
 
-void TokenVarDecExplicitAssign::analyse(){}
+void TokenVarDecExplicitAssign::analyse(){
+    TokenVarDecExplicit::analyse();
+    expr.analyse();
+}
 
 void TokenVarDecImplicit::analyse(){}
 

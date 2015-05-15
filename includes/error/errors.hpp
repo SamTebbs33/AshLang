@@ -3,11 +3,12 @@
 
 #include <stdio.h>
 #include <stdarg.h>
-#include <parser/tokens.hpp>
-#include <error/colours.hpp>
+#include <string>
+
+struct YYLTYPE;
 
 namespace Error {
-    void parserError(const char* msg, YYLTYPE location);
+    void parserError(const char* msg, YYLTYPE* location);
     void semanticError(std::string msg);
     void compilerError(std::string msg);
     void error(std::string errType, const char* format, ...);

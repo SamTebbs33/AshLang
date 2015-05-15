@@ -3,7 +3,11 @@
 
 #include <vector>
 #include <map>
-#include <parser/tokens.hpp>
+#include <semantics/semantics.hpp>
+
+using ModifiersInt = unsigned short;
+
+struct Args;
 
 struct QualifiedName {
     std::vector<std::string> paths;
@@ -39,8 +43,8 @@ struct Type : Member {
     std::vector<FuncSignature*> funcs;
     std::vector<Field*> fields;
     std::vector<Type*> supers;
-    EnumType::type type;
-    Type(ModifiersInt m, QualifiedName n, EnumType::type t);
+    int type;
+    Type(ModifiersInt m, QualifiedName n, int enumType);
     void print();
 };
 
@@ -48,8 +52,8 @@ namespace Members {
     void addAndEnterType(Type* t);
     void addFunction(FuncSignature* f);
     void addField(Field* f);
-    QualifiedName toQualifiedName(TokenQualifiedName* n);
-    QualifiedName toQualifiedName(TokenQualifiedName* n, std::string s);
+    QualifiedName toQualifiedName(std::vector<std::string> n);
+    QualifiedName toQualifiedName(std::vector<std::string> n, std::string s);
     Type* getCurrentType();
     Type* getType(std::string typeShortName);
     QualifiedName getCurrentTypeQualifiedName();

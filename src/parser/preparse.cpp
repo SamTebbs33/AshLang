@@ -3,9 +3,11 @@
 #include <loader/member.hpp>
 #include <error/errors.hpp>
 #include <semantics/semantics.hpp>
+#include <util/util.hpp>
+#include <loader/classloader.hpp>
 
 void TokenFile::preParse(){
-	Context::push(FileContext("", Members::toQualifiedName(&namespc.name, "")));
+	Context::push(FileContext("", Members::toQualifiedName(namespc.name.paths, "")));
 	namespc.preParse();
 	foreach(it, imports.imports) (*it).preParse();
 	foreach(it, typeDecs) if(*it) (*it)->preParse();

@@ -1,5 +1,7 @@
 #include <loader/member.hpp>
 #include <loader/context.hpp>
+#include <util/util.hpp>
+#include <parser/tokens.hpp>
 
 // Map which contains Type objects paired with unqualified names
 std::map<std::string, Type*> types;
@@ -50,7 +52,7 @@ bool FuncSignature::operator==(FuncSignature f){
 }
 
 
-Type::Type(ModifiersInt m, QualifiedName n, EnumType::type t) : Member(m, n), type(t){
+Type::Type(ModifiersInt m, QualifiedName n, int enumType) : Member(m, n), type(enumType){
 
 }
 
@@ -107,20 +109,18 @@ void Members::addField(Field* f){
     if(currentType) currentType->fields.push_back(f);
 }
 
-QualifiedName Members::toQualifiedName(TokenQualifiedName* n, std::string shortName){
+QualifiedName Members::toQualifiedName(std::vector<std::string> n, std::string shortName){
     QualifiedName name = toQualifiedName(n);
     name.add(shortName);
     return name;
 }
 
-QualifiedName Members::toQualifiedName(TokenQualifiedName* n){
+QualifiedName Members::toQualifiedName(std::vector<std::string> n){
     QualifiedName name;
-    if(n){
         // Add paths and the short name. A class called Test in ash.lang gives a qualified name called ash.lang.Test
-        for(auto it = n->paths.begin(); it != n->paths.end(); it++){
+        for(auto it = n.begin(); it != n.end(); it++){
             name.add((*it));
         }
-    }
     // Add short name to end. The short name is how the type or function is referred to in code.
     return name;
 }

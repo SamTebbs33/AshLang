@@ -2,6 +2,9 @@
 #include <loader/context.hpp>
 #include <loader/member.hpp>
 #include <util/util.hpp>
+#include <semantics/stdtypes.hpp>
+#include <semantics/semantics.hpp>
+#include <error/errors.hpp>
 
 const char* typeStrs[EnumType::NUM_TYPES] = {
 	"Class",
@@ -152,29 +155,91 @@ TokenVarDecExplicitAssign::TokenVarDecExplicitAssign(TokenIdentifier i, EnumVarD
 
 TokenVarDecImplicit::TokenVarDecImplicit(TokenIdentifier i, EnumVarDecKeyword::type k, TokenExpression e, ModifiersInt m) : TokenVarDec(m, i, k), expr(e){}
 
+TypeI TokenExpression::getExprType(){
+	return TypeI("");
+}
+
 TokenExprInfix::TokenExprInfix(TokenExpression e1, Operator o, TokenExpression e2) : expr1(e1), op(o), expr2(e2){}
+
+TypeI TokenExprInfix::getExprType(){
+	TypeI expr1Type = expr1.getExprType(), expr2Type = expr2.getExprType();
+	// Ensure that the types are either String or primitives
+	if(StdTypes::isStandardType(expr1Type) && StdTypes::isStandardType(expr2Type)){
+		// Get the most precedent type. Eg 1.2 + 4 gives a float64 and "hello" + 4 gives a String
+		return Semantics::getPrecedentType(expr1Type, expr2Type);
+	}else{
+		Error::semanticError("Cannot apply operator to types other than primtitives and String objects (" + expr1Type.toString() + ", " + expr2Type.toString() + ")");
+		errored = true;
+		return TypeI("");
+	}
+}
 
 TokenExprPrefix::TokenExprPrefix(Operator o, TokenExpression e) : op(o), expr(e){}
 
+TypeI TokenExprPrefix::getExprType(){
+	return expr.getExprType();
+}
+
 TokenExprPostfix::TokenExprPostfix(TokenExpression e, Operator o) : expr(e), op(o){}
+
+TypeI TokenExprPostfix::getExprType(){
+	return expr.getExprType();
+}
 
 TokenExprInt::TokenExprInt(int v) : val(v){}
 
+TypeI TokenExprInt::getExprType(){
+	return StdTypes::getAsTypeI(EnumPrimitiveType::INT);
+}
+
 TokenExprStr::TokenExprStr(std::string* s) : str(s){}
+
+TypeI TokenExprStr::getExprType(){
+	return TypeI(StdTypes::getStringShortName());
+}
 
 TokenExprChar::TokenExprChar(char c) : ch(c){}
 
+TypeI TokenExprChar::getExprType(){
+	return StdTypes::getAsTypeI(EnumPrimitiveType::CHAR);
+}
+
 TokenExprBool::TokenExprBool(bool v) : val(v){}
+
+TypeI TokenExprBool::getExprType(){
+	return StdTypes::getAsTypeI(EnumPrimitiveType::BOOL);
+}
 
 TokenExprFloat::TokenExprFloat(float v) : val(v){}
 
+TypeI TokenExprFloat::getExprType(){
+	return StdTypes::getAsTypeI(EnumPrimitiveType::FLOAT);
+}
+
 TokenExprFloat64::TokenExprFloat64(double v) : val(v){}
+
+TypeI TokenExprFloat64::getExprType(){
+	return StdTypes::getAsTypeI(EnumPrimitiveType::FLOAT64);
+}
 
 TokenExprLong::TokenExprLong(long v) : val(v){}
 
+TypeI TokenExprLong::getExprType(){
+	return StdTypes::getAsTypeI(EnumPrimitiveType::INT64);
+}
+
 TokenExprTernary::TokenExprTernary(TokenExpression eB, TokenExpression e1, TokenExpression e2) : exprBool(eB), expr1(e1), expr2(e2){}
 
+TypeI TokenExprTernary::getExprType(){
+	return Semantics::getPrecedentTypeOrCommonSuper(expr1.getExprType(), expr2.getExprType());
+}
+
 TokenVariable::TokenVariable(TokenIdentifier i) : id(i){}
+
+TypeI TokenVariable::getExprType(){
+	//TODO: Get var type from symbol table
+	return TypeI("");
+}
 
 TokenVarAssign::TokenVarAssign(TokenVariable v, Operator* o, TokenExpression e) : var(v), op(o), expr(e){}
 

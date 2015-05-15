@@ -2,6 +2,7 @@
 	#include <string>
 	#include <parser/tokens.hpp>
 	#include <error/errors.hpp>
+	#include <parser/yyltype.hpp>
 
 	#define YYERROR_VERBOSE
 	#define DEL(a) delete a;
@@ -11,11 +12,11 @@
 	extern const char* yytext;
 	extern YYLTYPE yylloc;
 	void yyerror(const char* msg){
-		Error::parserError(msg, yylloc);
+		Error::parserError(msg, &yylloc);
 	}
 
 	int lineNo = 0;
-	TokenFile file;
+	TokenFile* file;
 %}
 
 %union{
@@ -109,7 +110,7 @@
 
 %%
 
-file: namespace_dec imports type_decs {file = TokenFile(*$1, *$2, *$3); DEL($1) DEL($2) DEL($3)} ;
+file: namespace_dec imports type_decs {file = new TokenFile(*$1, *$2, *$3); DEL($1) DEL($2) DEL($3)} ;
 
 imports:
 	import {$$ = new Imports(*$1); DEL($1)}
