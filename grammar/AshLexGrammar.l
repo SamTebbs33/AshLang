@@ -5,6 +5,7 @@
 	#include <parser/tokens.hpp>
 	#include <parser/parser.hpp>
 
+	//std::string srcLine;
 	int yycolumn = 1;
 	#define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno; \
 		yylloc.first_column = yycolumn; yylloc.last_column = yycolumn+yyleng-1;\
@@ -22,7 +23,9 @@
 	#define SAVE_ID yylval.id = new TokenIdentifier(std::string(yytext)); SAVE_LINE(yylval.id);
 	#define SAVE_MOD yylval.mod = Tokens::getMod(std::string(yytext));
 	#define SAVE_VAR_KEYW(a) yylval.varDecKeyW = a;
-	
+	//#define PUSH_SRC_LINE std::getline(fileLineStream, srcLine); Error::pushSourceLine(srcLine);
+
+	//extern std::ifstream fileLineStream;
 	extern "C" int yywrap(){return 1;}
 
 %}

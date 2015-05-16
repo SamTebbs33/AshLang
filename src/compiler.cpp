@@ -17,12 +17,19 @@ int main(int argc, char const *argv[]) {
 
     currentFile = argv[1];
     yyin = fopen(currentFile, "r");
+    std::ifstream fileLineStream(currentFile);
     yydebug = 0;
 
-    if (yyin) {
+    if (yyin && fileLineStream.is_open()) {
+
         printf("### Parsing file: %s\n", currentFile);
         yyrestart(yyin);
         clock_t t = clock();
+        // Read in the source lines that are then used when reporting errors
+        std::string line;
+        while(std::getline(fileLineStream, line)) Error::pushSourceLine(line);
+        fileLineStream.close();
+
         yyparse();
         t = clock() - t;
         double seconds = ((double)t) / CLOCKS_PER_SEC;

@@ -80,7 +80,8 @@ void TokenVarDecExplicit::analyse(){
 
 void TokenVarDecExplicitAssign::analyse(){
     TokenVarDecExplicit::analyse();
-    expr.analyse();
+    expr->analyse();
+    printf("Inferred %s\n", expr->getExprType().toString().c_str());
 }
 
 void TokenVarDecImplicit::analyse(){}

@@ -1,7 +1,8 @@
 #include <semantics/stdtypes.hpp>
+#include <cmath>
 
 QualifiedName stringQualifiedName = QualifiedName().addThis("ash").addThis("lang").addThis("String");
-const char* primitiveTypeStrs[EnumPrimitiveType::NUM_TYPES] = {"bool", "char", "int8", "int16", "int", "int64", "uint8", "uint16", "uint", "uint64", "float", "float64"};
+const char* primitiveTypeStrs[EnumPrimitiveType::NUM_TYPES] = {"none", "bool", "float64", "float", "uint64", "uint", "uint16", "uint8", "int64", "int", "int16", "int8", "char"};
 
 bool StdTypes::isPrimitiveType(TypeI type){
     if(type.arrDims > 0) return false;
@@ -23,9 +24,9 @@ std::string StdTypes::getStringShortName(){
 }
 
 std::string StdTypes::getShortName(EnumPrimitiveType::type primitive){
-    return std::string(primitiveTypeStrs[primitive]);
+    return std::string(primitiveTypeStrs[(int)log2(primitive)]);
 }
 
 TypeI StdTypes::getAsTypeI(EnumPrimitiveType::type primitive){
-    return TypeI(StdTypes::getShortName(primitive));
+    return TypeI(StdTypes::getShortName(primitive), 0, primitive);
 }

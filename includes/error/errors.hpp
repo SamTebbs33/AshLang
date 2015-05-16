@@ -13,6 +13,7 @@ namespace Error {
     void compilerError(std::string msg);
     void error(std::string errType, const char* format, ...);
     unsigned int getNumErrors();
+    void pushSourceLine(std::string line);
 } /* Error */
 
 #endif /* end of include guard: ERRORS_H */

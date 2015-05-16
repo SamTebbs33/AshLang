@@ -131,6 +131,8 @@ Types::Types(TokenType t){
 	types.push_back(t);
 }
 
+Types::Types(){}
+
 TokenBlock::TokenBlock() : TokenAnalysable(){}
 
 TokenBlock::TokenBlock(TokenStatement* s) : TokenBlock(){
@@ -151,9 +153,9 @@ TokenVarDec::TokenVarDec(ModifiersInt m, TokenIdentifier i, EnumVarDecKeyword::t
 
 TokenVarDecExplicit::TokenVarDecExplicit(TokenIdentifier i, EnumVarDecKeyword::type k, TokenType t) : TokenVarDec(mods, i, k), type(t){}
 
-TokenVarDecExplicitAssign::TokenVarDecExplicitAssign(TokenIdentifier i, EnumVarDecKeyword::type k, TokenType t, TokenExpression e) : TokenVarDecExplicit(i, k, t), expr(e){}
+TokenVarDecExplicitAssign::TokenVarDecExplicitAssign(TokenIdentifier i, EnumVarDecKeyword::type k, TokenType t, TokenExpression* e) : TokenVarDecExplicit(i, k, t), expr(e){}
 
-TokenVarDecImplicit::TokenVarDecImplicit(TokenIdentifier i, EnumVarDecKeyword::type k, TokenExpression e, ModifiersInt m) : TokenVarDec(m, i, k), expr(e){}
+TokenVarDecImplicit::TokenVarDecImplicit(TokenIdentifier i, EnumVarDecKeyword::type k, TokenExpression* e, ModifiersInt m) : TokenVarDec(m, i, k), expr(e){}
 
 TypeI TokenExpression::getExprType(){
 	return TypeI("");

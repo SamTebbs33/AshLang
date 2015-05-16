@@ -155,6 +155,7 @@ struct Args{
 struct Types{
 	std::vector<TokenType> types;
 	Types(TokenType t);
+	Types();
 };
 
 struct TokenBlock : public TokenAnalysable{
@@ -198,15 +199,15 @@ struct TokenVarDecExplicit : public TokenVarDec{
 
 struct TokenVarDecExplicitAssign : public TokenVarDecExplicit{
 
-	TokenExpression expr;
-	TokenVarDecExplicitAssign(TokenIdentifier i, EnumVarDecKeyword::type k, TokenType t, TokenExpression e);
+	TokenExpression* expr;
+	TokenVarDecExplicitAssign(TokenIdentifier i, EnumVarDecKeyword::type k, TokenType t, TokenExpression* e);
 	virtual void analyse();
 };
 
 struct TokenVarDecImplicit : public TokenVarDec{
 
-	TokenExpression expr;
-	TokenVarDecImplicit(TokenIdentifier i, EnumVarDecKeyword::type k, TokenExpression e, ModifiersInt  m);
+	TokenExpression* expr;
+	TokenVarDecImplicit(TokenIdentifier i, EnumVarDecKeyword::type k, TokenExpression* e, ModifiersInt  m);
 	virtual void analyse();
 };
 

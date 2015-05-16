@@ -87,7 +87,7 @@
 %type <funcDec> class_func_dec protocol_func_dec func_dec
 %type <arg> arg
 %type <args> args type_args
-%type <type> type func_type throws
+%type <type> type func_type throws type_super
 %type <types> type_supers
 %type <block> enum_block func_dec_block
 %type <classBlock> protocol_block class_block
@@ -162,6 +162,8 @@ type_args:
 	PAREN_LEFT args PAREN_RIGHT {$$ = $2;}
 	| {$$ = new Args();} ;
 
+type_super: ID {$$ = new TokenType(*$1);} ;
+
 type:
 	ID {$$ = new TokenType(*$1); DEL($1)}
 	| PRIMITIVE {$$ = new TokenType(*$1); DEL($1)}
@@ -178,11 +180,12 @@ func_type: COLON type {$$ = $2;}
 	| {$$ = new TokenType();} ;
 
 type_supers:
-	func_type {$$ = new Types(*$1); DEL($1)}
-	| type_supers COMMA type {$1->types.push_back(*$3); DEL($3)} ;
+	COLON type_super {$$ = new Types(*$2); DEL($2)}
+	| type_supers COMMA type_super {$1->types.push_back(*$3); DEL($3)}
+	| {$$ = new Types();};
 
 throws:
-	ARROW type {$$ = $2;}
+	ARROW type_super {$$ = $2;}
 	| {$$ = NULL;} ;
 
 class_block:
@@ -232,9 +235,9 @@ var_dec_body: mods VAR ID {$$ = new TokenVarDec($1, *$3, $2); DEL($3)} ;
 
 var_dec_explicit: var_dec_body func_type {$$ = new TokenVarDecExplicit($1->id, $1->decKeyword, *$2);  DEL($2)};
 
-var_dec_explicit_assign: var_dec_explicit OP_ASSIGN expr {$$ = new TokenVarDecExplicitAssign($1->id, $1->decKeyword, $1->type, *$3); DEL($3)} ;
+var_dec_explicit_assign: var_dec_explicit OP_ASSIGN expr {$$ = new TokenVarDecExplicitAssign($1->id, $1->decKeyword, $1->type, $3);} ;
 
-var_dec_implicit: var_dec_body OP_ASSIGN expr {$$ = new TokenVarDecImplicit($1->id, $1->decKeyword, *$3, $1->mods); DEL($3)} ;
+var_dec_implicit: var_dec_body OP_ASSIGN expr {$$ = new TokenVarDecImplicit($1->id, $1->decKeyword, $3, $1->mods);} ;
 
 var_dec:
 	var_dec_explicit
