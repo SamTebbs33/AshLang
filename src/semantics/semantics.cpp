@@ -106,12 +106,9 @@ TypeI Semantics::getPrecedentType(TypeI t1, TypeI t2){
     // If the types aren't arrays or objects, then return either if they are the same type
     if(t1 == t2) return t1;
 
-    int primitive = t1.enumPrimitive | t2.enumPrimitive;
-
-    // This loop relies on the fact that each EnumPrimitiveType is double the previous
-    // and that the enum instances are ordered by precedence
-    for(int i = 1; i < EnumPrimitiveType::NUM_TYPES; i *= 2){
-        if(primitive | i) return StdTypes::getAsTypeI((EnumPrimitiveType::type)i);
+    // This loop relies on the fact that the EnumPrimitiveTypes are ordered by precedence
+    for(int i = 1; i < EnumPrimitiveType::NUM_TYPES; i++){
+        if((t1.enumPrimitive | i) || (t2.enumPrimitive | i)) return StdTypes::getAsTypeI((EnumPrimitiveType::type)i);
     }
     return t1;
 }

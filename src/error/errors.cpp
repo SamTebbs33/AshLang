@@ -46,7 +46,7 @@ void Error::parserError(const char* msg, YYLTYPE* location){
  */
 void Error::semanticError(std::string str){
     //TODO: Report line
-    Error::error(Colours::red("Error"), ":%s: %s\n", currentFile, str.c_str());
+    Error::error(Colours::red("Error"), " [%s] %s\n", currentFile, str.c_str());
 }
 
 unsigned int Error::getNumErrors(){

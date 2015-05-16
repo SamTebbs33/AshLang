@@ -2,6 +2,5 @@ namespace ash
 
 class SyntaxTest {
     var a = 0
-    var a3 = "hello"
-    func foo(){}
+    var a3 : String = "hello"
 }
