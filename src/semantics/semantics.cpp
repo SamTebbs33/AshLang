@@ -4,19 +4,32 @@
 #include <util/util.hpp>
 #include <semantics/stdtypes.hpp>
 #include <parser/tokens.hpp>
+#include <loader/context.hpp>
 
 TypeI::TypeI(std::string t) : TypeI(t, 0, 0){}
 TypeI::TypeI(std::string t, int dims) : TypeI(t, dims, 0){}
 TypeI::TypeI(std::string t, int dims, int enumPrimitive) : typeShortName(t), arrDims(dims), enumPrimitive(enumPrimitive){}
 
+bool TypeI::operator==(TypeI type){
+    return typeShortName == type.typeShortName && arrDims == type.arrDims && enumPrimitive == type.enumPrimitive;
+}
+
+bool TypeI::canBeAssignedTo(TypeI type){
+    TypeI thisType = *this;
+    return thisType == type || (thisType.arrDims == type.arrDims && Semantics::primitivesAreCompatible(thisType.enumPrimitive, type.enumPrimitive)) || type.isChildOf(thisType);
+}
+
+bool TypeI::isChildOf(TypeI t){
+    if(t.arrDims == this->arrDims && t.enumPrimitive == this->enumPrimitive){
+        return Members::getType(t.typeShortName)->hasSuper(typeShortName);
+    }
+    return false;
+}
+
 std::string TypeI::toString(){
     std::string result = typeShortName;
     for(int i = 0; i < arrDims; i++) result += "[]";
     return result;
-}
-
-bool TypeI::operator==(TypeI t){
-    return t.typeShortName == typeShortName && t.arrDims == arrDims && t.enumPrimitive == enumPrimitive;
 }
 
 bool Semantics::checkTypeExists(std::string shortName){
@@ -84,10 +97,10 @@ bool Semantics::checkFuncThrowsExtendsThrowable(std::string throwsShortName){
     return false;
 }
 
-bool Semantics::checkForNoDuplicates(Args* args, TokenArg* arg){
+bool Semantics::checkForNoDuplicates(Args* args, TokenArg* arg, int index){
     bool hasDupes = false;
-    foreach(it2, args->args){
-        if(arg->id == (*it2).id){
+    for(int i = 0; i < args->args.size(); i++){
+        if(arg->id == args->args.at(i).id && i != index){
             Error::semanticError("Duplicate argument identifiers (" + arg->id.str +")");
             hasDupes = true;
         }
@@ -116,4 +129,21 @@ TypeI Semantics::getPrecedentType(TypeI t1, TypeI t2){
 TypeI Semantics::getPrecedentTypeOrCommonSuper(TypeI t1, TypeI t2){
     //TODO: Actually do what it's supposed to do
     return t1;
+}
+
+bool Semantics::checkReturnExprIsCorrect(TypeI returnExpr){
+    if(Context::inFunc()){
+        FuncContext fc = Context::getFuncContext();
+        if(fc.sig->type.canBeAssignedTo(returnExpr)) return true;
+        else{
+            Error::semanticError("Function type and return expression are incompatible (" + fc.sig->type.toString() + ", " + returnExpr.toString());
+        }
+    }
+    return false;
+}
+
+bool Semantics::primitivesAreCompatible(int p1, int p2){
+    if(p1 == p2) return true;
+    else if(p1 == EnumPrimitiveType::BOOL || p2 == EnumPrimitiveType::BOOL) return false;
+    else return true;
 }

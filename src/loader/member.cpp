@@ -38,7 +38,7 @@ void Member::print(){
     printf("\t- Mods: %d\n", mods);
 }
 
-FuncSignature::FuncSignature(QualifiedName n, Args* a, ModifiersInt m) : Member(m, n), args(a){
+FuncSignature::FuncSignature(QualifiedName n, Args* a, ModifiersInt m, TypeI type) : Member(m, n), args(a), type(type){
 
 }
 
@@ -67,12 +67,30 @@ void Type::print(){
     foreach(it, fields) if(*it) (*it)->print();
 }
 
+FuncSignature* Type::getFunc(std::string id, Args* args){
+    foreach(it, funcs){
+        if(*it){
+            FuncSignature* func = *it;
+            if(func){
+                if(*func->args == *args && func->name.shortName == id) return func;
+            }
+        }
+    }
+    return NULL;
+}
+
+bool Type::hasSuper(std::string typeName){
+    foreach(it, supers){
+        if(*it) if((*it)->name.shortName == typeName) return true;
+    }
+    return false;
+}
+
 Field::Field(ModifiersInt m, QualifiedName n) : Member(m, n){}
 
 void Members::addAndEnterType(Type* t){
     currentType = t;
     types.insert(std::map<std::string, Type*>::value_type(t->name.shortName, t));
-    Context::enterTypeContext(TypeContext(t));
 }
 
 bool Members::typeExists(std::string shortName){
@@ -103,6 +121,10 @@ bool Members::funcExistsInCurrentType(FuncSignature signature){
 
 void Members::addFunction(FuncSignature* f){
     if(currentType) currentType->funcs.push_back(f);
+}
+
+void Members::addConstructor(FuncSignature* f){
+    if(currentType) currentType->constructors.push_back(f);
 }
 
 void Members::addField(Field* f){

@@ -5,7 +5,7 @@
 
 std::vector<std::string> lines;
 unsigned int numErrors = 0;
-extern char* currentFile;
+extern char* filePath;
 
 void Error::error(std::string errType, const char* format, ...){
     fprintf(stderr, "%s", errType.c_str());
@@ -25,7 +25,7 @@ void Error::compilerError(std::string msg){
  * @type {void}
  */
 void Error::parserError(const char* msg, YYLTYPE* location){
-    Error::error(Colours::red("Error"), " [%s:%d-%d] %s\n", currentFile, location->first_line, location->first_column, msg);
+    Error::error(Colours::red("Error"), " [%s:%d-%d] %s\n", filePath, location->first_line, location->first_column, msg);
     fprintf(stderr, "%s\n", lines.at(location->first_line-1).c_str());
     std::string locationIndicator;
     // Print out the message that shows the location of the error on the source line
@@ -46,7 +46,7 @@ void Error::parserError(const char* msg, YYLTYPE* location){
  */
 void Error::semanticError(std::string str){
     //TODO: Report line
-    Error::error(Colours::red("Error"), " [%s] %s\n", currentFile, str.c_str());
+    Error::error(Colours::red("Error"), " [%s] %s\n", filePath, str.c_str());
 }
 
 unsigned int Error::getNumErrors(){

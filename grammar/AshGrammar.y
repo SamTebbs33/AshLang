@@ -52,7 +52,7 @@
 	TokenQualifiedName* qualifiedName;
 	std::vector<TokenIdentifier>* enumInstances;
 	TokenVariable* var;
-	std::vector<TokenExpression>* exprVec;
+	std::vector<TokenExpression*>* exprVec;
 	TokenFuncCall* funcCall;
 	TokenPrefix* prefix;
 
@@ -170,7 +170,7 @@ type:
 	| type BRACKET_LEFT BRACKET_RIGHT {$1->arrDims++;} ;
 
 args:
-	arg {$$ = new Args();}
+	arg {$$ = new Args(); $$->args.push_back(*$1);}
 	| args COMMA arg {$1->args.push_back(*$3); DEL($3)}
 	| {$$ = new Args();} ;
 
@@ -204,7 +204,7 @@ func_stmt:
 	var_assign
 	| var_dec
 	| RETURN {$$ = new TokenReturn();}
-	| RETURN expr {$$ = new TokenReturn(*$2); DEL($2)} ;
+	| RETURN expr {$$ = new TokenReturn($2);} ;
 
 enum_instances:
 	ID {$$ = new std::vector<TokenIdentifier>(); $$->push_back(*$1); DEL($1)}
@@ -249,25 +249,25 @@ prefix:
 	| func_call ;
 
 func_call_args:
-	expr {$$ = new std::vector<TokenExpression>(); $$->push_back(*$1); DEL($1)}
-	| func_call_args COMMA expr {$1->push_back(*$3); DEL($3)}
-	| {$$ = new std::vector<TokenExpression>();} ;
+	expr {$$ = new std::vector<TokenExpression*>(); $$->push_back($1);}
+	| func_call_args COMMA expr {$1->push_back($3);}
+	| {$$ = new std::vector<TokenExpression*>();} ;
 
 func_call:
 	ID PAREN_LEFT func_call_args PAREN_RIGHT {$$ = new TokenFuncCall(*$1, *$3); DEL($3) DEL($1)}
-	| prefix DOT func_call {$3->prefix = *$1; DEL($1)} ;
+	| prefix DOT func_call {$3->prefix = $1;} ;
 
 var:
 	ID {$$ = new TokenVariable(*$1); DEL($1)}
-	| var BRACKET_LEFT expr BRACKET_RIGHT {$1->arrExprs.push_back(*$3); DEL($3)}
-	| prefix DOT var {$3->prefix = *$1; DEL($1)} ;
+	| var BRACKET_LEFT expr BRACKET_RIGHT {$1->arrExprs.push_back($3);}
+	| prefix DOT var {$3->prefix = $1;} ;
 
-var_assign: var op_assign expr {$$ = new TokenVarAssign(*$1, $2, *$3); DEL($1) DEL($3)} ;
+var_assign: var op_assign expr {$$ = new TokenVarAssign(*$1, $2, $3); DEL($1)} ;
 
 expr:
-	expr op_infix expr {$$ = new TokenExprInfix(*$1, *$2, *$3); DEL($1) DEL($3) DEL($2)}
-	| op_prefix expr {$$ = new TokenExprPrefix(*$1, *$2); DEL($2) DEL($1)}
-	| expr op_postfix {$$ = new TokenExprPostfix(*$1, *$2); DEL($1) DEL($2)}
+	expr op_infix expr {$$ = new TokenExprInfix($1, *$2, $3); DEL($2)}
+	| op_prefix expr {$$ = new TokenExprPrefix(*$1, $2); DEL($1)}
+	| expr op_postfix {$$ = new TokenExprPostfix($1, *$2); DEL($2)}
 	| INT {$$ = new TokenExprInt($1);}
 	| STR {$$ = new TokenExprStr($1);}
 	| CHAR {$$ = new TokenExprChar($1);}
@@ -276,7 +276,7 @@ expr:
 	| FLOAT {$$ = new TokenExprFloat($1);}
 	| FLOAT64 {$$ = new TokenExprFloat64($1);}
 	| LONG {$$ = new TokenExprLong($1);}
-	| expr QUESTION_MARK expr COLON expr {$$ = new TokenExprTernary(*$1, *$3, *$5); DEL($1) DEL($3) DEL($5)}
+	| expr QUESTION_MARK expr COLON expr {$$ = new TokenExprTernary($1, $3, $5);}
 	| PAREN_LEFT expr PAREN_RIGHT {$$ = $2;}
 	| var
 	| func_call

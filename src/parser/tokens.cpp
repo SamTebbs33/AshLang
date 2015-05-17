@@ -61,7 +61,7 @@ TokenNamespace::TokenNamespace(TokenQualifiedName name) : name(name){}
 
 TokenImport::TokenImport(TokenQualifiedName name) : name(name){}
 
-TokenReturn::TokenReturn(TokenExpression e) : expr(e){}
+TokenReturn::TokenReturn(TokenExpression* e) : expr(e){}
 
 TokenReturn::TokenReturn(){}
 
@@ -103,6 +103,10 @@ bool Args::operator==(Args a){
 	int i = 0;
 	foreach(it, a.args) if(*it != args.at(i++)) return false;
 	return true;
+}
+
+bool Args::isEmpty(){
+	return args.size() == 0;
 }
 
 TokenDeclaration::TokenDeclaration(TokenIdentifier i, ModifiersInt m) : id(i), mods(m){
@@ -161,10 +165,10 @@ TypeI TokenExpression::getExprType(){
 	return TypeI("");
 }
 
-TokenExprInfix::TokenExprInfix(TokenExpression e1, Operator o, TokenExpression e2) : expr1(e1), op(o), expr2(e2){}
+TokenExprInfix::TokenExprInfix(TokenExpression* e1, Operator o, TokenExpression* e2) : expr1(e1), op(o), expr2(e2){}
 
 TypeI TokenExprInfix::getExprType(){
-	TypeI expr1Type = expr1.getExprType(), expr2Type = expr2.getExprType();
+	TypeI expr1Type = expr1->getExprType(), expr2Type = expr2->getExprType();
 	// Ensure that the types are either String or primitives
 	if(StdTypes::isStandardType(expr1Type) && StdTypes::isStandardType(expr2Type)){
 		// Get the most precedent type. Eg 1.2 + 4 gives a float64 and "hello" + 4 gives a String
@@ -176,16 +180,16 @@ TypeI TokenExprInfix::getExprType(){
 	}
 }
 
-TokenExprPrefix::TokenExprPrefix(Operator o, TokenExpression e) : op(o), expr(e){}
+TokenExprPrefix::TokenExprPrefix(Operator o, TokenExpression* e) : op(o), expr(e){}
 
 TypeI TokenExprPrefix::getExprType(){
-	return expr.getExprType();
+	return expr->getExprType();
 }
 
-TokenExprPostfix::TokenExprPostfix(TokenExpression e, Operator o) : expr(e), op(o){}
+TokenExprPostfix::TokenExprPostfix(TokenExpression* e, Operator o) : expr(e), op(o){}
 
 TypeI TokenExprPostfix::getExprType(){
-	return expr.getExprType();
+	return expr->getExprType();
 }
 
 TokenExprInt::TokenExprInt(int v) : val(v){}
@@ -230,10 +234,10 @@ TypeI TokenExprLong::getExprType(){
 	return StdTypes::getAsTypeI(EnumPrimitiveType::INT64);
 }
 
-TokenExprTernary::TokenExprTernary(TokenExpression eB, TokenExpression e1, TokenExpression e2) : exprBool(eB), expr1(e1), expr2(e2){}
+TokenExprTernary::TokenExprTernary(TokenExpression* eB, TokenExpression* e1, TokenExpression* e2) : exprBool(eB), expr1(e1), expr2(e2){}
 
 TypeI TokenExprTernary::getExprType(){
-	return Semantics::getPrecedentTypeOrCommonSuper(expr1.getExprType(), expr2.getExprType());
+	return Semantics::getPrecedentTypeOrCommonSuper(expr1->getExprType(), expr2->getExprType());
 }
 
 TokenVariable::TokenVariable(TokenIdentifier i) : id(i){}
@@ -243,6 +247,6 @@ TypeI TokenVariable::getExprType(){
 	return TypeI("");
 }
 
-TokenVarAssign::TokenVarAssign(TokenVariable v, Operator* o, TokenExpression e) : var(v), op(o), expr(e){}
+TokenVarAssign::TokenVarAssign(TokenVariable v, Operator* o, TokenExpression* e) : var(v), op(o), expr(e){}
 
-TokenFuncCall::TokenFuncCall(TokenIdentifier i, std::vector<TokenExpression> e) : id(i), args(e){}
+TokenFuncCall::TokenFuncCall(TokenIdentifier i, std::vector<TokenExpression*> e) : id(i), args(e){}

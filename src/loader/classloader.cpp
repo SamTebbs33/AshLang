@@ -18,6 +18,10 @@ std::string ClassLoader::getClassPath(){
 	return *classPath;
 }
 
+std::string ClassLoader::getSourceExtension(){
+	return sourceExtension;
+}
+
 bool ClassLoader::importClass(std::vector<std::string> vec){
 	if(!isInitialised) return false;
 	std::string path = "";

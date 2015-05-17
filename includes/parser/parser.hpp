@@ -164,7 +164,7 @@ union YYSTYPE
 	TokenQualifiedName* qualifiedName;
 	std::vector<TokenIdentifier>* enumInstances;
 	TokenVariable* var;
-	std::vector<TokenExpression>* exprVec;
+	std::vector<TokenExpression*>* exprVec;
 	TokenFuncCall* funcCall;
 	TokenPrefix* prefix;
 

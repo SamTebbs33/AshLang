@@ -29,7 +29,8 @@ struct Member {
 
 struct FuncSignature : Member{
     Args* args;
-    FuncSignature(QualifiedName i, Args* a, ModifiersInt m);
+    TypeI type;
+    FuncSignature(QualifiedName i, Args* a, ModifiersInt m, TypeI type);
     void print();
     bool operator==(FuncSignature f);
 };
@@ -46,11 +47,14 @@ struct Type : Member {
     int type;
     Type(ModifiersInt m, QualifiedName n, int enumType);
     void print();
+    FuncSignature* getFunc(std::string id, Args* args);
+    bool hasSuper(std::string superName);
 };
 
 namespace Members {
     void addAndEnterType(Type* t);
     void addFunction(FuncSignature* f);
+    void addConstructor(FuncSignature* f);
     void addField(Field* f);
     QualifiedName toQualifiedName(std::vector<std::string> n);
     QualifiedName toQualifiedName(std::vector<std::string> n, std::string s);

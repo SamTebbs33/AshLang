@@ -43,6 +43,7 @@ namespace Tokens{
 struct Token{
 	unsigned int line;
 	Token();
+	virtual void gen() = 0;
 };
 
 /**
@@ -75,6 +76,7 @@ struct TokenStatement : public TokenAnalysable, public TokenPreParseable{
 	TokenStatement();
 	virtual void preParse();
 	virtual void analyse();
+	virtual void gen();
 };
 
 struct Operator{
@@ -92,6 +94,7 @@ struct TokenIdentifier : public Token{
 	TokenIdentifier();
 	bool operator==(TokenIdentifier n);
 	bool operator==(std::string str);
+	void gen();
 };
 
 struct TokenQualifiedName : public Token{
@@ -99,6 +102,7 @@ struct TokenQualifiedName : public Token{
 	std::vector<std::string> paths;
 	TokenQualifiedName(TokenIdentifier id);
 	TokenQualifiedName();
+	void gen();
 };
 
 struct TokenNamespace : public TokenPreParseable{
@@ -107,6 +111,7 @@ struct TokenNamespace : public TokenPreParseable{
 	TokenNamespace();
 	TokenNamespace(TokenQualifiedName n);
 	void preParse();
+	void gen();
 };
 
 struct TokenImport : public TokenPreParseable{
@@ -114,6 +119,7 @@ struct TokenImport : public TokenPreParseable{
 	TokenQualifiedName name;
 	TokenImport(TokenQualifiedName i);
 	void preParse();
+	void gen();
 };
 
 struct Imports{
@@ -125,7 +131,7 @@ struct Imports{
 
 struct TokenType : public TokenAnalysable{
 	bool errored;
-	int arrDims;
+	int arrDims = 0;
 	TokenIdentifier id;
 	TokenType(TokenIdentifier i);
 	TokenType();
@@ -133,6 +139,7 @@ struct TokenType : public TokenAnalysable{
 	bool operator==(TokenType n);
 	bool operator==(std::string str);
 	bool operator!=(const char* str);
+	void gen();
 };
 
 struct TokenArg : public TokenAnalysable{
@@ -143,6 +150,7 @@ struct TokenArg : public TokenAnalysable{
 	virtual void analyse();
 	bool operator==(TokenArg n);
 	bool operator!=(TokenArg n);
+	void gen();
 };
 
 struct Args{
@@ -150,6 +158,8 @@ struct Args{
 	std::vector<TokenArg> args;
 	Args();
 	bool operator==(Args n);
+	bool isEmpty();
+	void gen();
 };
 
 struct Types{
@@ -163,11 +173,14 @@ struct TokenBlock : public TokenAnalysable{
 	TokenBlock();
 	TokenBlock(TokenStatement* s);
 	virtual void analyse();
+	void gen();
 };
 
 struct TokenExpression : public TokenAnalysable{
 	virtual void analyse();
+	bool errored = false;
     virtual TypeI getExprType();
+	void gen();
 };
 
 struct TokenDeclaration : public TokenAnalysable, public TokenPreParseable, public TokenStatement{
@@ -179,6 +192,7 @@ struct TokenDeclaration : public TokenAnalysable, public TokenPreParseable, publ
 	TokenDeclaration();
 	virtual void preParse();
 	virtual void analyse();
+	void gen();
 };
 
 struct TokenVarDec : public TokenDeclaration, public TokenStatement{
@@ -188,6 +202,7 @@ struct TokenVarDec : public TokenDeclaration, public TokenStatement{
 	TokenVarDec(ModifiersInt m, TokenIdentifier id, EnumVarDecKeyword::type k);
 	virtual void preParse();
 	virtual void analyse();
+	void gen();
 };
 
 struct TokenVarDecExplicit : public TokenVarDec{
@@ -195,6 +210,7 @@ struct TokenVarDecExplicit : public TokenVarDec{
 	TokenType type;
 	TokenVarDecExplicit(TokenIdentifier i, EnumVarDecKeyword::type k, TokenType t);
 	virtual void analyse();
+	void gen();
 };
 
 struct TokenVarDecExplicitAssign : public TokenVarDecExplicit{
@@ -202,6 +218,7 @@ struct TokenVarDecExplicitAssign : public TokenVarDecExplicit{
 	TokenExpression* expr;
 	TokenVarDecExplicitAssign(TokenIdentifier i, EnumVarDecKeyword::type k, TokenType t, TokenExpression* e);
 	virtual void analyse();
+	void gen();
 };
 
 struct TokenVarDecImplicit : public TokenVarDec{
@@ -209,6 +226,7 @@ struct TokenVarDecImplicit : public TokenVarDec{
 	TokenExpression* expr;
 	TokenVarDecImplicit(TokenIdentifier i, EnumVarDecKeyword::type k, TokenExpression* e, ModifiersInt  m);
 	virtual void analyse();
+	void gen();
 };
 
 struct TokenFuncDec : public TokenDeclaration{
@@ -221,6 +239,7 @@ struct TokenFuncDec : public TokenDeclaration{
 	TokenFuncDec();
 	void preParse();
 	virtual void analyse();
+	void gen();
 };
 
 struct ClassBlock : public TokenPreParseable, public TokenAnalysable{
@@ -231,18 +250,18 @@ struct ClassBlock : public TokenPreParseable, public TokenAnalysable{
 	ClassBlock();
 	void preParse();
 	void analyse();
+	void gen();
 };
 
 struct TokenTypeDec : public TokenDeclaration{
 	bool errored = false;
 	Args args;
-	std::vector<TokenFuncDec> funcDecs;
-	std::vector<TokenVarDec> varDecs;
 	TokenTypeDec(Args a, TokenIdentifier i, ModifiersInt m);
 	TokenTypeDec(Args a, TokenIdentifier i);
 	virtual void preParse();
 	virtual void analyse();
 	virtual EnumType::type getType();
+	void gen();
 };
 
 struct TokenClassDec : public TokenTypeDec{
@@ -252,6 +271,7 @@ struct TokenClassDec : public TokenTypeDec{
 	void preParse();
 	virtual void analyse();
 	virtual EnumType::type getType();
+	void gen();
 };
 
 struct TokenProtocolDec : public TokenTypeDec{
@@ -261,6 +281,7 @@ struct TokenProtocolDec : public TokenTypeDec{
 	void preParse();
 	virtual void analyse();
 	virtual EnumType::type getType();
+	void gen();
 };
 
 struct TokenEnumDec : public TokenTypeDec{
@@ -270,6 +291,7 @@ struct TokenEnumDec : public TokenTypeDec{
 	void preParse();
 	virtual void analyse();
 	virtual EnumType::type getType();
+	void gen();
 };
 
 struct TokenFile : public TokenPreParseable, public TokenAnalysable{
@@ -282,41 +304,46 @@ struct TokenFile : public TokenPreParseable, public TokenAnalysable{
 	TokenFile();
 	void preParse();
 	virtual void analyse();
+	void gen();
 };
 
 struct TokenReturn : public TokenStatement, public TokenAnalysable{
-
-	TokenExpression expr;
+	bool errored = false;
+	TokenExpression* expr;
 	TokenReturn();
-	TokenReturn(TokenExpression e);
+	TokenReturn(TokenExpression* e);
 	virtual void analyse();
+	void gen();
 };
 
 struct TokenExprInfix : public TokenExpression{
     bool errored = false;
-	TokenExpression expr1, expr2;
+	TokenExpression* expr1, *expr2;
 	Operator op;
-	TokenExprInfix(TokenExpression e1, Operator o, TokenExpression e2);
+	TokenExprInfix(TokenExpression* e1, Operator o, TokenExpression* e2);
 	virtual void analyse();
     virtual TypeI getExprType();
+	void gen();
 };
 
 struct TokenExprPrefix : public TokenExpression{
 
-	TokenExpression expr;
+	TokenExpression* expr;
 	Operator op;
-	TokenExprPrefix(Operator o, TokenExpression expr);
+	TokenExprPrefix(Operator o, TokenExpression* expr);
 	virtual void analyse();
     virtual TypeI getExprType();
+	void gen();
 };
 
 struct TokenExprPostfix : public TokenExpression{
 
-	TokenExpression expr;
+	TokenExpression* expr;
 	Operator op;
-	TokenExprPostfix(TokenExpression e, Operator o);
+	TokenExprPostfix(TokenExpression* e, Operator o);
 	virtual void analyse();
     virtual TypeI getExprType();
+	void gen();
 };
 
 struct TokenExprInt : public TokenExpression{
@@ -324,6 +351,7 @@ struct TokenExprInt : public TokenExpression{
 	int val;
 	TokenExprInt(int v);
     virtual TypeI getExprType();
+	void gen();
 };
 
 struct TokenExprStr : public TokenExpression{
@@ -331,6 +359,7 @@ struct TokenExprStr : public TokenExpression{
 	std::string* str;
 	TokenExprStr(std::string* s);
     virtual TypeI getExprType();
+	void gen();
 };
 
 struct TokenExprChar : public TokenExpression{
@@ -338,6 +367,7 @@ struct TokenExprChar : public TokenExpression{
 	char ch;
 	TokenExprChar(char c);
     virtual TypeI getExprType();
+	void gen();
 };
 
 struct TokenExprBool : public TokenExpression{
@@ -345,6 +375,7 @@ struct TokenExprBool : public TokenExpression{
 	bool val;
 	TokenExprBool(bool b);
     virtual TypeI getExprType();
+	void gen();
 };
 
 struct TokenExprFloat : public TokenExpression{
@@ -352,6 +383,7 @@ struct TokenExprFloat : public TokenExpression{
 	float val;
 	TokenExprFloat(float v);
     virtual TypeI getExprType();
+	void gen();
 };
 
 struct TokenExprFloat64 : public TokenExpression{
@@ -359,6 +391,7 @@ struct TokenExprFloat64 : public TokenExpression{
 	double val;
 	TokenExprFloat64(double v);
     virtual TypeI getExprType();
+	void gen();
 };
 
 struct TokenExprLong : public TokenExpression{
@@ -366,14 +399,16 @@ struct TokenExprLong : public TokenExpression{
 	long val;
 	TokenExprLong(long v);
     virtual TypeI getExprType();
+	void gen();
 };
 
 struct TokenExprTernary : public TokenExpression{
 
-	TokenExpression exprBool, expr1, expr2;
-	TokenExprTernary(TokenExpression eBool, TokenExpression e1, TokenExpression e2);
+	TokenExpression* exprBool, *expr1, *expr2;
+	TokenExprTernary(TokenExpression* eBool, TokenExpression* e1, TokenExpression* e2);
 	virtual void analyse();
     virtual TypeI getExprType();
+	void gen();
 };
 
 struct TokenPrefix : public TokenExpression{
@@ -382,30 +417,33 @@ struct TokenPrefix : public TokenExpression{
 
 struct TokenVariable : public TokenPrefix{
 
-	TokenPrefix prefix;
+	TokenPrefix* prefix;
 	TokenIdentifier id;
-	std::vector<TokenExpression> arrExprs;
+	std::vector<TokenExpression*> arrExprs;
 	TokenVariable(TokenIdentifier i);
 	virtual void analyse();
     virtual TypeI getExprType();
+	void gen();
 };
 
 struct TokenVarAssign : public TokenStatement{
 
 	TokenVariable var;
 	Operator* op;
-	TokenExpression expr;
-	TokenVarAssign(TokenVariable v, Operator* o, TokenExpression e);
+	TokenExpression* expr;
+	TokenVarAssign(TokenVariable v, Operator* o, TokenExpression* e);
 	virtual void analyse();
+	void gen();
 };
 
 struct TokenFuncCall : public TokenStatement, public TokenPrefix{
 
-	TokenPrefix prefix;
+	TokenPrefix* prefix;
 	TokenIdentifier id;
-	std::vector<TokenExpression> args;
-	TokenFuncCall(TokenIdentifier i, std::vector<TokenExpression> e);
+	std::vector<TokenExpression*> args;
+	TokenFuncCall(TokenIdentifier i, std::vector<TokenExpression*> e);
 	virtual void analyse();
+	void gen();
 };
 
 #endif

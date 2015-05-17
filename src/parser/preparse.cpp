@@ -5,6 +5,7 @@
 #include <semantics/semantics.hpp>
 #include <util/util.hpp>
 #include <loader/classloader.hpp>
+#include <semantics/stdtypes.hpp>
 
 void TokenFile::preParse(){
 	Context::push(FileContext("", Members::toQualifiedName(namespc.name.paths, "")));
@@ -31,6 +32,9 @@ void TokenTypeDec::preParse(){
 		QualifiedName name = Context::getNamespace();
 		name.add(id.str);
 		Members::addAndEnterType(new Type(mods, name, getType()));
+		if(!args.isEmpty()){
+			Members::addConstructor(new FuncSignature(name, &args, mods, TypeI(name.shortName)));
+		}
 	}else{
 		Error::semanticError("Type already exists (" + id.str + ")");
 		errored = true;
@@ -80,7 +84,7 @@ void TokenFuncDec::preParse(){
 	QualifiedName name = Members::getCurrentTypeQualifiedName();
 	// Form a qualified name to this function
 	name.add(id.str);
-	FuncSignature* signature = new FuncSignature(name, &args, mods);
+	FuncSignature* signature = new FuncSignature(name, &args, mods, TypeI(type.id.str, type.arrDims, StdTypes::getPrimitive(type.id.str)));
 	if(!Members::funcExistsInCurrentType(*signature)) Members::addFunction(signature);
 	else Error::semanticError("Function with identical signature already exists (" + name.shortName + ")");
 }

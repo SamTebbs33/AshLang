@@ -16,12 +16,22 @@ struct TypeContext{
 	TypeContext();
 };
 
+struct FuncContext{
+	FuncSignature* sig;
+	FuncContext(FuncSignature* funcSig);
+	FuncContext();
+};
+
 namespace Context{
 	FileContext top();
 	FileContext pop();
 	void push(FileContext fc);
 	void enterTypeContext(TypeContext tc);
 	void exitTypeContext();
+	void enterFuncContext(FuncContext fc);
+	void exitFuncContext();
+	TypeContext getTypeContext();
+	FuncContext getFuncContext();
 	bool inType();
 	bool inFunc();
 	QualifiedName getNamespace();

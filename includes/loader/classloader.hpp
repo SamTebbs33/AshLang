@@ -20,6 +20,7 @@ namespace ClassLoader {
 	void init();
 	std::string getCWD();
 	std::string getClassPath();
+	std::string getSourceExtension();
 	bool importClass(std::vector<std::string> paths);
 	bool importClass(std::string qualifiedName);
 	AshFile* searchDir(std::string absPath, std::string qualifiedName);

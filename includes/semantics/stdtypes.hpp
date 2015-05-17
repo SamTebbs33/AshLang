@@ -26,10 +26,12 @@ struct EnumPrimitiveType{
 namespace StdTypes{
     bool isPrimitiveType(TypeI typeName);
     bool isStandardType(TypeI typeShortName);
+    int getPrimitive(std::string str);
     QualifiedName getStringQualifiedName();
     std::string getShortName(EnumPrimitiveType::type primitive);
     std::string getStringShortName();
     TypeI getAsTypeI(EnumPrimitiveType::type primtive);
+    std::string getJavaName(int primitive);
 }
 
 #endif /* end of include guard: STDTYPES_H */

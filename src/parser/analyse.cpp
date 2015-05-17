@@ -1,6 +1,9 @@
 #include <parser/tokens.hpp>
 #include <semantics/semantics.hpp>
 #include <util/util.hpp>
+#include <loader/context.hpp>
+#include <loader/member.hpp>
+#include <error/errors.hpp>
 
 void TokenStatement::analyse(){}
 
@@ -23,10 +26,13 @@ void TokenBlock::analyse(){
 void TokenDeclaration::analyse(){}
 
 void TokenFuncDec::analyse(){
+    Context::enterFuncContext(FuncContext(Context::getTypeContext().type->getFunc(id.str, &args)));
+    int i = 0;
     foreach(it, args.args){
         (*it).analyse();
         if((*it).errored) errored = true;
-        if(!Semantics::checkForNoDuplicates(&args, &(*it))) errored = true;
+        if(!Semantics::checkForNoDuplicates(&args, &(*it), i)) errored = true;
+        i++;
     }
     type.analyse();
     if(type.errored) errored = true;
@@ -40,9 +46,12 @@ void ClassBlock::analyse(){
     foreach(it, funcDecs) if(*it) (*it)->analyse();
 }
 
-void TokenTypeDec::analyse(){}
+void TokenTypeDec::analyse(){
+    Context::enterTypeContext(TypeContext(Members::getType(id.str)));
+}
 
 void TokenClassDec::analyse(){
+    TokenTypeDec::analyse();
     if(!TokenTypeDec::errored){
         foreach(it, supers.types){
             (*it).analyse();
@@ -54,6 +63,7 @@ void TokenClassDec::analyse(){
 }
 
 void TokenProtocolDec::analyse(){
+    TokenTypeDec::analyse();
     if(!TokenTypeDec::errored){
         foreach(it, supers.types){
             (*it).analyse();
@@ -81,20 +91,56 @@ void TokenVarDecExplicit::analyse(){
 void TokenVarDecExplicitAssign::analyse(){
     TokenVarDecExplicit::analyse();
     expr->analyse();
-    printf("Inferred %s\n", expr->getExprType().toString().c_str());
 }
 
-void TokenVarDecImplicit::analyse(){}
+void TokenVarDecImplicit::analyse(){
+    TokenVarDec::analyse();
+}
 
-void TokenReturn::analyse(){}
+void TokenReturn::analyse(){
+        if(Context::inFunc()){
+            FuncSignature* func = Context::getFuncContext().sig;
+            if(func){
+                if(expr) expr->analyse();
+                // If in a void function and the return expression is not null
+                if(func->type.typeShortName == ""){
+                    if(expr) Error::semanticError("Cannot return an expression in a void function");
+                    errored = true;
+                }else if(!expr){
+                    Error::semanticError("Cannot return void in a non-void function");
+                    errored = true;
+                }
+            }
+        }
+}
 
-void TokenExprInfix::analyse(){}
+void TokenExprInfix::analyse(){
+    expr1->analyse();
+    expr2->analyse();
+    if(expr2->errored || expr2->errored) errored = true;
+}
 
-void TokenExprPrefix::analyse(){}
+void TokenExprPrefix::analyse(){
+    expr->analyse();
+    if(expr->errored) errored = true;
+}
 
-void TokenExprPostfix::analyse(){}
+void TokenExprPostfix::analyse(){
+    expr->analyse();
+    if(expr->errored) errored = true;
+}
 
-void TokenExprTernary::analyse(){}
+void TokenExprTernary::analyse(){
+    println("ternary");
+    exprBool->analyse();
+    expr1->analyse();
+    expr2->analyse();
+    TypeI t1 = expr1->getExprType(), t2 = expr2->getExprType();
+    if(Semantics::getPrecedentTypeOrCommonSuper(t1, t2).typeShortName == ""){
+        Error::semanticError("Ternary expressions are incompatible (" + t1.toString() + ", " + t2.toString() + ")");
+        errored = true;
+    }
+}
 
 void TokenVariable::analyse(){}
 

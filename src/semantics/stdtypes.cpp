@@ -11,6 +11,11 @@ bool StdTypes::isPrimitiveType(TypeI type){
     return false;
 }
 
+int StdTypes::getPrimitive(std::string str){
+    for(int i = 1; i < EnumPrimitiveType::NUM_TYPES; i++) if(str == primitiveTypeStrs[i]) return i;
+    return 0;
+}
+
 bool StdTypes::isStandardType(TypeI type){
     return StdTypes::isPrimitiveType(type) || (type.typeShortName == StdTypes::getStringShortName() && type.arrDims == 0);
 }
@@ -29,4 +34,26 @@ std::string StdTypes::getShortName(EnumPrimitiveType::type primitive){
 
 TypeI StdTypes::getAsTypeI(EnumPrimitiveType::type primitive){
     return TypeI(StdTypes::getShortName(primitive), 0, primitive);
+}
+
+std::string StdTypes::getJavaName(int primitive){
+    switch (primitive) {
+        case EnumPrimitiveType::EnumPrimitiveType::BOOL:
+            return "boolean";
+        case EnumPrimitiveType::FLOAT64:
+            return "double";
+        case EnumPrimitiveType::FLOAT:
+            return "float";
+        case EnumPrimitiveType::INT64:
+            return "long";
+        case EnumPrimitiveType::INT:
+            return "int";
+        case EnumPrimitiveType::INT16:
+            return "short";
+        case EnumPrimitiveType::INT8:
+            return "byte";
+        case EnumPrimitiveType::CHAR:
+            return "char";
+    }
+    return "";
 }

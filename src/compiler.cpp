@@ -6,23 +6,26 @@
 #include <loader/member.hpp>
 #include <util/util.hpp>
 #include <parser/tokens.hpp>
+#include <codegen/codegen.hpp>
 
-const char* currentFile;
+std::string currentFile;
+const char* filePath;
 
 int main(int argc, char const *argv[]) {
     if (argc < 2) {
-        Error::compilerError("Expected a file path argument\n");
+        Error::compilerError("Expected a file path argument (without extension)\n");
         return -1;
     }
 
-    currentFile = argv[1];
-    yyin = fopen(currentFile, "r");
-    std::ifstream fileLineStream(currentFile);
+    currentFile = std::string(argv[1]);
+    filePath = (currentFile+ClassLoader::getSourceExtension()).c_str();
+    yyin = fopen(filePath, "r");
+    std::ifstream fileLineStream(filePath);
     yydebug = 0;
 
     if (yyin && fileLineStream.is_open()) {
 
-        printf("### Parsing file: %s\n", currentFile);
+        printf("### Parsing file: %s\n", filePath);
         yyrestart(yyin);
         clock_t t = clock();
         // Read in the source lines that are then used when reporting errors
@@ -41,7 +44,12 @@ int main(int argc, char const *argv[]) {
             ClassLoader::init();
             file->preParse();
             file->analyse();
-            Members::printTypes();
+            //Members::printTypes();
+            if(Error::getNumErrors() == 0){
+                println("### Generating code");
+                CodeGen::gen(file, currentFile);
+                println("### Finished generating code");
+            }
         }
         return 0;
     }else println("### Failed to open file");

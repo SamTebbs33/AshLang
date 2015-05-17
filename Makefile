@@ -7,6 +7,7 @@ SOURCES = $(wildcard src/*.cpp) \
 		  $(wildcard src/parser/*.cpp) \
 		  $(wildcard src/error/*.cpp) \
 		  $(wildcard src/semantics/*.cpp) \
+		  $(wildcard src/codegen/*.cpp) \
 
 GRAMMARS = grammar/AshGrammar.y grammar/AshLexGrammar.l
 
@@ -30,12 +31,12 @@ parser: ${GRAMMARS}
 # Run in debug mode
 debug:
 	@echo "### Debugging ashc"
-	@valgrind --track-origins=yes bin/ashc tests/syntax.ash
+	@valgrind --track-origins=yes bin/ashc tests/Test
 
 # Run
 run:
 	@echo "### Running ashc"
-	@bin/ashc tests/syntax.ash
+	@bin/ashc tests/Test
 
 git:
 	@echo "### Pulling and adding"
