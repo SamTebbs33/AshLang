@@ -4,7 +4,7 @@
 #include <error/errors.hpp>
 #include <semantics/semantics.hpp>
 #include <util/util.hpp>
-#include <loader/classloader.hpp>
+#include <loader/classimporter.hpp>
 #include <semantics/stdtypes.hpp>
 
 void TokenFile::preParse(){
@@ -21,7 +21,7 @@ void TokenStatement::preParse(){
 void TokenNamespace::preParse(){}
 
 void TokenImport::preParse(){
-	ClassLoader::importClass(name.paths);
+	ClassImporter::importClass(name.paths);
 }
 
 void TokenDeclaration::preParse(){}

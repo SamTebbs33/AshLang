@@ -1,8 +1,8 @@
-#include <stdio.h>
+#include <stdlib.h>
 #include <ctime>
 #include <parser/externs.hpp>
 #include <error/errors.hpp>
-#include <loader/classloader.hpp>
+#include <loader/classimporter.hpp>
 #include <loader/member.hpp>
 #include <util/util.hpp>
 #include <parser/tokens.hpp>
@@ -18,7 +18,7 @@ int main(int argc, char const *argv[]) {
     }
 
     currentFile = std::string(argv[1]);
-    filePath = (currentFile+ClassLoader::getSourceExtension()).c_str();
+    filePath = (currentFile+ClassImporter::getSourceExtension()).c_str();
     yyin = fopen(filePath, "r");
     std::ifstream fileLineStream(filePath);
     yydebug = 0;
@@ -41,14 +41,22 @@ int main(int argc, char const *argv[]) {
 
         if(Error::getNumErrors() > 0) return 0;
         if(file){
-            ClassLoader::init();
+            ClassImporter::init();
             file->preParse();
             file->analyse();
             //Members::printTypes();
             if(Error::getNumErrors() == 0){
+                /*
                 println("### Generating code");
                 CodeGen::gen(file, currentFile);
                 println("### Finished generating code");
+                std::string command = "javac " + currentFile + ".java";
+                println("### Compiling java");
+                system(command.c_str());
+                println("### Compiled java\n");
+                command = "javap " + currentFile + ".class";
+                system(command.c_str());
+                */
             }
         }
         return 0;

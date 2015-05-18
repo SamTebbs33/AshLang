@@ -31,12 +31,12 @@ parser: ${GRAMMARS}
 # Run in debug mode
 debug:
 	@echo "### Debugging ashc"
-	@valgrind --track-origins=yes bin/ashc tests/Test
+	@valgrind --track-origins=yes bin/ashc Test
 
 # Run
 run:
 	@echo "### Running ashc"
-	@bin/ashc tests/Test
+	@bin/ashc Test
 
 git:
 	@echo "### Pulling and adding"
@@ -46,3 +46,7 @@ git:
 	@git commit -m "${M}"
 	@echo "### Pushing"
 	@git push
+
+test:
+	g++ -w src2/loadertest.cpp
+	./a.out Test.class
