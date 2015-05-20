@@ -10,6 +10,52 @@ char cwdBuf[FILENAME_MAX];
 std::string compiledExtension = ".class", sourceExtension = ".ash", ashPath, javaPath;
 bool isInitialised = false;
 
+QualifiedName toQualifiedName(constant_utf8* utf8){
+	QualifiedName name;
+	std::string progress = "";
+	// Convert the class to a qualified name
+	for(int i = 0; i < utf8->length; i++){
+		char ch = (char)utf8->bytes[i];
+		if(ch == '/'){
+			if(progress != "") name.add(progress);
+			progress = "";
+		}else progress += ch;
+	}
+	name.add(progress);
+	return name;
+}
+
+JavaClass::JavaClass(ClassFile* clsFile){
+	if(clsFile->access_flags & 0x4000) type = EnumType::ENUM;
+	else if(clsFile->access_flags & 0x0200) type = EnumType::PROTOCOL;
+	else type = EnumType::CLASS;
+
+	// Parse the modifiers
+	if(clsFile->access_flags & 0x0001) mods |= EnumModifier::PUBLIC;
+	if(clsFile->access_flags & 0x0010) mods |= EnumModifier::FINAL;
+	if(clsFile->access_flags & 0x0400) mods |= EnumModifier::ABSTRACT;
+
+	// Read in the class qualified name
+	constant_class* clsInfo = (constant_class*)clsFile->constant_pool[clsFile->this_class];
+	constant_utf8* clsName = (constant_utf8*)clsFile->constant_pool[clsInfo->name_index];
+	name = toQualifiedName(clsName);
+
+	// Read in super class and interfaces
+	if(clsFile->super_class > 0){ // If the class is not Object
+		constant_class* superInfo = (constant_class*)clsFile->constant_pool[clsFile->super_class];
+		super = toQualifiedName((constant_utf8*)clsFile->constant_pool[superInfo->name_index]);
+	}
+	interfaceCount = clsFile->interface_count;
+	interfaces = new QualifiedName[interfaceCount];
+	for(int i = 0; i < interfaceCount; i++){
+		constant_class* interfaceInfo = (constant_class*)clsFile->constant_pool[clsFile->interfaces[i]];
+		interfaces[i] = toQualifiedName((constant_utf8*)clsFile->constant_pool[interfaceInfo->name_index]);
+	}
+
+	// Read in fields
+	// Read in methods
+}
+
 void ClassImporter::init(){
 	currentDir(cwdBuf, sizeof(cwdBuf));
 	ashPath = std::string(getenv("ASH_PATH"));
@@ -47,14 +93,12 @@ bool ClassImporter::importClass(std::string qualifiedName){
 	bool success = false;
 	// Search current working directory
 	AshFile* file = ClassImporter::searchDir(std::string(cwdBuf), qualifiedName);
-	println("Looked in current dir");
 	if(file){
 		// Found in current directory
 		return parseLoadedFile(file);
 	}else {
 		// Search in ash path
 		file = ClassImporter::searchDir(ClassImporter::getAshPath(), qualifiedName);
-		println("Looked in ash path");
 	}
 
 	if(file){
@@ -63,7 +107,6 @@ bool ClassImporter::importClass(std::string qualifiedName){
 	}else{
 		// Search in the jdk path
 		file = ClassImporter::searchDir(ClassImporter::getJavaPath(), qualifiedName);
-		println("Looked in java");
 	}
 
 	if(file){
@@ -78,43 +121,10 @@ bool ClassImporter::importClass(std::string qualifiedName){
 }
 
 bool ClassImporter::parseLoadedFile(AshFile* file){
-	printf("parsing loaded file\n");
 	if(!file->isSrc){
-		printf("!isSrc\n");
-		ClassFile* clsFile = ClassLoader::loadClass(file);
+		JavaClass cls(ClassLoader::loadClass(file));
 
-		// Parser the type (class, interface or enum)
-		EnumType::type type;
-		if(clsFile->access_flags & 0x4000) type = EnumType::ENUM;
-		else if(clsFile->access_flags & 0x0200) type = EnumType::PROTOCOL;
-		else type = EnumType::CLASS;
-
-		// Parse the modifiers
-		ModifiersInt mods = 0;
-		if(clsFile->access_flags & 0x0001) mods |= EnumModifier::PUBLIC;
-		if(clsFile->access_flags & 0x0010) mods |= EnumModifier::FINAL;
-		if(clsFile->access_flags & 0x0400) mods |= EnumModifier::ABSTRACT;
-
-		// Read in the class qualified name
-		QualifiedName name;
-		printf("This class: %u\n", clsFile->this_class);
-		constant_class* clsInfo = (constant_class*)clsFile->constant_pool[clsFile->this_class];
-		printf("Class info name index: %u\n", clsInfo->name_index-2);
-		constant_utf8* clsName = (constant_utf8*)clsFile->constant_pool[clsInfo->name_index-2];
-		//printf("Class name tag: %u\n", clsFile->constant_pool[((constant_class*)clsFile->constant_pool[clsFile->this_class])->name_index]->tag);
-		std::string fullName = "";
-		for(int i = 0; i < clsName->length; i++){
-			char ch = (char)clsName->bytes[i];
-			printf("%c\n", ch);
-			if(ch == '/'){
-				if(fullName != "") name.add(fullName);
-				fullName = "";
-			}else fullName += ch;
-		}
-		name.add(fullName);
-		printf("Made name: %s\n", name.fullName.c_str());
-
-		Members::addAndEnterType(new Type(mods, name, type));
+		Members::addAndEnterType(new Type(cls.mods, cls.name, cls.type));
 	}
 	return false;
 }
@@ -126,7 +136,6 @@ AshFile* ClassImporter::searchDir(std::string absPath, std::string qualifiedName
 	std::string path = absPath+qualifiedName;
 	// Make the path to a compiled class file
 	std::string compiledPath = std::string(path+compiledExtension);
-	printf("searching for class: %s\n", compiledPath.c_str());
 	// Attempt to open class file
 	std::ifstream* stream = new std::ifstream(compiledPath.c_str(), std::ios::in | std::ios::binary | std::ios::ate);
 	if(stream->is_open()){
@@ -136,7 +145,6 @@ AshFile* ClassImporter::searchDir(std::string absPath, std::string qualifiedName
 
 	// Attempt to find a source file instead
 	std::string srcPath = std::string(path+sourceExtension);
-	printf("searching for source: %s\n", srcPath.c_str());
 	stream->open(srcPath.c_str(), std::ios::in | std::ios::binary | std::ios::ate);
 	if(stream->is_open()){
 		return new AshFile(true, srcPath, stream);

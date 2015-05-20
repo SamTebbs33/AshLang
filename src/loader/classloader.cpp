@@ -4,6 +4,8 @@
 #include <loader/classimporter.hpp>
 
 // Source: https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html
+// http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/7-b147/com/sun/tools/classfile/ClassFile.java#ClassFile.read%28java.io.InputStream%2Ccom.sun.tools.classfile.Attribute.Factory%29
+// See read() method in above link
 
 char* buffer;
 int idx = 0;
@@ -35,106 +37,99 @@ void ClassLoader::readVersion(){
     classFile->major = read16();
 }
 
-constant_entry* ClassLoader::readConstantEntry(int offset){
-    u8 tag = read8();
+constant_entry* ClassLoader::readConstantEntry(int tag){
     switch(tag){
         case 7: { // CLASS_info
             constant_class* entry = new constant_class();
-            entry->tag = tag;
+
             entry->name_index = read16();
-            printf("Read class info (name_index:offset): %d:%d\n", entry->name_index, offset);
             return entry;
             }
         case 9: {// FIELD_info
             constant_field* entry = new constant_field();
-            entry->tag = tag;
+
             entry->class_index = read16();
             entry->name_and_type_index = read16();
             return entry;
             }
         case 10:{ // METHOD_info
             constant_method* entry = new constant_method();
-            entry->tag = tag;
+
             entry->class_index = read16();
             entry->name_and_type_index = read16();
             return entry;
         }
         case 11:{ // INTERFACE_METHOD_info
             constant_interface_method* entry = new constant_interface_method();
-            entry->tag = tag;
+
             entry->class_index = read16();
             entry->name_and_type_index = read16();
             return entry;
         }
         case 8:{ // STRING
             constant_string* entry = new constant_string();
-            entry->tag = tag;
+
             entry->string_index = read16();
             return entry;
         }
         case 3:{ // INTEGER
             constant_integer* entry = new constant_integer();
-            entry->tag = tag;
+
             entry->bytes = (int) read32();
             return entry;
         }
         case 4:{ // FLOAT
             constant_float* entry = new constant_float();
-            entry->tag = tag;
+
             u32 iVal = read32();
             entry->bytes = reinterpret_cast<float&>(iVal);
             return entry;
         }
         case 5:{ // LONG
             constant_long* entry = new constant_long();
-            entry->tag = tag;
+
             entry->high_bytes = read32();
             entry->low_bytes = read32();
             return entry;
         }
         case 6:{ // DOUBLE
             constant_double* entry = new constant_double();
-            entry->tag = tag;
+
             entry->high_bytes = read32();
             entry->low_bytes = read32();
             return entry;
         }
         case 12:{ // NAME_AND_TYPE
             constant_name_and_type* entry = new constant_name_and_type();
-            entry->tag = tag;
+
             entry->name_index = read16();
             entry->descriptor_index = read16();
             return entry;
         }
         case 1:{ // UTF8_STRING
             constant_utf8* entry = new constant_utf8();
-            entry->tag = tag;
+
             entry->length = read16();
             entry->bytes = new u8[entry->length];
             for(int i = 0; i < entry->length; i++) entry->bytes[i] = read8();
-            printf("Read String:%d: ", offset);
-            for(int i = 0; i < entry->length; i++){
-                printf("%c", (char)entry->bytes[i]);
-            }
-            printf("\n");
             return entry;
         }
         case 15:{ // METHOD_HANDLE
             constant_method_handle* entry = new constant_method_handle();
-            entry->tag = tag;
+
             entry->reference_kind = read8();
             entry->reference_index = read16();
             return entry;
         }
         case 16:{ // METHOD_TYPE
             constant_method_type* entry = new constant_method_type();
-            entry->tag = tag;
+
             entry->descriptor_index = read16();
             return entry;
         }
         case 18:{ // INVOKE_DYNAMIC
             constant_invoke_dyamic* entry = new constant_invoke_dyamic();
-            entry->tag = tag;
+
             entry->bootstrap_method_attr_index = read16();
             entry->name_and_type_index = read16();
             return entry;
@@ -144,10 +139,13 @@ constant_entry* ClassLoader::readConstantEntry(int offset){
 }
 
 void ClassLoader::readConstantPool(){
-    classFile->constant_pool_count = read16()-1;
+    classFile->constant_pool_count = read16();
     classFile->constant_pool = new constant_entry*[classFile->constant_pool_count];
-    for (size_t c = 0; c < classFile->constant_pool_count; c++) {
-        classFile->constant_pool[c] = readConstantEntry(c);
+    for (size_t c = 1; c < classFile->constant_pool_count; c++) {
+        u8 tag = read8();
+        classFile->constant_pool[c] = readConstantEntry(tag);
+        classFile->constant_pool[c]->tag = tag;
+        if(tag == 5 || tag == 6) c++;
     }
 }
 

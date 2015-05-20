@@ -1,7 +1,7 @@
-import Test2
+import ash.Object
 
 public class Test {
-    public func foo(i : int) : char {
+    public func foo(i : int) : Object {
         return 'a'
     }
 }
