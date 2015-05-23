@@ -23,3 +23,5 @@
     * **var otherName : String?**
     * otherName can be null
 * Closed-blocks that take a variable and at the end of the block, call .close() on the variable.
+* toString is automatically overriden and prints the values of the class' fields.
+* modifier block that applies the modifier to all fields and method declarations wihin
